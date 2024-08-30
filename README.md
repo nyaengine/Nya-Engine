@@ -19,4 +19,13 @@ Contributions are welcome! If you'd like to contribute to the engine, please fol
 ## Support
 If you find this engine useful and would like to support its development, consider making a donation. Your contributions help cover development costs and improve the engine. Here’s how you can support:
 
-- [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M5XFVTB)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/M4M5XFVTB)
+
+## Contact
+You can contact us through any of those ways:
+
+Twitter: https://x.com/MoonwaveEngine
+
+Discord: https://discord.gg/SnAnC4x7VT
+
+Support Twitter: https://x.com/Moonwave_Help

@@ -2,44 +2,33 @@
 
 local Engine = require("engine.engine")
 local UIManager = require("engine.ui.ui_manager")
+local UICreator = require("ui_creator")
+
+local uiCreator
 
 function love.load()
     Engine:init()
-
-    -- Create a button and a label
-    UIManager:addButton({
-        x = 300, y = 300, width = 100, height = 50, label = "Click Me!",
-        onClick = function() print("Button Clicked!") end
-    })
-
-    UIManager:addLabel({
-        x = 300, y = 250, text = "Hello, Game World!"
-    })
-
-    -- Create a text box
-    UIManager:addTextBox({
-        x = 300, y = 200, width = 200, height = 30, placeholder = "Type here..."
-    })
+    uiCreator = UICreator:new()
 end
 
 function love.update(dt)
     Engine:update(dt)
-    UIManager:update(dt)
+    uiCreator:update(dt)
 end
 
 function love.draw()
     Engine:draw()
-    UIManager:draw()
+    uiCreator:draw()
 end
 
 function love.mousepressed(x, y, button)
-    UIManager:mousepressed(x, y, button)
+    uiCreator:mousepressed(x, y, button)
 end
 
 function love.textinput(text)
-    UIManager:textinput(text)
+    UIManager:textinput(text)  -- Handles text input for text boxes
 end
 
 function love.keypressed(key)
-    UIManager:keypressed(key)
+    UIManager:keypressed(key)  -- Handles key presses for UI elements
 end

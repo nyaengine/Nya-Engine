@@ -4,10 +4,10 @@ Welcome to our 2D Game Engine built from scratch using LOVE2D! This project is a
 
 ## Project Structure
 
-main.lua - Entry point of the engine.
-assets/ - Directory for storing game assets like images and sounds.
-engine/ - Contains the core engine files and modules.
-examples/ - Sample projects and demos showcasing the engine’s capabilities.
+- main.lua - Entry point of the engine.
+- assets/ - Directory for storing game assets like images and sounds.
+- engine/ - Contains the core engine files and modules.
+- examples/ - Sample projects and demos showcasing the engine’s capabilities.
 
 ## Contributing
 

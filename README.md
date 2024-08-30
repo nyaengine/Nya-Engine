@@ -9,6 +9,9 @@ Welcome to our 2D Game Engine built from scratch using LOVE2D! This project is a
 - engine/ - Contains the core engine files and modules.
 - examples/ - Sample projects and demos showcasing the engine’s capabilities.
 
+## To-Do list
+You can access the to-do list [here](https://github.com/users/Virus01Official/projects/18/views/1).
+
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute to the engine, please follow these guidelines:

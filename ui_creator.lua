@@ -25,8 +25,7 @@ function UICreator:new()
             spread = math.pi / 4,
             minSpeed = 50,
             maxSpeed = 100
-        },
-        particleUIElements = {}  -- Holds the UI elements (textboxes) for customizing particles
+        }
     }
     setmetatable(instance, UICreator)
     return instance
@@ -65,27 +64,20 @@ function UICreator:drawParticleCustomizationPanel()
     love.graphics.setColor(1, 1, 1)
     love.graphics.printf("Particle Settings", 10, 300, self.panelWidth, "center")
 
-    -- Draw labels and textboxes for particle properties
-    local yOffset = 340
-    for key, value in pairs(config) do
-        if type(value) ~= "table" then
-            love.graphics.printf(key:gsub("^%l", string.upper) .. ": ", 10, yOffset, self.panelWidth - 20, "left")
-            self.particleUIElements[key]:draw()
-            yOffset = yOffset + 40
-        end
-    end
+    -- Example customization fields (replace with more detailed customization)
+    love.graphics.printf("Max Particles: " .. config.maxParticles, 10, 340, self.panelWidth, "left")
+    love.graphics.printf("Emission Rate: " .. config.emissionRate, 10, 360, self.panelWidth, "left")
+    love.graphics.printf("Min Speed: " .. config.minSpeed, 10, 380, self.panelWidth, "left")
+    love.graphics.printf("Max Speed: " .. config.maxSpeed, 10, 400, self.panelWidth, "left")
+    love.graphics.printf("Start Size: " .. config.startSize, 10, 420, self.panelWidth, "left")
+    love.graphics.printf("End Size: " .. config.endSize, 10, 440, self.panelWidth, "left")
+
+    -- You can add sliders or textboxes to adjust these values and apply changes in real-time
 end
 
 function UICreator:update(dt)
     -- Update all UI elements
     self.uiManager:update(dt)
-
-    -- Update the particle system customization textboxes if they exist
-    if self.activeParticleSystem then
-        for _, textbox in pairs(self.particleUIElements) do
-            textbox:update(dt)
-        end
-    end
 end
 
 function UICreator:draw()
@@ -165,50 +157,11 @@ end
 
 function UICreator:createParticleSystem(x, y)
     -- Create a new particle system using the particle configuration
-    local particleSystem = engine:createParticleSystem(love.graphics.newImage("particle.png"), self.particleConfig)
+    local particleSystem = engine:createParticleSystem(love.graphics.newImage("assets/sprites/particle.png"), self.particleConfig)
 
     -- Set the active particle system for customization
     self.activeParticleSystem = particleSystem
-
-    -- Create textboxes for particle customization
-    self.particleUIElements = {}
-    self.particleUIElements.maxParticles = self:createParticleTextBox("maxParticles", self.particleConfig.maxParticles, 350)
-    self.particleUIElements.emissionRate = self:createParticleTextBox("emissionRate", self.particleConfig.emissionRate, 390)
-    self.particleUIElements.minSpeed = self:createParticleTextBox("minSpeed", self.particleConfig.minSpeed, 430)
-    self.particleUIElements.maxSpeed = self:createParticleTextBox("maxSpeed", self.particleConfig.maxSpeed, 470)
-    self.particleUIElements.startSize = self:createParticleTextBox("startSize", self.particleConfig.startSize, 510)
-    self.particleUIElements.endSize = self:createParticleTextBox("endSize", self.particleConfig.endSize, 550)
-
     self.mode = "select" -- Switch to select mode after creating
-end
-
-function UICreator:createParticleTextBox(param, defaultValue, y)
-    local textbox = self.uiManager:addTextBox({
-        x = 10,
-        y = y,
-        width = self.panelWidth - 20,
-        height = 30,
-        text = tostring(defaultValue),
-        onEnter = function(text)
-            local value = tonumber(text)
-            if value then
-                self.particleConfig[param] = value
-                self:updateParticleSystem()
-            end
-        end
-    })
-    return textbox
-end
-
-function UICreator:updateParticleSystem()
-    if self.activeParticleSystem then
-        -- Update particle system with the new configuration values
-        self.activeParticleSystem:setBufferSize(self.particleConfig.maxParticles)
-        self.activeParticleSystem:setEmissionRate(self.particleConfig.emissionRate)
-        self.activeParticleSystem:setSizes(self.particleConfig.startSize, self.particleConfig.endSize)
-        self.activeParticleSystem:setSpeed(self.particleConfig.minSpeed, self.particleConfig.maxSpeed)
-        -- Add more updates as needed
-    end
 end
 
 return UICreator

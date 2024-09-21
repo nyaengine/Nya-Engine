@@ -33,6 +33,46 @@ function ParticleSystem:new(image, config)
     return ps
 end
 
+function ParticleSystem:setConfig(config)
+    -- Update particle lifetime
+    self.system:setParticleLifetime(config.minLifetime or 1, config.maxLifetime or 2)
+
+    -- Update emission rate
+    self.system:setEmissionRate(config.emissionRate or 10)
+
+    -- Update size variation
+    self.system:setSizeVariation(config.sizeVariation or 1)
+
+    -- Update linear acceleration
+    self.system:setLinearAcceleration(
+        config.minSpeedX or -200, config.minSpeedY or -200,
+        config.maxSpeedX or 200, config.maxSpeedY or 200
+    )
+
+    -- Update colors
+    self.system:setColors(
+        config.startColor or {1, 1, 1, 1},
+        config.endColor or {1, 1, 1, 0}
+    )
+
+    -- Update sizes
+    self.system:setSizes(config.startSize or 1, config.endSize or 0.1)
+
+    -- Update spread
+    self.system:setSpread(config.spread or math.pi * 2)
+
+    -- Update speed
+    self.system:setSpeed(config.minSpeed or 100, config.maxSpeed or 200)
+
+    -- Update rotation
+    self.system:setRotation(config.rotationMin or 0, config.rotationMax or math.pi * 2)
+
+    -- Update emission area
+    if config.emissionArea then
+        self.system:setEmissionArea(unpack(config.emissionArea))
+    end
+end
+
 function ParticleSystem:start()
     self.system:start()
 end

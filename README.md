@@ -27,7 +27,7 @@ If you find this engine useful and would like to support its development, consid
 ## Contact
 You can contact us through any of those ways:
 
-Twitter: https://x.com/MoonwaveEngine
+BlueSky: https://moonwaveengine.bsky.social
 
 Discord: https://discord.gg/SnAnC4x7VT
 

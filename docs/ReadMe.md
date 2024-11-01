@@ -193,6 +193,7 @@ end
 - **Customizable Gravity**: Allow setting gravity direction and magnitude per scene.
 - **Animation Support**: Introduce sprite animations and basic timelines for character actions.
 - **Save and Load Scenes**: Enable saving scenes to file for persistence.
+- **A lot more**: Since this engine is currently being developed we will constantly add new features such as: camera, assets, lighting, audio, etc.
 
 ---
 

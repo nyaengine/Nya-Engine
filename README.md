@@ -1,6 +1,8 @@
-# MW-Engine
+# Nya-Engine
 
 Welcome to our 2D Game Engine built from scratch using LOVE2D! This project is a comprehensive and modular engine designed to facilitate the development of 2D games with ease. Whether you're a seasoned developer or just getting started, this engine provides a robust foundation to build and customize your game projects.
+
+It's a community-run project
 
 ## Project Structure
 

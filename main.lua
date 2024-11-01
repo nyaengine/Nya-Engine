@@ -6,6 +6,13 @@ function love.load()
     -- Initialize Nya Engine
     NyaEngine:init()
 
+    -- Add ambient sound near a specific object (e.g., waterfall sound)
+    local waterfallSound = NyaEngine.audio:addSound("sounds/waterfall.ogg", 500, 300, false)
+    NyaEngine.audio:playSound(waterfallSound)
+
+    -- Add a sound that plays on event (e.g., object collision)
+    local collisionSound = NyaEngine.audio:addSound("sounds/collision.ogg", 0, 0, false)
+
     -- Create a ground platform (static)
     local ground = PhysicsObject:new(NyaEngine.physicsWorld, 400, 550, 800, 50, "static")
     NyaEngine.activeScene:addObject(ground)
@@ -36,7 +43,10 @@ function love.mousepressed(x, y, button)
 end
 
 function love.keypressed(key)
-    -- Pass key events to both the engine and UI
-    NyaEngine:keypressed(key)
-    UI:keypressed(key)
+    if key == "space" then
+        -- Play collision sound at player's position for demonstration
+        local playerX, playerY = NyaEngine:getPlayerPosition()
+        NyaEngine.audio:setSoundPosition(collisionSound, playerX, playerY)
+        NyaEngine.audio:playSound(collisionSound)
+    end
 end

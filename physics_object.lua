@@ -1,18 +1,14 @@
-local PhysicsObject = {}
+local GameObject = require("game_object")
+local PhysicsObject = setmetatable({}, { __index = GameObject })
 PhysicsObject.__index = PhysicsObject
 
 -- Constructor for physics-enabled object
 function PhysicsObject:new(world, x, y, width, height, type)
-    local obj = setmetatable({}, PhysicsObject)
+    local obj = GameObject.new(self, x, y, width, height)  -- Call base constructor
+    setmetatable(obj, PhysicsObject)
     
-    -- Set default properties
-    obj.width = width or 32
-    obj.height = height or 32
-    obj.color = {1, 0.8, 0.8}  -- Light pink for visibility
-
-    -- Create physics body and shape
-    obj.body = love.physics.newBody(world, x, y, type or "dynamic")  -- 'dynamic', 'static', or 'kinematic'
-    obj.shape = love.physics.newRectangleShape(obj.width, obj.height)
+    obj.body = love.physics.newBody(world, x, y, type or "dynamic")
+    obj.shape = love.physics.newRectangleShape(width, height)
     obj.fixture = love.physics.newFixture(obj.body, obj.shape)
 
     return obj
@@ -33,9 +29,10 @@ function PhysicsObject:render()
     love.graphics.pop()
 end
 
--- Handle object removal
 function PhysicsObject:destroy()
-    self.body:destroy()
+    if self.body then
+        self.body:destroy()  -- Destroy the physics body if it exists
+    end
 end
 
 return PhysicsObject

@@ -3,6 +3,7 @@ local NyaEngine = {}
 -- Dependencies
 local Scene = require("scene")
 local GameObject = require("game_object")
+local AudioSystem = require("audio_system")
 
 -- Initialization of Nya Engine components
 function NyaEngine:init()
@@ -21,6 +22,9 @@ function NyaEngine:init()
             print("Collision ended between " .. tostring(a:getUserData()) .. " and " .. tostring(b:getUserData()))
         end
     )
+
+    -- Initialize audio system
+    self.audio = AudioSystem:new()
 
     -- Add a default scene
     self:addScene("default", Scene:new(self.physicsWorld))
@@ -59,6 +63,9 @@ function NyaEngine:update(dt)
         self.physicsWorld:update(dt)  -- Update the physics world
         self.activeScene:update(dt)
     end
+    -- Update listener position (assuming player or camera at center)
+    local playerX, playerY = self:getPlayerPosition()  -- Replace with actual player position
+    self.audio:setListenerPosition(playerX, playerY)
 end
 
 -- Render loop for the engine
@@ -68,11 +75,17 @@ function NyaEngine:render()
     end
 end
 
--- Key press handler
+-- Function to retrieve player's position (for example)
+function NyaEngine:getPlayerPosition()
+    -- Replace this with actual code to fetch player position
+    return 400, 300  -- Example center position
+end
+
+--[[ Key press handler
 function NyaEngine:keypressed(key)
     if self.activeScene then
         self.activeScene:keypressed(key)
     end
-end
+end]]
 
 return NyaEngine

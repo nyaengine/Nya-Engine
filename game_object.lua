@@ -20,12 +20,8 @@ function GameObject:render()
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
 end
 
-function GameObject:keypressed(key)
-    -- Example: Move the object with arrow keys
-    if key == "right" then self.x = self.x + 10 end
-    if key == "left" then self.x = self.x - 10 end
-    if key == "up" then self.y = self.y - 10 end
-    if key == "down" then self.y = self.y + 10 end
+function GameObject:destroy()
+    -- Empty destroy method for base GameObject
 end
 
 return GameObject

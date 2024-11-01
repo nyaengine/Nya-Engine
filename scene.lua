@@ -17,7 +17,9 @@ end
 function Scene:removeObject(object)
     for i, obj in ipairs(self.objects) do
         if obj == object then
-            obj:destroy()  -- Destroy the physics body if it's a physics object
+            if obj.destroy then  -- Check if `destroy` method exists
+                obj:destroy()    -- Call `destroy` if available
+            end
             table.remove(self.objects, i)
             break
         end

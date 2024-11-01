@@ -1,6 +1,6 @@
 -- conf.lua
 function love.conf(t)
-    t.window.title = "MW Engine 2D"
+    t.window.title = "Nya Engine 2D"
     t.window.width = 1000
     t.window.height = 700
     t.window.fullscreen = false

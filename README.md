@@ -1,5 +1,5 @@
-<p align="center">
-  <img width="200" alt="Nya Engine logo" src="docs/NyaEngine.jpg">
+<p align="left">
+  <img width="100" alt="Nya Engine logo" src="docs/NyaEngine.jpg">
 </p>
 
 # Nya Engine

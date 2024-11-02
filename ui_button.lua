@@ -1,15 +1,16 @@
 local Button = {}
 Button.__index = Button
 
-function Button:new(label, x, y, action)
+function Button:new(label, x, y, action, width, height)
     local btn = setmetatable({}, Button)
     btn.label = label
     btn.x = x
     btn.y = y
-    btn.width = 100
-    btn.height = 30
+    btn.width = width or 100
+    btn.height = height or 30
     btn.color = {0.9, 0.7, 0.9}  -- Cute pastel pink
     btn.action = action
+    btn.isToggle = false  -- Flag for toggle button if needed
     return btn
 end
 
@@ -22,7 +23,8 @@ function Button:render()
     love.graphics.setColor(self.color)
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height, 10, 10)
     love.graphics.setColor(0, 0, 0)
-    love.graphics.printf(self.label, self.x, self.y + 8, self.width, "center")
+    love.graphics.setFont(love.graphics.getFont() or love.graphics.newFont(14))
+    love.graphics.printf(self.label, self.x, self.y + (self.height / 2) - (love.graphics.getFont():getHeight() / 2), self.width, "center")
 end
 
 function Button:mousepressed(x, y, button)

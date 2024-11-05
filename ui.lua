@@ -2,7 +2,6 @@ local UI = {}
 local Button = require("ui_button")
 local ColorPicker = require("ui_color_picker")
 local Slider = require("ui_slider")  -- New slider component for adjustable physics properties
-local camera = require("camera")
 
 -- Constants for sidebar dimensions and positions
 local SIDEBAR_WIDTH = 200
@@ -40,15 +39,6 @@ function UI:init(engine)
         if self.activeObject then
             self.engine.activeScene:removeObject(self.activeObject)
             self.activeObject = nil
-        end
-    end)
-
-    -- Add button to toggle camera follow
-    self:addButton("Follow Object", 10, 410, function()
-        if self.activeObject then
-            camera:setTarget(self.activeObject)
-        else
-            camera:setTarget(nil)  -- Disable following
         end
     end)
 

@@ -3,6 +3,7 @@
 -- Required files
 local ObjectLibrary = require("lib/ObjectLibrary")
 local ButtonLibrary = require("lib/ButtonLibrary")
+local window = require("window")
 local Camera = require("lib/Camera")
 
 -- Game objects
@@ -18,10 +19,19 @@ local appId = require 'applicationId'
 -- Buttons
 local buttons = {}
 local topbarButtons = {}
+local sidebarButtons = {}
+
+-- Windows
+local settingsVis = false
+
+local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X")
 
 -- Initialize the game
 function love.load()
     nextPresenceUpdate = 0
+    myWindow = window:new(100, 100, 300, 200)
+    myWindow:addElement(closeButton)
+
     -- Create the "Create Object" button
     local createObjectButton = ButtonLibrary:new(10, 70, 120, 40, "Create Object", function()
         local newObject = ObjectLibrary:new(150, 100, 50, 50)
@@ -33,9 +43,8 @@ function love.load()
     end)
 
     local settingsButton = ButtonLibrary:new(10, 10, 30, 30, "⚙", function()
-        print("test")
+        openSettingsWindow()
     end)
-
     discordRPC.initialize(appId, true)
 
     -- Add buttons to the buttons table
@@ -75,6 +84,8 @@ function love.update(dt)
       nextPresenceUpdate = love.timer.getTime() + 2.0
   end
   discordRPC.runCallbacks()
+
+  myWindow:update(dt)
 end
 
 function discordApplyPresence()
@@ -152,6 +163,10 @@ function love.draw()
         love.graphics.setColor(1, 1, 1, 1) -- Reset color
     end
 
+    --sidebar
+    love.graphics.setColor(1, 0.4, 0.7)
+    love.graphics.rectangle("fill", windowWidth - 200, 50, windowWidth, windowHeight - 50)
+
     -- Topbar
     love.graphics.setColor(1, 0.4, 0.7,0.5)
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
@@ -161,9 +176,17 @@ function love.draw()
         btn:draw()
     end
 
+    if settingsVis == true then
+        myWindow:draw()
+    end
+
     camera:apply()
 
     camera:reset()
+end
+
+function openSettingsWindow()
+    settingsVis = not settingsVis
 end
 
 -- Key press to reset the game

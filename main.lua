@@ -1,56 +1,146 @@
-local NyaEngine = require("nya_engine")
-local UI = require("ui")
-local PhysicsObject = require("physics_object")
+-- Nya Engine
 
+-- Required files
+local ObjectLibrary = require("lib/ObjectLibrary")
+local ButtonLibrary = require("lib/ButtonLibrary")
+
+-- Game objects
+local objects = {}
+local selectedObject = nil
+local running = false
+local isDragging = false
+
+local discordRPC = require 'lib/discordRPC'
+local appId = require 'applicationId'
+
+-- Buttons
+local buttons = {}
+
+-- Initialize the game
 function love.load()
-    -- Initialize Nya Engine
-    NyaEngine:init()
+    nextPresenceUpdate = 0
+    -- Create the "Create Object" button
+    local createObjectButton = ButtonLibrary:new(10, 10, 120, 40, "Create Object", function()
+        local newObject = ObjectLibrary:new(100, 100, 50, 50)
+        table.insert(objects, newObject)
+    end)
 
-    -- Add ambient sound near a specific object (e.g., waterfall sound)
-    local waterfallSound = NyaEngine.audio:addSound("sounds/waterfall.ogg", 500, 300, false)
-    NyaEngine.audio:playSound(waterfallSound)
+    local createRunButton = ButtonLibrary:new(10, 70, 120, 40, "Run", function()
+        running = not running
+    end)
 
-    -- Add a sound that plays on event (e.g., object collision)
-    local collisionSound = NyaEngine.audio:addSound("sounds/collision.ogg", 0, 0, false)
+    discordRPC.initialize(appId, true)
 
-    -- Create a ground platform (static)
-    local ground = PhysicsObject:new(NyaEngine.physicsWorld, 400, 550, 800, 50, "static")
-    NyaEngine.activeScene:addObject(ground)
-
-    -- Create a dynamic falling box
-    local box = PhysicsObject:new(NyaEngine.physicsWorld, 400, 100, 50, 50, "dynamic")
-    NyaEngine.activeScene:addObject(box)
-
-    -- Initialize the UI with Nya Engine's reference
-    UI:init(NyaEngine)
+    -- Add buttons to the buttons table
+    table.insert(buttons, createObjectButton)
+    table.insert(buttons, createRunButton)
 end
 
+-- Update the game
 function love.update(dt)
-    -- Update Nya Engine and UI
-    NyaEngine:update(dt)
-    UI:update(dt)
+    -- Update all objects
+    if running then
+        for _, obj in ipairs(objects) do
+            obj:update(dt)
+        end
+    end
+
+    -- Update all buttons
+    local mouseX, mouseY = love.mouse.getPosition()
+    for _, button in ipairs(buttons) do
+        button:update(mouseX, mouseY)
+    end
+
+    -- Dragging logic
+    if isDragging and selectedObject then
+        local mouseX, mouseY = love.mouse.getPosition()
+        selectedObject.x = mouseX - selectedObject.width / 2
+        selectedObject.y = mouseY - selectedObject.height / 2
+    end
+
+    if nextPresenceUpdate < love.timer.getTime() then
+      discordRPC.updatePresence(discordApplyPresence())
+      nextPresenceUpdate = love.timer.getTime() + 2.0
+  end
+  discordRPC.runCallbacks()
 end
 
+function discordApplyPresence()
+    detailsNow = "Developing"
+    stateNow = ""
+  
+  presence = {
+    largeImageKey = "nyaengine_icon",
+    largeImageText = "Nya Engine 1.0",
+    details = detailsNow,
+    state = stateNow,
+    startTimestamp = now,
+  }
+  
+  return presence
+end
+
+-- Handle mouse presses
+function love.mousepressed(x, y, button, istouch, presses)
+    if button == 1 then -- Left mouse button
+        -- Check if a button is clicked
+        for _, btn in ipairs(buttons) do
+            if btn:mousepressed(x, y, button) then
+                return
+            end
+        end
+
+        -- Check if an object is clicked
+        for _, obj in ipairs(objects) do
+            if obj:isClicked(x, y) then
+                selectedObject = obj
+                isDragging = true
+                return
+            end
+        end
+
+        -- Deselect if clicked outside any object
+        selectedObject = nil
+    end
+end
+
+-- Handle mouse release
+function love.mousereleased(x, y, button, istouch, presses)
+    if button == 1 then -- Left mouse button
+        isDragging = false
+    end
+end
+
+-- Draw everything
 function love.draw()
+    -- Draw all buttons
+    for _, btn in ipairs(buttons) do
+        btn:draw()
+    end
 
-    -- Render Nya Engine and UI
-    NyaEngine:render()
-    UI:render()
+    -- Draw all objects
+    for _, obj in ipairs(objects) do
+        obj:draw()
+    end
+
+    -- Highlight the selected object
+    if selectedObject then
+        love.graphics.setColor(1, 0, 0, 0.5)
+        love.graphics.rectangle("line", selectedObject.x, selectedObject.y, selectedObject.width, selectedObject.height)
+        love.graphics.setColor(1, 1, 1, 1) -- Reset color
+    end
 end
 
-function love.mousepressed(x, y, button)
-    -- Pass mouse events to the UI
-    UI:mousepressed(x, y, button)
-end
-
+-- Key press to reset the game
 function love.keypressed(key)
-    
+    if key == "r" then
+        objects = {} -- Clear all objects
+        selectedObject = nil
+    elseif key == "space" then
+        running = not running
+    end
 end
 
-function love.mousereleased(x, y, button)
-    UI:mousereleased(x, y, button)
-end
-
-function love.mousemoved(x, y, dx, dy)
-    UI:mousemoved(x, y, dx, dy)
+function love.quit()
+  discordRPC.shutdown()
 end

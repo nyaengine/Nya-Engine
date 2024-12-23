@@ -3,30 +3,37 @@
 -- Required files
 local ObjectLibrary = require("lib/ObjectLibrary")
 local ButtonLibrary = require("lib/ButtonLibrary")
+local Camera = require("lib/Camera")
 
 -- Game objects
 local objects = {}
 local selectedObject = nil
 local running = false
 local isDragging = false
+local camera = Camera:new(0, 0, 0)
 
 local discordRPC = require 'lib/discordRPC'
 local appId = require 'applicationId'
 
 -- Buttons
 local buttons = {}
+local topbarButtons = {}
 
 -- Initialize the game
 function love.load()
     nextPresenceUpdate = 0
     -- Create the "Create Object" button
-    local createObjectButton = ButtonLibrary:new(10, 10, 120, 40, "Create Object", function()
-        local newObject = ObjectLibrary:new(100, 100, 50, 50)
+    local createObjectButton = ButtonLibrary:new(10, 70, 120, 40, "Create Object", function()
+        local newObject = ObjectLibrary:new(150, 100, 50, 50)
         table.insert(objects, newObject)
     end)
 
-    local createRunButton = ButtonLibrary:new(10, 70, 120, 40, "Run", function()
+    local createRunButton = ButtonLibrary:new(10, 130, 120, 40, "Run", function()
         running = not running
+    end)
+
+    local settingsButton = ButtonLibrary:new(10, 10, 30, 30, "⚙", function()
+        print("test")
     end)
 
     discordRPC.initialize(appId, true)
@@ -34,6 +41,7 @@ function love.load()
     -- Add buttons to the buttons table
     table.insert(buttons, createObjectButton)
     table.insert(buttons, createRunButton)
+    table.insert(topbarButtons, settingsButton)
 end
 
 -- Update the game
@@ -48,6 +56,10 @@ function love.update(dt)
     -- Update all buttons
     local mouseX, mouseY = love.mouse.getPosition()
     for _, button in ipairs(buttons) do
+        button:update(mouseX, mouseY)
+    end
+
+    for _, button in ipairs(topbarButtons) do
         button:update(mouseX, mouseY)
     end
 
@@ -90,6 +102,12 @@ function love.mousepressed(x, y, button, istouch, presses)
             end
         end
 
+        for _, btn in ipairs(topbarButtons) do
+            if btn:mousepressed(x, y, button) then
+                return
+            end
+        end
+
         -- Check if an object is clicked
         for _, obj in ipairs(objects) do
             if obj:isClicked(x, y) then
@@ -113,14 +131,18 @@ end
 
 -- Draw everything
 function love.draw()
-    -- Draw all buttons
-    for _, btn in ipairs(buttons) do
-        btn:draw()
-    end
+    love.graphics.setBackgroundColor(0.3,0.3,0.3)
+    local windowWidth = love.graphics.getWidth()
+    local windowHeight = love.graphics.getHeight()
 
     -- Draw all objects
     for _, obj in ipairs(objects) do
         obj:draw()
+    end
+
+    -- Draw all buttons
+    for _, btn in ipairs(buttons) do
+        btn:draw()
     end
 
     -- Highlight the selected object
@@ -129,6 +151,19 @@ function love.draw()
         love.graphics.rectangle("line", selectedObject.x, selectedObject.y, selectedObject.width, selectedObject.height)
         love.graphics.setColor(1, 1, 1, 1) -- Reset color
     end
+
+    -- Topbar
+    love.graphics.setColor(1, 0.4, 0.7,0.5)
+    love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
+
+    -- Draw all buttons
+    for _, btn in ipairs(topbarButtons) do
+        btn:draw()
+    end
+
+    camera:apply()
+
+    camera:reset()
 end
 
 -- Key press to reset the game

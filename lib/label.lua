@@ -1,4 +1,4 @@
---[[
+--[[ 
 Label Library for LÖVE2D
 
 Usage:
@@ -17,7 +17,8 @@ function love.load()
         y = 50,
         text = "Hello, World!",
         font = love.graphics.newFont(20),
-        color = {1, 1, 1, 1} -- White
+        color = {1, 1, 1, 1}, -- White
+        textScale = 1.5 -- Scale the text by 1.5 times
     })
 end
 
@@ -38,6 +39,7 @@ function Label:new(options)
     instance.text = options.text or "Label"
     instance.font = options.font or love.graphics.getFont() -- Default font
     instance.color = options.color or {1, 1, 1, 1} -- Default to white color
+    instance.textScale = options.textScale or 1 -- Default to no scaling
 
     return instance
 end
@@ -46,7 +48,17 @@ end
 function Label:draw()
     love.graphics.setFont(self.font)
     love.graphics.setColor(self.color)
-    love.graphics.print(self.text, self.x, self.y)
+
+    -- Apply scaling to the label's position and text
+    love.graphics.push()  -- Save the current transformation state
+    love.graphics.translate(self.x, self.y)  -- Move to the label's position
+    love.graphics.scale(self.textScale)  -- Apply the scaling factor
+
+    -- Draw the text at the origin (0, 0) after transformation
+    love.graphics.print(self.text, 0, 0)
+    
+    love.graphics.pop()  -- Restore the transformation state
+
     love.graphics.setColor(1, 1, 1, 1) -- Reset to default color
 end
 
@@ -69,6 +81,11 @@ end
 -- Update the label's color
 function Label:setColor(r, g, b, a)
     self.color = {r, g, b, a or 1}
+end
+
+-- Update the label's text scale
+function Label:setTextScale(scale)
+    self.textScale = scale
 end
 
 return Label

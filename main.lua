@@ -11,7 +11,7 @@ local objects = {}
 local selectedObject = nil
 local running = false
 local isDragging = false
-local camera = Camera:new(0, 0, 0)
+local camera = Camera:new(0, 0, 1)
 
 local discordRPC = require 'lib/discordRPC'
 local appId = require 'applicationId'
@@ -75,32 +75,32 @@ function love.update(dt)
     -- Dragging logic
     if isDragging and selectedObject then
         local mouseX, mouseY = love.mouse.getPosition()
-        selectedObject.x = mouseX - selectedObject.width / 2
-        selectedObject.y = mouseY - selectedObject.height / 2
+        selectedObject.x = mouseX / camera.scale - camera.x - selectedObject.width / 2
+        selectedObject.y = mouseY / camera.scale - camera.y - selectedObject.height / 2
     end
 
     if nextPresenceUpdate < love.timer.getTime() then
-      discordRPC.updatePresence(discordApplyPresence())
-      nextPresenceUpdate = love.timer.getTime() + 2.0
-  end
-  discordRPC.runCallbacks()
+        discordRPC.updatePresence(discordApplyPresence())
+        nextPresenceUpdate = love.timer.getTime() + 2.0
+    end
+    discordRPC.runCallbacks()
 
-  myWindow:update(dt)
+    myWindow:update(dt)
 end
 
 function discordApplyPresence()
     detailsNow = "Developing"
     stateNow = ""
-  
-  presence = {
-    largeImageKey = "nyaengine_icon",
-    largeImageText = "Nya Engine 1.0",
-    details = detailsNow,
-    state = stateNow,
-    startTimestamp = now,
-  }
-  
-  return presence
+
+    presence = {
+        largeImageKey = "nyaengine_icon",
+        largeImageText = "Nya Engine 1.0",
+        details = detailsNow,
+        state = stateNow,
+        startTimestamp = now,
+    }
+
+    return presence
 end
 
 -- Handle mouse presses
@@ -120,8 +120,9 @@ function love.mousepressed(x, y, button, istouch, presses)
         end
 
         -- Check if an object is clicked
+        local camX, camY = x / camera.scale + camera.x, y / camera.scale + camera.y
         for _, obj in ipairs(objects) do
-            if obj:isClicked(x, y) then
+            if obj:isClicked(camX, camY) then
                 selectedObject = obj
                 isDragging = true
                 return
@@ -146,14 +147,12 @@ function love.draw()
     local windowWidth = love.graphics.getWidth()
     local windowHeight = love.graphics.getHeight()
 
+    -- Apply camera
+    camera:apply()
+
     -- Draw all objects
     for _, obj in ipairs(objects) do
         obj:draw()
-    end
-
-    -- Draw all buttons
-    for _, btn in ipairs(buttons) do
-        btn:draw()
     end
 
     -- Highlight the selected object
@@ -163,15 +162,22 @@ function love.draw()
         love.graphics.setColor(1, 1, 1, 1) -- Reset color
     end
 
-    --sidebar
+    -- Reset camera
+    camera:reset()
+
+    -- Sidebar
     love.graphics.setColor(1, 0.4, 0.7)
     love.graphics.rectangle("fill", windowWidth - 200, 50, windowWidth, windowHeight - 50)
 
     -- Topbar
-    love.graphics.setColor(1, 0.4, 0.7,0.5)
+    love.graphics.setColor(1, 0.4, 0.7, 0.5)
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
     -- Draw all buttons
+    for _, btn in ipairs(buttons) do
+        btn:draw()
+    end
+
     for _, btn in ipairs(topbarButtons) do
         btn:draw()
     end
@@ -179,10 +185,6 @@ function love.draw()
     if settingsVis == true then
         myWindow:draw()
     end
-
-    camera:apply()
-
-    camera:reset()
 end
 
 function openSettingsWindow()
@@ -196,9 +198,23 @@ function love.keypressed(key)
         selectedObject = nil
     elseif key == "space" then
         running = not running
+    elseif key == "f" then
+        camera:focus(selectedObject)
+    elseif key == "w" then
+        camera:move(0, -10)
+    elseif key == "s" then
+        camera:move(0, 10)
+    elseif key == "a" then
+        camera:move(-10, 0)
+    elseif key == "d" then
+        camera:move(10, 0)
+    elseif key == "=" then
+        camera:zoom(1.1)
+    elseif key == "-" then
+        camera:zoom(0.9)
     end
 end
 
 function love.quit()
-  discordRPC.shutdown()
+    discordRPC.shutdown()
 end

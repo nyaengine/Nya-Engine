@@ -35,19 +35,22 @@ local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X")
 -- Initialize the game
 function love.load()
     love.graphics.setFont(font)
+    love.graphics.setDefaultFilter("nearest", "nearest")
 
     myLabel = Label:new({
         x = love.graphics.getWidth() - 200,
         y = 50,
         text = "Properties",
-        color = {1, 1, 1, 1} -- White
+        color = {1, 1, 1, 1}, -- White
+        textScale = 1.25 -- Scale the text by 1.5 times
     })
 
     SidebarTitle = Label:new({
         x = 0,
         y = 50,
         text = "Explorer",
-        color = {1, 1, 1, 1}
+        color = {1, 1, 1, 1},
+        textScale = 1.25 -- Scale the text by 1.5 times
     })
 
     nextPresenceUpdate = 0

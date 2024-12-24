@@ -1,3 +1,5 @@
+-- SceneManager.lua
+
 SceneManager = {}
 SceneManager.__index = SceneManager
 
@@ -14,6 +16,18 @@ end
 -- Add a new scene
 function SceneManager:addScene(name, scene)
     self.scenes[name] = scene
+end
+
+-- Remove a scene
+function SceneManager:removeScene(name)
+    if self.scenes[name] then
+        if self.currentScene == self.scenes[name] then
+            self.currentScene = nil
+        end
+        self.scenes[name] = nil
+    else
+        error("Scene '" .. name .. "' does not exist!")
+    end
 end
 
 -- Switch to a specific scene

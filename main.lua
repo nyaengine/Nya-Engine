@@ -1,10 +1,13 @@
--- Nya Engine
-
 -- Required files
 local ObjectLibrary = require("lib/ObjectLibrary")
 local ButtonLibrary = require("lib/ButtonLibrary")
 local window = require("window")
 local Camera = require("lib/Camera")
+local Label = require("lib/label")
+local SceneManager = require("lib/SceneManager")
+local AudioEngine = require("lib/AudioEngine")
+
+local font = love.graphics.newFont("assets/fonts/NotoSans-Regular.ttf", 15)
 
 -- Game objects
 local objects = {}
@@ -21,6 +24,9 @@ local buttons = {}
 local topbarButtons = {}
 local sidebarButtons = {}
 
+--Labels
+local SidebarLabels = {}
+
 -- Windows
 local settingsVis = false
 
@@ -28,6 +34,22 @@ local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X")
 
 -- Initialize the game
 function love.load()
+    love.graphics.setFont(font)
+
+    myLabel = Label:new({
+        x = love.graphics.getWidth() - 200,
+        y = 50,
+        text = "Properties",
+        color = {1, 1, 1, 1} -- White
+    })
+
+    SidebarTitle = Label:new({
+        x = 0,
+        y = 50,
+        text = "Explorer",
+        color = {1, 1, 1, 1}
+    })
+
     nextPresenceUpdate = 0
     myWindow = window:new(100, 100, 300, 200)
     myWindow:addElement(closeButton)
@@ -38,19 +60,22 @@ function love.load()
         table.insert(objects, newObject)
     end)
 
-    local createRunButton = ButtonLibrary:new(10, 130, 120, 40, "Run", function()
+    local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 40, "Run", function()
         running = not running
     end)
 
     local settingsButton = ButtonLibrary:new(10, 10, 30, 30, "⚙", function()
         openSettingsWindow()
     end)
+
     discordRPC.initialize(appId, true)
 
     -- Add buttons to the buttons table
     table.insert(buttons, createObjectButton)
-    table.insert(buttons, createRunButton)
+    table.insert(topbarButtons, createRunButton)
     table.insert(topbarButtons, settingsButton)
+    table.insert(SidebarLabels, SidebarTitle)
+    table.insert(SidebarLabels, myLabel)
 end
 
 -- Update the game
@@ -86,6 +111,30 @@ function love.update(dt)
     discordRPC.runCallbacks()
 
     myWindow:update(dt)
+
+    if love.keyboard.isDown("w") then
+        camera:move(0, -10)
+    end
+
+    if love.keyboard.isDown("s") then
+        camera:move(0, 10)
+    end
+
+    if love.keyboard.isDown("d") then
+        camera:move(10, 0)
+    end
+
+    if love.keyboard.isDown("a") then
+        camera:move(-10, 0)
+    end
+
+    if love.keyboard.isDown("=") then
+        camera:zoom(1.1)
+    end
+
+    if love.keyboard.isDown("-") then
+        camera:zoom(0.9)
+    end
 end
 
 function discordApplyPresence()
@@ -167,7 +216,11 @@ function love.draw()
 
     -- Sidebar
     love.graphics.setColor(1, 0.4, 0.7)
-    love.graphics.rectangle("fill", windowWidth - 200, 50, windowWidth, windowHeight - 50)
+    love.graphics.rectangle("fill", windowWidth - 200, 50, windowWidth - 150, windowHeight - 50)
+
+    -- Sidebar2
+    love.graphics.setColor(1, 0.4, 0.7)
+    love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
 
     -- Topbar
     love.graphics.setColor(1, 0.4, 0.7, 0.5)
@@ -180,6 +233,11 @@ function love.draw()
 
     for _, btn in ipairs(topbarButtons) do
         btn:draw()
+    end
+
+    myLabel:setPosition(love.graphics.getWidth() - 200, 50)
+    for _, lbl in ipairs(SidebarLabels) do
+        lbl:draw()
     end
 
     if settingsVis == true then
@@ -196,22 +254,10 @@ function love.keypressed(key)
     if key == "r" then
         objects = {} -- Clear all objects
         selectedObject = nil
-    elseif key == "space" then
+    elseif key == "f5" then
         running = not running
     elseif key == "f" then
         camera:focus(selectedObject)
-    elseif key == "w" then
-        camera:move(0, -10)
-    elseif key == "s" then
-        camera:move(0, 10)
-    elseif key == "a" then
-        camera:move(-10, 0)
-    elseif key == "d" then
-        camera:move(10, 0)
-    elseif key == "=" then
-        camera:zoom(1.1)
-    elseif key == "-" then
-        camera:zoom(0.9)
     end
 end
 

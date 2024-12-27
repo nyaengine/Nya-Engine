@@ -52,7 +52,7 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
 
     myLabel = Label:new({
-        x = love.graphics.getWidth() - 200,
+        x = love.graphics.getWidth() - 150,
         y = 50,
         text = "Properties",
         color = {1, 1, 1, 1}, -- White
@@ -267,7 +267,8 @@ function love.draw()
 
     -- Sidebar
     love.graphics.setColor(1, 0.4, 0.7)
-    love.graphics.rectangle("fill", windowWidth - 200, 50, 150, windowHeight - 50)
+    love.graphics.rectangle("fill", windowWidth - 150, 50, 150, windowHeight - 50)
+    myLabel:setPosition(windowWidth - 150, 50)
 
     -- Explorer Sidebar
     love.graphics.setColor(1, 0.4, 0.7)
@@ -302,7 +303,6 @@ function love.draw()
         btn:IsVisibleBG(false)
     end
 
-    myLabel:setPosition(love.graphics.getWidth() - 200, 50)
     for _, lbl in ipairs(SidebarLabels) do
         lbl:draw()
     end

@@ -75,6 +75,17 @@ function love.load()
         textScale = 1.25
     })
 
+    ScenesText = Label:new({
+        x = 0,
+        y = 150,
+        text = "Scenes",
+        color = {1,1,1,1},
+        textScale = 1.25,
+        background = true,
+        bgx = 120,
+        bgy = 25
+    })
+
     nextPresenceUpdate = 0
     myWindow = window:new(100, 100, 300, 200)
     myWindow:addElement(closeButton)
@@ -272,7 +283,10 @@ function love.draw()
     for i, objName in ipairs(ObjectList) do
         love.graphics.setColor(1, 1, 1, 1) -- White text
         love.graphics.print(objName, 10, startY + (i - 1) * 20)
+        ScenesText:setPosition(0, startY + i * 20)
     end
+
+    ScenesText:draw()
 
     -- Topbar
     love.graphics.setColor(1, 0.4, 0.7, 0.5)

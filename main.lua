@@ -6,8 +6,12 @@ local Camera = require("lib/Camera")
 local Label = require("lib/label")
 local SceneManager = require("lib/SceneManager")
 local AudioEngine = require("lib/AudioEngine")
+local TextBox = require("lib/textbox")
+local slider = require("lib/slider")
 
-local font = love.graphics.newFont("assets/fonts/NotoSans-Regular.ttf", 15)
+local assetsFolder = love.filesystem.createDirectory("project")
+
+local font = love.graphics.newFont("assets/fonts/Poppins-Regular.ttf", 15)
 
 -- Game objects
 local objects = {}
@@ -20,17 +24,27 @@ local discordRPC = require 'lib/discordRPC'
 local appId = require 'applicationId'
 
 -- Buttons
-local buttons = {}
 local topbarButtons = {}
 local sidebarButtons = {}
+local tabButtons = {}
+local ObjectList = {}
 
 --Labels
 local SidebarLabels = {}
 
 -- Windows
 local settingsVis = false
+local createWin = false
 
-local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X")
+local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X", function()
+    settingsVis = not settingsVis
+end)
+
+local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object", function()
+    local newObject = ObjectLibrary:new(150, 100, 50, 50)
+    table.insert(objects, newObject)
+    table.insert(ObjectList, "Object " .. tostring(#objects)) -- Add only the new object to ObjectList
+end)
 
 -- Initialize the game
 function love.load()
@@ -53,14 +67,25 @@ function love.load()
         textScale = 1.25 -- Scale the text by 1.5 times
     })
 
+    ObjectsText = Label:new({
+        x = 0,
+        y = 75,
+        text = "Objects",
+        color = {1,1,1,1},
+        textScale = 1.25
+    })
+
     nextPresenceUpdate = 0
     myWindow = window:new(100, 100, 300, 200)
     myWindow:addElement(closeButton)
 
+    createWindow = window:new(500, 100, 300, 300)
+    createWindow:addElement(createObjectButton)
+
     -- Create the "Create Object" button
-    local createObjectButton = ButtonLibrary:new(10, 70, 120, 40, "Create Object", function()
-        local newObject = ObjectLibrary:new(150, 100, 50, 50)
-        table.insert(objects, newObject)
+
+    local createButton = ButtonLibrary:new(125, 70, 30, 30, "+", function()
+        openCreateWindow()
     end)
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 40, "Run", function()
@@ -74,11 +99,11 @@ function love.load()
     discordRPC.initialize(appId, true)
 
     -- Add buttons to the buttons table
-    table.insert(buttons, createObjectButton)
     table.insert(topbarButtons, createRunButton)
     table.insert(topbarButtons, settingsButton)
     table.insert(SidebarLabels, SidebarTitle)
     table.insert(SidebarLabels, myLabel)
+    table.insert(tabButtons, createButton)
 end
 
 -- Update the game
@@ -92,11 +117,12 @@ function love.update(dt)
 
     -- Update all buttons
     local mouseX, mouseY = love.mouse.getPosition()
-    for _, button in ipairs(buttons) do
+
+    for _, button in ipairs(topbarButtons) do
         button:update(mouseX, mouseY)
     end
 
-    for _, button in ipairs(topbarButtons) do
+    for _, button in ipairs(tabButtons) do
         button:update(mouseX, mouseY)
     end
 
@@ -114,6 +140,10 @@ function love.update(dt)
     discordRPC.runCallbacks()
 
     myWindow:update(dt)
+    createWindow:update(dt)
+
+    closeButton:update(mouseX, mouseY)
+    createObjectButton:update(mouseX, mouseY)
 
     if love.keyboard.isDown("w") then
         camera:move(0, -10)
@@ -155,17 +185,22 @@ function discordApplyPresence()
     return presence
 end
 
+function openCreateWindow()
+    createWin = not createWin
+end
+
 -- Handle mouse presses
 function love.mousepressed(x, y, button, istouch, presses)
     if button == 1 then -- Left mouse button
         -- Check if a button is clicked
-        for _, btn in ipairs(buttons) do
+
+        for _, btn in ipairs(topbarButtons) do
             if btn:mousepressed(x, y, button) then
                 return
             end
         end
 
-        for _, btn in ipairs(topbarButtons) do
+        for _, btn in ipairs(tabButtons) do
             if btn:mousepressed(x, y, button) then
                 return
             end
@@ -181,6 +216,9 @@ function love.mousepressed(x, y, button, istouch, presses)
             end
         end
 
+        closeButton:mousepressed(x, y, button)
+        createObjectButton:mousepressed(x, y, button)
+
         -- Deselect if clicked outside any object
         selectedObject = nil
     end
@@ -193,9 +231,8 @@ function love.mousereleased(x, y, button, istouch, presses)
     end
 end
 
--- Draw everything
 function love.draw()
-    love.graphics.setBackgroundColor(0.3,0.3,0.3)
+    love.graphics.setBackgroundColor(0.3, 0.3, 0.3)
     local windowWidth = love.graphics.getWidth()
     local windowHeight = love.graphics.getHeight()
 
@@ -219,23 +256,36 @@ function love.draw()
 
     -- Sidebar
     love.graphics.setColor(1, 0.4, 0.7)
-    love.graphics.rectangle("fill", windowWidth - 200, 50, windowWidth - 150, windowHeight - 50)
+    love.graphics.rectangle("fill", windowWidth - 200, 50, 150, windowHeight - 50)
 
-    -- Sidebar2
+    -- Explorer Sidebar
     love.graphics.setColor(1, 0.4, 0.7)
     love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
+
+    -- Objects Label
+    love.graphics.setColor(0.8, 0.3, 0.6)
+    love.graphics.rectangle("fill", 0, 75, 150, 25)
+    ObjectsText:draw()
+
+    -- Draw ObjectList items
+    local startY = 100 -- Start position for object list
+    for i, objName in ipairs(ObjectList) do
+        love.graphics.setColor(1, 1, 1, 1) -- White text
+        love.graphics.print(objName, 10, startY + (i - 1) * 20)
+    end
 
     -- Topbar
     love.graphics.setColor(1, 0.4, 0.7, 0.5)
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
     -- Draw all buttons
-    for _, btn in ipairs(buttons) do
+    for _, btn in ipairs(topbarButtons) do
         btn:draw()
     end
 
-    for _, btn in ipairs(topbarButtons) do
+    for _, btn in ipairs(tabButtons) do
         btn:draw()
+        btn:IsVisibleBG(false)
     end
 
     myLabel:setPosition(love.graphics.getWidth() - 200, 50)
@@ -245,6 +295,10 @@ function love.draw()
 
     if settingsVis == true then
         myWindow:draw()
+    end
+
+    if createWin == true then
+        createWindow:draw()
     end
 end
 

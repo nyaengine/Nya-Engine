@@ -40,6 +40,9 @@ function Label:new(options)
     instance.font = options.font or love.graphics.getFont() -- Default font
     instance.color = options.color or {1, 1, 1, 1} -- Default to white color
     instance.textScale = options.textScale or 1 -- Default to no scaling
+    instance.background = options.background or false
+    instance.bgx = options.bgx or 0
+    instance.bgy = options.bgy or 0
 
     return instance
 end
@@ -53,6 +56,12 @@ function Label:draw()
     love.graphics.push()  -- Save the current transformation state
     love.graphics.translate(self.x, self.y)  -- Move to the label's position
     love.graphics.scale(self.textScale)  -- Apply the scaling factor
+
+    if self.background == true then
+        love.graphics.setColor(0.8, 0.3, 0.6)
+        love.graphics.rectangle("fill", 0, 0, self.bgx, self.bgy)
+        love.graphics.setColor(1, 1, 1, 1) -- Reset to default color
+    end
 
     -- Draw the text at the origin (0, 0) after transformation
     love.graphics.print(self.text, 0, 0)

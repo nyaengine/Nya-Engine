@@ -8,6 +8,8 @@ local SceneManager = require("lib/SceneManager")
 local AudioEngine = require("lib/AudioEngine")
 local TextBox = require("lib/textbox")
 local slider = require("lib/slider")
+local CheckboxLib = require("lib/checkbox")
+local CheckboxGroup = CheckboxLib.CheckboxGroup
 
 local assetsFolder = love.filesystem.createDirectory("project")
 
@@ -15,10 +17,12 @@ local font = love.graphics.newFont("assets/fonts/Poppins-Regular.ttf", 15)
 
 -- Game objects
 local objects = {}
+local CollisionObjects = {}
 local selectedObject = nil
 local running = false
 local isDragging = false
 local camera = Camera:new(0, 0, 1)
+local group
 
 local discordRPC = require 'lib/discordRPC'
 local appId = require 'applicationId'
@@ -31,6 +35,7 @@ local ObjectList = {}
 
 --Labels
 local SidebarLabels = {}
+local propertiesLabels = {}
 
 -- Windows
 local settingsVis = false
@@ -50,6 +55,11 @@ end)
 function love.load()
     love.graphics.setFont(font)
     love.graphics.setDefaultFilter("nearest", "nearest")
+
+    group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
+    group:setOnToggle(function(checked)
+        print("Option 1 is now:", checked and "Checked" or "Unchecked")
+    end)
 
     myLabel = Label:new({
         x = love.graphics.getWidth() - 150,
@@ -86,9 +96,38 @@ function love.load()
         bgy = 25
     })
 
+    ObjectName = Label:new({
+        x = love.graphics.getWidth() - 150,
+        y = 75,
+        text = "ObjectName",
+        color = {1, 1, 1, 1}, -- White
+        textScale = 1.25, -- Scale the text by 1.5 times
+        background = true,
+        bgx = 120,
+        bgy = 25
+    })
+
+    ComingSoon = Label:new({
+        x = 150,
+        y = 150,
+        text = "Coming Soon",
+        color = {1,0,0,1},
+        textScale = 1.25
+    })
+
+    EngineSetText = Label:new({
+        x = 150,
+        y = 100,
+        text = "Engine Settings",
+        color = {1,1,1,1},
+        textScale = 1.25
+    })
+
     nextPresenceUpdate = 0
     myWindow = window:new(100, 100, 300, 200)
     myWindow:addElement(closeButton)
+    myWindow:addElement(ComingSoon)
+    myWindow:addElement(EngineSetText)
 
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
@@ -115,6 +154,7 @@ function love.load()
     table.insert(SidebarLabels, SidebarTitle)
     table.insert(SidebarLabels, myLabel)
     table.insert(tabButtons, createButton)
+    table.insert(propertiesLabels, ObjectName)
 end
 
 -- Update the game
@@ -230,6 +270,8 @@ function love.mousepressed(x, y, button, istouch, presses)
         closeButton:mousepressed(x, y, button)
         createObjectButton:mousepressed(x, y, button)
 
+        group:mousepressed(x, y, button)
+
         -- Deselect if clicked outside any object
         selectedObject = nil
     end
@@ -305,6 +347,15 @@ function love.draw()
 
     for _, lbl in ipairs(SidebarLabels) do
         lbl:draw()
+    end
+
+    for _, v in ipairs(objects) do
+        if selectedObject == v then
+            ObjectName:draw()
+            ObjectName:setPosition(windowWidth - 150, 75)
+            group:draw()
+            group:setPosition(windowWidth - 135, 125)
+        end
     end
 
     if settingsVis == true then

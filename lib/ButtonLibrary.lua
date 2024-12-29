@@ -41,6 +41,11 @@ function ButtonLibrary:mousepressed(mouseX, mouseY, button)
     end
 end
 
+function ButtonLibrary:setPosition(x, y)
+    self.x = x 
+    self.y = y
+end
+
 -- Draw the button
 function ButtonLibrary:draw()
     -- Button background

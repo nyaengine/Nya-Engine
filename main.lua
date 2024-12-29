@@ -104,6 +104,17 @@ function love.load()
         bgy = 25
     })
 
+    UISText = Label:new({
+        x = 0,
+        y = 225,
+        text = "UI",
+        color = {1,1,1,1},
+        textScale = 1.25,
+        background = true,
+        bgx = 120,
+        bgy = 25
+    })
+
     ObjectName = Label:new({
         x = love.graphics.getWidth() - 150,
         y = 75,
@@ -357,9 +368,12 @@ function love.draw()
         love.graphics.print(objName, 10, startY + (i - 1) * 20)
         ScenesText:setPosition(0, startY + i * 20)
         createscenesButton:setPosition(125, startY + i * 20)
+        UISText:setPosition(0, startY + (i + 4) * 20)
     end
 
     ScenesText:draw()
+
+    UISText:draw()
 
     -- Topbar
     love.graphics.setColor(1, 0.4, 0.7, 0.5)

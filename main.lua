@@ -226,6 +226,7 @@ function love.update(dt)
         discordRPC.updatePresence(discordApplyPresence())
         nextPresenceUpdate = love.timer.getTime() + 2.0
     end
+    
     discordRPC.runCallbacks()
 
     myWindow:update(dt)

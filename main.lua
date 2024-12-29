@@ -279,6 +279,19 @@ end
 
 function love.mousepressed(x, y, button, istouch, presses)
     if button == 1 then -- Left mouse button
+        group:mousepressed(x, y, button)
+
+        -- Check if the click is within the properties sidebar
+        local sidebarX = love.graphics.getWidth() - 150
+        local sidebarY = 50
+        local sidebarWidth = 150
+        local sidebarHeight = love.graphics.getHeight() - 50
+
+        if x >= sidebarX and x <= sidebarX + sidebarWidth and y >= sidebarY and y <= sidebarY + sidebarHeight then
+            -- Click is within the sidebar, do not deselect
+            return
+        end
+
         -- Check if a button is clicked
         for _, btn in ipairs(topbarButtons) do
             if btn:mousepressed(x, y, button) then
@@ -307,8 +320,6 @@ function love.mousepressed(x, y, button, istouch, presses)
 
         closeButton:mousepressed(x, y, button)
         createObjectButton:mousepressed(x, y, button)
-
-        group:mousepressed(x, y, button)
 
         -- Deselect if clicked outside any object
         selectedObject = nil

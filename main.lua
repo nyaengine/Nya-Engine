@@ -44,6 +44,7 @@ local propertiesLabels = {}
 local settingsVis = false
 local createWin = false
 local sceneWin = false
+local UIWin = false
 
 local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X", function()
     settingsVis = not settingsVis
@@ -56,7 +57,11 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
 end)
 
 local createscenesButton = ButtonLibrary:new(125, 150, 30, 30, "+", function()
-        openScenesWindow()
+    openScenesWindow()
+end)
+
+local createuiButton = ButtonLibrary:new(125, 225, 30, 30, "+", function()
+    openUIWindow()
 end)
 
 -- Initialize the game
@@ -185,6 +190,7 @@ function love.load()
     table.insert(SidebarLabels, myLabel)
     table.insert(tabButtons, createButton)
     table.insert(tabButtons, createscenesButton)
+    table.insert(tabButtons, createuiButton)
     table.insert(propertiesLabels, ObjectName)
     table.insert(propertiesLabels, SizePropText)
 end
@@ -228,6 +234,7 @@ function love.update(dt)
 
     closeButton:update(mouseX, mouseY)
     createObjectButton:update(mouseX, mouseY)
+    createuiButton:update(mouseX, mouseY)
 
     if love.keyboard.isDown("w") then
         camera:move(0, -10)
@@ -277,6 +284,10 @@ function openScenesWindow()
     sceneWin = not sceneWin
 end
 
+function openUIWindow()
+    UIWin = not UIWin
+end
+
 function love.mousepressed(x, y, button, istouch, presses)
     if button == 1 then -- Left mouse button
         group:mousepressed(x, y, button)
@@ -320,6 +331,7 @@ function love.mousepressed(x, y, button, istouch, presses)
 
         closeButton:mousepressed(x, y, button)
         createObjectButton:mousepressed(x, y, button)
+        createuiButton:mousepressed(x, y, button)
 
         -- Deselect if clicked outside any object
         selectedObject = nil
@@ -380,6 +392,7 @@ function love.draw()
         ScenesText:setPosition(0, startY + i * 20)
         createscenesButton:setPosition(125, startY + i * 20)
         UISText:setPosition(0, startY + (i + 4) * 20)
+        createuiButton:setPosition(125, startY + (i + 4) * 20)
     end
 
     ScenesText:draw()

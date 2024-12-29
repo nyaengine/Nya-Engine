@@ -24,6 +24,8 @@ local isDragging = false
 local camera = Camera:new(0, 0, 1)
 local group
 
+local engineVer = "1.0"
+
 local discordRPC = require 'lib/discordRPC'
 local appId = require 'applicationId'
 
@@ -54,7 +56,7 @@ end)
 
 local createscenesButton = ButtonLibrary:new(125, 150, 30, 30, "+", function()
         openScenesWindow()
-    end)
+end)
 
 -- Initialize the game
 function love.load()
@@ -128,6 +130,14 @@ function love.load()
         textScale = 1.25
     })
 
+    SizePropText = Label:new({
+        x = love.graphics.getWidth() - 150,
+        y = 175,
+        text = "Size: ",
+        color = {1,1,1,1},
+        textScale = 1.25
+    })
+
     nextPresenceUpdate = 0
     myWindow = window:new(100, 100, 300, 200)
     myWindow:addElement(closeButton)
@@ -164,6 +174,7 @@ function love.load()
     table.insert(tabButtons, createButton)
     table.insert(tabButtons, createscenesButton)
     table.insert(propertiesLabels, ObjectName)
+    table.insert(propertiesLabels, SizePropText)
 end
 
 -- Update the game
@@ -369,8 +380,10 @@ function love.draw()
 
     for _, v in ipairs(objects) do
         if selectedObject == v then
-            ObjectName:draw()
-            ObjectName:setPosition(windowWidth - 150, 75)
+            for _, lbl in ipairs(propertiesLabels) do
+                lbl:draw()
+                lbl:setPosition(windowWidth - 150, lbl.y)
+            end
             group:draw()
             group:setPosition(windowWidth - 135, 125)
         end

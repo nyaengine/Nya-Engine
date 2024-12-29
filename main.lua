@@ -40,6 +40,7 @@ local propertiesLabels = {}
 -- Windows
 local settingsVis = false
 local createWin = false
+local sceneWin = false
 
 local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X", function()
     settingsVis = not settingsVis
@@ -50,6 +51,10 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
     table.insert(objects, newObject)
     table.insert(ObjectList, "Object " .. tostring(#objects)) -- Add only the new object to ObjectList
 end)
+
+local createscenesButton = ButtonLibrary:new(125, 150, 30, 30, "+", function()
+        openScenesWindow()
+    end)
 
 -- Initialize the game
 function love.load()
@@ -132,6 +137,9 @@ function love.load()
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
 
+    createsceneWindow = window:new(500, 100, 300, 300)
+    createsceneWindow:addElement()
+
     -- Create the "Create Object" button
 
     local createButton = ButtonLibrary:new(125, 70, 30, 30, "+", function()
@@ -154,6 +162,7 @@ function love.load()
     table.insert(SidebarLabels, SidebarTitle)
     table.insert(SidebarLabels, myLabel)
     table.insert(tabButtons, createButton)
+    table.insert(tabButtons, createscenesButton)
     table.insert(propertiesLabels, ObjectName)
 end
 
@@ -192,6 +201,7 @@ function love.update(dt)
 
     myWindow:update(dt)
     createWindow:update(dt)
+    createsceneWindow:update(dt)
 
     closeButton:update(mouseX, mouseY)
     createObjectButton:update(mouseX, mouseY)
@@ -238,6 +248,10 @@ end
 
 function openCreateWindow()
     createWin = not createWin
+end
+
+function openScenesWindow()
+    sceneWin = not sceneWin
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
@@ -330,6 +344,7 @@ function love.draw()
         love.graphics.setColor(1, 1, 1, 1) -- White text
         love.graphics.print(objName, 10, startY + (i - 1) * 20)
         ScenesText:setPosition(0, startY + i * 20)
+        createscenesButton:setPosition(125, startY + i * 20)
     end
 
     ScenesText:draw()
@@ -367,6 +382,10 @@ function love.draw()
 
     if createWin == true then
         createWindow:draw()
+    end
+
+    if sceneWin == true then
+        createsceneWindow:draw()
     end
 end
 

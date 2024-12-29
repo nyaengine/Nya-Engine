@@ -1,0 +1,31 @@
+{
+    "callbacks": [
+        "load", "update", "draw", "keypressed", "keyreleased",
+        "mousepressed", "mousereleased", "wheelmoved", "textinput",
+        "resize", "focus", "quit"
+    ],
+    "modules": [
+        "audio", "event", "filesystem", "graphics", "image", "joystick",
+        "keyboard", "math", "mouse", "physics", "sound", "system",
+        "thread", "timer", "touch", "video", "window"
+    ],
+    "functions": {
+        "love": ["getVersion", "run", "errorhandler", "handlers"],
+        "audio": ["newSource", "play", "stop", "setVolume", "getVolume"],
+        "graphics": ["newImage", "newFont", "newShader", "setColor", "clear", "draw"]
+    },
+    "lua_keywords": [
+        "and", "break", "do", "else", "elseif", "end", "false", "for", "function",
+        "if", "in", "local", "nil", "not", "or", "repeat", "return", "then", "true",
+        "until", "while"
+    ],
+    "lua_operators": [
+        "+", "-", "*", "/", "%", "^", "#", "==", "~=", "<", ">", "<=", ">=", "=",
+        "(", ")", "{", "}", "[", "]", ";", ":", ",", ".", ".."
+    ],
+    "lua_functions": [
+        "assert", "collectgarbage", "dofile", "error", "getmetatable", "ipairs",
+        "load", "next", "pairs", "pcall", "print", "rawequal", "rawget", "rawset",
+        "require", "select", "setmetatable", "tonumber", "tostring", "type", "xpcall"
+    ]
+}

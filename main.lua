@@ -9,6 +9,7 @@ local AudioEngine = require("lib/AudioEngine")
 local TextBox = require("lib/textbox")
 local slider = require("lib/slider")
 local CheckboxLib = require("lib/checkbox")
+local ide = require("ide")
 local CheckboxGroup = CheckboxLib.CheckboxGroup
 
 local assetsFolder = love.filesystem.createDirectory("project")

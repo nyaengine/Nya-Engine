@@ -58,7 +58,7 @@ function love.load()
 
     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
     group:setOnToggle(function(checked)
-        print("Option 1 is now:", checked and "Checked" or "Unchecked")
+        table.insert(CollisionObjects, selectedObject)
     end)
 
     myLabel = Label:new({
@@ -142,9 +142,9 @@ function love.load()
         running = not running
     end)
 
-    local settingsButton = ButtonLibrary:new(10, 10, 30, 30, "⚙", function()
+    local settingsButton = ButtonLibrary:new(10, 10, 30, 30, "", function()
         openSettingsWindow()
-    end)
+    end, "assets/settings.png")
 
     discordRPC.initialize(appId, true)
 
@@ -240,11 +240,9 @@ function openCreateWindow()
     createWin = not createWin
 end
 
--- Handle mouse presses
 function love.mousepressed(x, y, button, istouch, presses)
     if button == 1 then -- Left mouse button
         -- Check if a button is clicked
-
         for _, btn in ipairs(topbarButtons) do
             if btn:mousepressed(x, y, button) then
                 return
@@ -259,10 +257,13 @@ function love.mousepressed(x, y, button, istouch, presses)
 
         -- Check if an object is clicked
         local camX, camY = x / camera.scale + camera.x, y / camera.scale + camera.y
-        for _, obj in ipairs(objects) do
+        for index, obj in ipairs(objects) do
             if obj:isClicked(camX, camY) then
                 selectedObject = obj
                 isDragging = true
+                
+                -- Update ObjectName label with the corresponding name from ObjectList
+                ObjectName:setText(ObjectList[index])
                 return
             end
         end
@@ -274,6 +275,8 @@ function love.mousepressed(x, y, button, istouch, presses)
 
         -- Deselect if clicked outside any object
         selectedObject = nil
+        -- Reset the ObjectName label if no object is selected
+        ObjectName:setText("ObjectName")
     end
 end
 

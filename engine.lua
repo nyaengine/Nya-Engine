@@ -90,4 +90,53 @@ function engine:mousepressed(x, y, button, istouch, presses)
     end
 end
 
+function engine:getobj()
+    return objects
+end
+
+function engine:getselobj()
+    return selectedObject
+end
+
+function engine:mousereleased(x, y, button, istouch, presses)
+    if button == 1 then -- Left mouse button
+        isDragging = false
+    end
+end
+
+function engine:draw()
+    love.graphics.setBackgroundColor(0.3, 0.3, 0.3)
+
+    -- Apply camera
+    camera:apply()
+
+    -- Draw all objects
+    for _, obj in ipairs(objects) do
+        obj:draw()
+    end
+
+    -- Highlight the selected object
+    if selectedObject then
+        love.graphics.setColor(1, 0, 0, 0.5)
+        love.graphics.rectangle("line", selectedObject.x, selectedObject.y, selectedObject.width, selectedObject.height)
+        love.graphics.setColor(1, 1, 1, 1) -- Reset color
+    end
+
+    -- Reset camera
+    camera:reset()
+
+    sceneManager:draw()
+end
+
+function engine:keypressed(key)
+    if key == "r" then
+        objects = {} -- Clear all objects
+        selectedObject = nil
+    elseif key == "f5" then
+        running = not running
+    elseif key == "f" then
+        camera:focus(selectedObject)
+    end
+end
+
 return engine

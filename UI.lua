@@ -268,4 +268,94 @@ function ui:mousepressed(x, y, button, istouch, presses)
     end
 end
 
+function ui:draw()
+    local windowWidth = love.graphics.getWidth()
+    local windowHeight = love.graphics.getHeight()
+
+    -- Sidebar
+    love.graphics.setColor(1, 0.4, 0.7)
+    love.graphics.rectangle("fill", windowWidth - 150, 50, 150, windowHeight - 50)
+    myLabel:setPosition(windowWidth - 150, 50)
+
+    -- Explorer Sidebar
+    love.graphics.setColor(1, 0.4, 0.7)
+    love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
+
+    -- Objects Label
+    love.graphics.setColor(0.8, 0.3, 0.6)
+    love.graphics.rectangle("fill", 0, 75, 150, 25)
+    ObjectsText:draw()
+
+    -- Draw ObjectList items
+    local objectListStartY = 100 -- Starting Y position for ObjectList
+    for i, objName in ipairs(ObjectList) do
+        love.graphics.setColor(1, 1, 1, 1) -- White text
+        love.graphics.print(objName, 10, objectListStartY + (i - 1) * 20)
+    end
+
+    -- Adjust ScenesText position dynamically based on ObjectList size
+    local scenesTextY = objectListStartY + #ObjectList * 20 + 10 -- Add some padding
+    ScenesText:setPosition(0, scenesTextY)
+    createscenesButton:setPosition(125, scenesTextY)
+    ScenesText:draw()
+
+    -- Draw SceneList items
+    local sceneListStartY = scenesTextY + 25 -- Start rendering SceneList just below ScenesText
+    for i, sceneName in ipairs(SceneList) do
+        love.graphics.setColor(1, 1, 1, 1) -- White text
+        love.graphics.print(sceneName, 10, sceneListStartY + (i - 1) * 20)
+    end
+
+    local uiTextY = sceneListStartY + #SceneList * 20 + 10 -- Add some padding
+    UISText:setPosition(0, uiTextY)
+    UISText:draw()
+    createuiButton:setPosition(125, uiTextY)
+
+    -- Topbar
+    love.graphics.setColor(1, 0.4, 0.7, 0.5)
+    love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
+
+    -- Draw all buttons
+    for _, btn in ipairs(topbarButtons) do
+        btn:draw()
+    end
+
+    for _, btn in ipairs(tabButtons) do
+        btn:draw()
+        btn:IsVisibleBG(false)
+    end
+
+    for _, lbl in ipairs(SidebarLabels) do
+        lbl:draw()
+    end
+
+    for _, v in ipairs(engine:getobj()) do
+        if engine:getselobj() == v then
+            for _, lbl in ipairs(propertiesLabels) do
+                lbl:draw()
+                lbl:setPosition(windowWidth - 150, lbl.y)
+            end
+            group:draw()
+            group:setPosition(windowWidth - 135, 125)
+        end
+    end
+
+    if settingsVis == true then
+        myWindow:draw()
+    end
+
+    if createWin == true then
+        createWindow:draw()
+    end
+
+    if sceneWin == true then
+        createsceneWindow:draw()
+    end
+end
+
+function openSettingsWindow()
+    settingsVis = not settingsVis
+end
+
+
 return ui

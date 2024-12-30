@@ -11,7 +11,6 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [Launching Nya Engine](#launching-nya-engine)
   - [Creating Your First Object](#creating-your-first-object)
 - [UI Features](#ui-features)
 - [Physics Integration](#physics-integration)
@@ -52,12 +51,6 @@ love Nya-Engine
 ```
 
 ## Usage
-
-### Launching Nya Engine
-Once the engine is set up, launch it using LÖVE2D:
-```bash
-love .
-```
 
 ### Creating Your First Object
 1. Open Nya Engine and load the default scene.
@@ -113,7 +106,7 @@ We welcome contributions from the community! Here's how you can get involved:
    git checkout -b feature/AmazingFeature
    ```
 2. **Commit your changes** and submit a pull request.
-3. Join our [Discord server](https://discord.com/invite/example) to discuss features, report bugs, and meet the community.
+3. Join our [Discord server](ttps://discord.gg/SnAnC4x7VT) to discuss features, report bugs, and meet the community.
 
 ## License
 

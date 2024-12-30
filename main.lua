@@ -22,6 +22,7 @@ local CollisionObjects = {}
 local selectedObject = nil
 local running = false
 local isDragging = false
+local sceneManager = SceneManager:new()
 local camera = Camera:new(0, 0, 1)
 local group
 
@@ -35,6 +36,7 @@ local topbarButtons = {}
 local sidebarButtons = {}
 local tabButtons = {}
 local ObjectList = {}
+local SceneList = {}
 
 --Labels
 local SidebarLabels = {}
@@ -54,6 +56,34 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
     local newObject = ObjectLibrary:new(150, 100, 50, 50)
     table.insert(objects, newObject)
     table.insert(ObjectList, "Object " .. tostring(#objects)) -- Add only the new object to ObjectList
+end)
+
+local createSceneButton = ButtonLibrary:new(500, 150, 120, 40, "Create Scene", function()
+    -- Create a unique name for the new scene
+    local sceneName = "Scene " .. tostring(#sceneManager.scenes + 1)
+    
+    -- Define the new scene with basic functionality
+    local newScene = {
+        name = sceneName,
+        enter = function(self)
+            print(self.name .. " has been entered.")
+        end,
+        exit = function(self)
+            print(self.name .. " has been exited.")
+        end,
+        update = function(self, dt)
+            -- Scene-specific update logic here
+        end,
+        draw = function(self)
+            love.graphics.print("You are in " .. self.name, 400, 300)
+        end,
+    }
+
+    sceneManager:addScene(sceneName, newScene)
+    
+    sceneManager:switchTo(sceneName)
+    
+    table.insert(SceneList, sceneName)
 end)
 
 local createscenesButton = ButtonLibrary:new(125, 150, 30, 30, "+", function()
@@ -165,7 +195,7 @@ function love.load()
     createWindow:addElement(createObjectButton)
 
     createsceneWindow = window:new(500, 100, 300, 300)
-    createsceneWindow:addElement()
+    createsceneWindow:addElement(createSceneButton)
 
     -- Create the "Create Object" button
 
@@ -226,7 +256,7 @@ function love.update(dt)
         discordRPC.updatePresence(discordApplyPresence())
         nextPresenceUpdate = love.timer.getTime() + 2.0
     end
-    
+
     discordRPC.runCallbacks()
 
     myWindow:update(dt)
@@ -235,7 +265,10 @@ function love.update(dt)
 
     closeButton:update(mouseX, mouseY)
     createObjectButton:update(mouseX, mouseY)
+    createSceneButton:update(mouseX, mouseY)
     createuiButton:update(mouseX, mouseY)
+
+    sceneManager:update(dt)
 
     if love.keyboard.isDown("w") then
         camera:move(0, -10)
@@ -333,6 +366,7 @@ function love.mousepressed(x, y, button, istouch, presses)
         closeButton:mousepressed(x, y, button)
         createObjectButton:mousepressed(x, y, button)
         createuiButton:mousepressed(x, y, button)
+        createSceneButton:mousepressed(x, y, button)
 
         -- Deselect if clicked outside any object
         selectedObject = nil
@@ -386,19 +420,31 @@ function love.draw()
     ObjectsText:draw()
 
     -- Draw ObjectList items
-    local startY = 100 -- Start position for object list
+    local objectListStartY = 100 -- Starting Y position for ObjectList
     for i, objName in ipairs(ObjectList) do
         love.graphics.setColor(1, 1, 1, 1) -- White text
-        love.graphics.print(objName, 10, startY + (i - 1) * 20)
-        ScenesText:setPosition(0, startY + i * 20)
-        createscenesButton:setPosition(125, startY + i * 20)
-        UISText:setPosition(0, startY + (i + 4) * 20)
-        createuiButton:setPosition(125, startY + (i + 4) * 20)
+        love.graphics.print(objName, 10, objectListStartY + (i - 1) * 20)
     end
 
+    -- Adjust ScenesText position dynamically based on ObjectList size
+    local scenesTextY = objectListStartY + #ObjectList * 20 + 10 -- Add some padding
+    ScenesText:setPosition(0, scenesTextY)
+    createscenesButton:setPosition(125, scenesTextY)
     ScenesText:draw()
 
+    -- Draw SceneList items
+    local sceneListStartY = scenesTextY + 25 -- Start rendering SceneList just below ScenesText
+    for i, sceneName in ipairs(SceneList) do
+        love.graphics.setColor(1, 1, 1, 1) -- White text
+        love.graphics.print(sceneName, 10, sceneListStartY + (i - 1) * 20)
+    end
+
+    local uiTextY = sceneListStartY + #SceneList * 20 + 10 -- Add some padding
+    UISText:setPosition(0, uiTextY)
     UISText:draw()
+    createuiButton:setPosition(125, uiTextY)
+
+    sceneManager:draw()
 
     -- Topbar
     love.graphics.setColor(1, 0.4, 0.7, 0.5)

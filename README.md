@@ -53,7 +53,10 @@ love Nya-Engine
 
 ### Creating Your First Object
 1. Open Nya Engine and load the default scene.
-2. Click on the **"Add Object"** button to create a new game object.
+2. Click on the **"Add Object"** button to create a new game object. You can also use scripting to create objects. Example: 
+```lua
+   local newObject = ObjectLibrary:new(x, y, width, height, image) -- image is optional
+  ```
 3. Use the UI tools to modify its properties:
    - **Position**: Drag and drop the object to set its position.
    - **Size & Color**: Customize the object's size and color using the built-in tools.

@@ -26,6 +26,10 @@ end
 
 -- Update button hover state based on mouse position
 function ButtonLibrary:update(mouseX, mouseY)
+    if not (mouseX and mouseY and self.x and self.y and self.width and self.height) then
+        return
+    end
+
     self.isHovered = mouseX >= self.x and mouseX <= self.x + self.width and
                      mouseY >= self.y and mouseY <= self.y + self.height
 end

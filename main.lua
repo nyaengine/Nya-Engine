@@ -98,6 +98,14 @@ local createuiButton = ButtonLibrary:new(125, 225, 30, 30, "+", function()
     openUIWindow()
 end)
 
+local createProjectButton = ButtonLibrary:new(0, 150, 125, 30, "Create Project", function()
+    local projectName = ProjectName.text
+    if projectName and projectName ~= "" then
+        local projectPath = "assets/" .. projectName
+        love.filesystem.createDirectory(projectPath)
+    end
+end)
+
 -- Initialize the game
 function love.load()
     love.graphics.setFont(font)
@@ -189,7 +197,7 @@ function love.load()
         textScale = 1.25
     })
 
-    ProjectName = TextBox.new(100, 100, 200, 30, "Project Name")
+    ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
     nextPresenceUpdate = 0
     myWindow = window:new(100, 100, 300, 200)
@@ -205,6 +213,7 @@ function love.load()
 
     projectWindow = window:new(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), {0,0,0}, {0.5,0.5,0.5})
     projectWindow:addElement(ProjectName)
+    projectWindow:addElement(createProjectButton)
 
     -- Create the "Create Object" button
 
@@ -278,6 +287,7 @@ function love.update(dt)
     createObjectButton:update(mouseX, mouseY)
     createSceneButton:update(mouseX, mouseY)
     createuiButton:update(mouseX, mouseY)
+    createProjectButton:update(mouseX, mouseY)
 
     sceneManager:update(dt)
 
@@ -379,6 +389,7 @@ function love.mousepressed(x, y, button, istouch, presses)
         createuiButton:mousepressed(x, y, button)
         createSceneButton:mousepressed(x, y, button)
         ProjectName:mousepressed(x, y, button)
+        createProjectButton:mousepressed(x, y, button)
 
         -- Deselect if clicked outside any object
         selectedObject = nil

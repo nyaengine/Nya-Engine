@@ -29,7 +29,6 @@
 - **Visual Coding**: Create game logic using an intuitive drag-and-drop interface, no coding skills required.
 - **Lua Scripting**: Full Lua scripting support for those who want to create complex game logic and functionality.
 - **UI System**: Build and customize user interfaces directly within the engine with a fully integrated UI system.
-- **Physics Integration**: Use Box2D for realistic object behavior with gravity, collisions, and physics interactions.
 - **Object Creation & Scene Management**: Easily create, manipulate, and manage game objects and scenes.
 - **Scene Transitions**: Switch between scenes seamlessly, making it easier to manage different parts of your game.
 - **Color Customization**: Adjust object colors using an intuitive built-in RGB color picker.
@@ -69,21 +68,6 @@ Nya Engine features a kawaii-themed UI designed for ease of use and functionalit
 - **UI Customization**: Use the built-in UI tools to customize buttons, sliders, and layouts.
 - **Physics Control**: Toggle between static, dynamic, and kinematic physics types for objects.
 - **Color Picker**: Adjust the color of objects with an RGB slider for precise color control.
-
-## Physics Integration
-
-Nya Engine utilizes **Box2D** for physics, providing:
-
-- **Gravity**: Objects respond to gravity and fall naturally.
-- **Collision Detection**: Objects collide with each other and interact accordingly.
-- **Body Types**: Support for `dynamic`, `static`, and `kinematic` body types to suit different needs.
-
-### Example Physics Object:
-```lua
-local PhysicsObject = require("physics_object")
-local box = PhysicsObject:new(NyaEngine.physicsWorld, 400, 100, 50, 50, "dynamic")
-NyaEngine.activeScene:addObject(box)
-```
 
 ## Visual and Lua Coding
 

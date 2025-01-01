@@ -189,13 +189,7 @@ function love.load()
         textScale = 1.25
     })
 
-    SomeText = Label:new({
-        x = 0,
-        y = 0,
-        text = "Name your project: ",
-        color = {1,1,1,1},
-        textScale = 1.25
-    })
+    ProjectName = TextBox.new(100, 100, 200, 30, "Project Name")
 
     nextPresenceUpdate = 0
     myWindow = window:new(100, 100, 300, 200)
@@ -210,7 +204,7 @@ function love.load()
     createsceneWindow:addElement(createSceneButton)
 
     projectWindow = window:new(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), {0,0,0}, {0.5,0.5,0.5})
-    projectWindow:addElement(SomeText)
+    projectWindow:addElement(ProjectName)
 
     -- Create the "Create Object" button
 
@@ -384,6 +378,7 @@ function love.mousepressed(x, y, button, istouch, presses)
         createObjectButton:mousepressed(x, y, button)
         createuiButton:mousepressed(x, y, button)
         createSceneButton:mousepressed(x, y, button)
+        ProjectName:mousepressed(x, y, button)
 
         -- Deselect if clicked outside any object
         selectedObject = nil

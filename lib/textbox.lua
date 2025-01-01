@@ -25,10 +25,18 @@ function TextBox:update(dt)
             end
         end
 
-        for _, key in ipairs(love.keyboard.getPressed()) do
-            if key:len() == 1 then
-                self.text = self.text:sub(1, self.cursorPos - 1) .. key .. self.text:sub(self.cursorPos)
+        -- Use keypressed for discrete input instead of getPressed
+        local function textInputHandler(text)
+            if text:len() == 1 then
+                self.text = self.text:sub(1, self.cursorPos - 1) .. text .. self.text:sub(self.cursorPos)
                 self.cursorPos = self.cursorPos + 1
+            end
+        end
+
+        -- Attach text input handling (see `love.textinput`)
+        function love.textinput(text)
+            if self.focused then
+                textInputHandler(text)
             end
         end
     end

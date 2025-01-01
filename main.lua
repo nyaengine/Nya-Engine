@@ -47,6 +47,7 @@ local settingsVis = false
 local createWin = false
 local sceneWin = false
 local UIWin = false
+local projectWin = true -- set to false when testing the engine
 
 local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X", function()
     settingsVis = not settingsVis
@@ -188,6 +189,14 @@ function love.load()
         textScale = 1.25
     })
 
+    SomeText = Label:new({
+        x = 0,
+        y = 0,
+        text = "Name your project: ",
+        color = {1,1,1,1},
+        textScale = 1.25
+    })
+
     nextPresenceUpdate = 0
     myWindow = window:new(100, 100, 300, 200)
     myWindow:addElement(closeButton)
@@ -199,6 +208,9 @@ function love.load()
 
     createsceneWindow = window:new(500, 100, 300, 300)
     createsceneWindow:addElement(createSceneButton)
+
+    projectWindow = window:new(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), {0,0,0}, {0.5,0.5,0.5})
+    projectWindow:addElement(SomeText)
 
     -- Create the "Create Object" button
 
@@ -265,6 +277,8 @@ function love.update(dt)
     myWindow:update(dt)
     createWindow:update(dt)
     createsceneWindow:update(dt)
+    projectWindow:update(dt)
+    projectWindow:setSize(love.graphics:getWidth(), love.graphics:getHeight())
 
     closeButton:update(mouseX, mouseY)
     createObjectButton:update(mouseX, mouseY)
@@ -488,6 +502,10 @@ function love.draw()
 
     if sceneWin == true then
         createsceneWindow:draw()
+    end
+
+    if projectWin == true then
+        projectWindow:draw()
     end
 end
 

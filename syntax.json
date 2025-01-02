@@ -11,8 +11,8 @@
     ],
     "functions": {
         "love": ["getVersion", "run", "errorhandler", "handlers", "love"],
-        "audio": ["newSource", "play", "stop", "setVolume", "getVolume"],
-        "graphics": ["newImage", "newFont", "newShader", "setColor", "clear", "draw"]
+        "audio": ["newSource", "play", "stop", "setVolume", "getVolume", "audio"],
+        "graphics": ["newImage", "newFont", "newShader", "setColor", "clear", "draw", "graphics"]
     },
     "lua_keywords": [
         "and", "break", "do", "else", "elseif", "end", "false", "for", "function",
@@ -27,5 +27,8 @@
         "assert", "collectgarbage", "dofile", "error", "getmetatable", "ipairs",
         "load", "next", "pairs", "pcall", "print", "rawequal", "rawget", "rawset",
         "require", "select", "setmetatable", "tonumber", "tostring", "type", "xpcall"
+    ],
+    "customLibraries": [
+        "ButtonLibrary", "ObjectLibrary", "checkbox", "slider", "textbox", "SceneManager", "Camera", "json", "label", "Raycast", "mobilecontrols"
     ]
 }

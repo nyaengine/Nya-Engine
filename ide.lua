@@ -7,6 +7,20 @@ local syntax  -- Will hold the parsed syntax data
 -- Editor states
 local textEditorContent = "-- Start coding here\n"
 local visualEditorComponents = {} -- Table to store visual mode components like nodes, connections, etc.
+local connections = {} -- Store connections between nodes
+
+local availableModules = {
+    lua = {
+        math = { "sin", "cos", "abs", "sqrt" },
+        string = { "sub", "gsub", "find", "match" },
+        table = { "insert", "remove", "sort" }
+    },
+    love = {
+        graphics = { "draw", "line", "rectangle", "circle" },
+        audio = { "newSource", "play", "stop" },
+        timer = { "after", "every", "getTime" }
+    }
+}
 
 -- Colors for syntax highlighting
 local syntaxColors = {
@@ -14,6 +28,7 @@ local syntaxColors = {
     functions = {0.2, 0.6, 1}, -- Blue for functions
     operator = {0.8, 0.8, 0}, -- Yellow for operators
     lovefunctions = {1, 0.5, 0.5},
+    customlibs = {0.5,1,1},
     default = {1, 1, 1}       -- White for normal text
 }
 
@@ -106,6 +121,12 @@ function ide.getSyntaxColor(token)
         return syntaxColors.operator
     elseif syntax and table.contains(syntax.functions.love, token) then
         return syntaxColors.lovefunctions
+    elseif syntax and table.contains(syntax.functions.audio, token) then
+        return syntaxColors.lovefunctions
+    elseif syntax and table.contains(syntax.functions.graphics, token) then
+        return syntaxColors.lovefunctions
+    elseif syntax and table.contains(syntax.customLibraries, token) then
+        return syntaxColors.customlibs
     else
         return syntaxColors.default
     end
@@ -139,31 +160,62 @@ function table.contains(tbl, value)
     return false
 end
 
--- Visual mode rendering (placeholder for further development)
+-- Visual mode rendering (with module nodes)
 function ide.drawVisualMode()
     love.graphics.setColor(1, 1, 1, 1)
+    
+    -- Draw connections between nodes
+    for _, connection in ipairs(connections) do
+        love.graphics.setColor(0, 1, 0, 1)  -- Green for connections
+        love.graphics.line(connection[1].x + connection[1].width / 2, connection[1].y + connection[1].height / 2,
+                            connection[2].x + connection[2].width / 2, connection[2].y + connection[2].height / 2)
+    end
+    
+    -- Draw each component (node)
     for _, component in ipairs(visualEditorComponents) do
+        love.graphics.setColor(0, 0, 1, 1)  -- Blue for nodes
         love.graphics.rectangle("fill", component.x, component.y, component.width, component.height)
-        love.graphics.setColor(0, 0, 0, 1)
+        love.graphics.setColor(0, 0, 0, 1)  -- Black text for labels
         love.graphics.printf(component.name, component.x + 5, component.y + 5, component.width - 10, "center")
-        love.graphics.setColor(1, 1, 1, 1)
     end
 end
 
--- Visual mode update logic
+-- Visual mode update logic (dragging and handling interactions)
 function ide.updateVisualMode(dt)
-    -- Placeholder for visual components' behavior
+    -- Placeholder for visual components' behavior (e.g., dragging)
 end
 
--- Handle mouse interactions in visual mode
+-- Handle mouse interactions in visual mode (add nodes, connect them)
 function ide.handleVisualMousePressed(x, y, button)
-    -- Example: Add a new visual component on click
+    if button == 1 then  -- Left mouse button
+        -- Check if clicking on an existing node (for dragging or selecting)
+        for _, component in ipairs(visualEditorComponents) do
+            if x >= component.x and x <= component.x + component.width and
+               y >= component.y and y <= component.y + component.height then
+                -- Add logic for dragging or selecting nodes
+                return
+            end
+        end
+
+        -- Add a new module node on click (like math or love.graphics)
+        local moduleX, moduleY = x - 50, y - 25
+        local moduleNode = { name = "math", x = moduleX, y = moduleY, width = 100, height = 50, type = "module" }
+        table.insert(visualEditorComponents, moduleNode)
+    elseif button == 2 then  -- Right mouse button (for connecting nodes)
+        -- Add connection logic here (e.g., connect two nodes by adding an entry in the connections table)
+    end
+end
+
+-- Function for adding function nodes under a module
+function ide.addFunctionNode(moduleName, functionName, x, y)
     table.insert(visualEditorComponents, {
-        name = "Node",
+        name = functionName,
         x = x,
         y = y,
         width = 100,
-        height = 50
+        height = 50,
+        module = moduleName,
+        type = "function"
     })
 end
 

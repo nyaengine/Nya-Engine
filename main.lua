@@ -392,6 +392,7 @@ end
 
 function love.mousepressed(x, y, button, istouch, presses)
     if button == 1 then -- Left mouse button
+        if ideTest == false then
         group:mousepressed(x, y, button)
 
         -- Check if the click is within the properties sidebar
@@ -439,14 +440,13 @@ function love.mousepressed(x, y, button, istouch, presses)
         createProjectButton:mousepressed(x, y, button)
         openProjectButton:mousepressed(x, y, button)
 
-        if ideTest == true then
-            ide.mousepressed(x, y, button)
-        end
-
         -- Deselect if clicked outside any object
         selectedObject = nil
         -- Reset the ObjectName label if no object is selected
         ObjectName:setText("ObjectName")
+    else
+        ide.mousepressed(x, y, button)
+    end
     end
 end
 
@@ -582,6 +582,32 @@ function love.textinput(text)
     end
 end
 
+function saveIDECode(code)  
+    -- Define the path to the scripts folder within the project directory
+    local scriptsFolder = "project/" .. projectName .. "/scripts"
+
+    -- Check if the "scripts" folder exists
+    local info = love.filesystem.getInfo(scriptsFolder)
+    
+    -- If the "scripts" folder doesn't exist, create it
+    if not info then
+        love.filesystem.createDirectory(scriptsFolder)
+    end
+
+    -- Create a file path for the code to be saved (e.g., "scripts/ide_code.lua")
+    local filePath = scriptsFolder .. "/ide_code.lua"
+
+    -- Write the code to the file
+    local success, message = love.filesystem.write(filePath, code)
+
+    -- Check if the file was successfully saved
+    if success then
+        print("Code successfully saved to " .. filePath)
+    else
+        print("Failed to save code: " .. message)
+    end
+end
+
 -- Key press to reset the game
 function love.keypressed(key)
     if key == "r" then
@@ -592,8 +618,10 @@ function love.keypressed(key)
     elseif key == "f" then
         camera:focus(selectedObject)
     elseif key == "t" then
+        if projectWin == false then
         ide.load()
         ideTest = true
+    end
     end
 
     if ideTest == true then

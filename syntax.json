@@ -10,7 +10,7 @@
         "thread", "timer", "touch", "video", "window"
     ],
     "functions": {
-        "love": ["love.graphics.draw","getVersion", "run", "errorhandler", "handlers", "love"],
+        "love": ["love.graphics.draw", "love.graphics", "love.graphics.newFont","getVersion", "run", "errorhandler", "handlers", "love.filesystem", "love"],
         "audio": ["newSource", "play", "stop", "setVolume", "getVolume", "audio"],
         "graphics": ["newImage", "newFont", "newShader", "setColor", "clear", "draw", "graphics"]
     },

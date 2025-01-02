@@ -271,11 +271,16 @@ function love.load()
         openSettingsWindow()
     end, "assets/settings.png")
 
+    local OpenIDE = ButtonLibrary:new(50, 10, 100, 30, "IDE", function()
+        openIDE()
+    end)
+
     discordRPC.initialize(appId, true)
 
     -- Add buttons to the buttons table
     table.insert(topbarButtons, createRunButton)
     table.insert(topbarButtons, settingsButton)
+    table.insert(topbarButtons, OpenIDE)
     table.insert(SidebarLabels, SidebarTitle)
     table.insert(SidebarLabels, myLabel)
     table.insert(tabButtons, createButton)
@@ -388,6 +393,13 @@ end
 
 function openUIWindow()
     UIWin = not UIWin
+end
+
+function openIDE()
+    if projectWin == false then
+        ide.load()
+        ideTest = true
+    end
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
@@ -621,11 +633,6 @@ function love.keypressed(key)
         running = not running
     elseif key == "f" then
         camera:focus(selectedObject)
-    elseif key == "t" then
-        if projectWin == false then
-        ide.load()
-        ideTest = true
-    end
     end
 
     if ideTest == true then

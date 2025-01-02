@@ -580,6 +580,10 @@ function love.textinput(text)
     if ideTest == true then
         ide.textinput(text)
     end
+
+    if projectWin == true then
+        ProjectName:textinput(text)
+    end
 end
 
 function saveIDECode(code)  

@@ -1,4 +1,3 @@
--- textbox.lua
 local TextBox = {}
 TextBox.__index = TextBox
 
@@ -24,21 +23,6 @@ function TextBox:update(dt)
                 self.cursorPos = #self.text + 1
             end
         end
-
-        -- Use keypressed for discrete input instead of getPressed
-        local function textInputHandler(text)
-            if text:len() == 1 then
-                self.text = self.text:sub(1, self.cursorPos - 1) .. text .. self.text:sub(self.cursorPos)
-                self.cursorPos = self.cursorPos + 1
-            end
-        end
-
-        -- Attach text input handling (see `love.textinput`)
-        function love.textinput(text)
-            if self.focused then
-                textInputHandler(text)
-            end
-        end
     end
 end
 
@@ -53,6 +37,21 @@ function TextBox:draw()
         love.graphics.print(self.placeholder, self.x + 5, self.y + (self.height / 2) - 6)
     else
         love.graphics.print(self.text, self.x + 5, self.y + (self.height / 2) - 6)
+    end
+end
+
+-- Use keypressed for discrete input instead of getPressed
+function TextBox:textInputHandler(text)
+    if text:len() == 1 then
+        self.text = self.text:sub(1, self.cursorPos - 1) .. text .. self.text:sub(self.cursorPos)
+        self.cursorPos = self.cursorPos + 1
+    end
+end
+
+-- Attach text input handling (see `love.textinput`)
+function TextBox:textinput(text)
+    if self.focused then
+        self:textInputHandler(text)  -- Pass `self` to the handler
     end
 end
 

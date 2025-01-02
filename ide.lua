@@ -5,7 +5,7 @@ local mode = "text"
 local syntax  -- Will hold the parsed syntax data
 
 -- Editor states
-local textEditorContent = "-- Start coding here\n"
+local textEditorContent = ""
 local visualEditorComponents = {} -- Table to store visual mode components like nodes, connections, etc.
 local connections = {} -- Store connections between nodes
 
@@ -34,9 +34,6 @@ local syntaxColors = {
 
 -- Generic setup
 function ide.load()
-    love.window.setTitle("IDE - Text and Visual Coding Mode")
-    love.graphics.setFont(love.graphics.newFont(14))
-
     -- Load and parse the syntax.json file
     local json = require("lib/dkjson")  -- Assuming dkjson.lua is in your project
 
@@ -120,10 +117,6 @@ function ide.getSyntaxColor(token)
     elseif syntax and table.contains(syntax.lua_operators, token) then
         return syntaxColors.operator
     elseif syntax and table.contains(syntax.functions.love, token) then
-        return syntaxColors.lovefunctions
-    elseif syntax and table.contains(syntax.functions.audio, token) then
-        return syntaxColors.lovefunctions
-    elseif syntax and table.contains(syntax.functions.graphics, token) then
         return syntaxColors.lovefunctions
     elseif syntax and table.contains(syntax.customLibraries, token) then
         return syntaxColors.customlibs

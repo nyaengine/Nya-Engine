@@ -38,6 +38,7 @@ local sidebarButtons = {}
 local tabButtons = {}
 local ObjectList = {}
 local SceneList = {}
+local ideTest = false
 
 --Labels
 local SidebarLabels = {}
@@ -356,6 +357,10 @@ function love.update(dt)
     if love.keyboard.isDown("-") then
         camera:zoom(0.9)
     end
+
+    if ideTest == true then
+        ide.update(dt)
+    end
 end
 
 function discordApplyPresence()
@@ -434,6 +439,10 @@ function love.mousepressed(x, y, button, istouch, presses)
         createProjectButton:mousepressed(x, y, button)
         openProjectButton:mousepressed(x, y, button)
 
+        if ideTest == true then
+            ide.mousepressed(x, y, button)
+        end
+
         -- Deselect if clicked outside any object
         selectedObject = nil
         -- Reset the ObjectName label if no object is selected
@@ -449,6 +458,7 @@ function love.mousereleased(x, y, button, istouch, presses)
 end
 
 function love.draw()
+    if ideTest == false then
     love.graphics.setBackgroundColor(0.3, 0.3, 0.3)
     local windowWidth = love.graphics.getWidth()
     local windowHeight = love.graphics.getHeight()
@@ -556,10 +566,20 @@ function love.draw()
     if projectWin == true then
         projectWindow:draw()
     end
+
+    else
+        ide:draw()
+    end
 end
 
 function openSettingsWindow()
     settingsVis = not settingsVis
+end
+
+function love.textinput(text)
+    if ideTest == true then
+        ide.textinput(text)
+    end
 end
 
 -- Key press to reset the game
@@ -571,6 +591,13 @@ function love.keypressed(key)
         running = not running
     elseif key == "f" then
         camera:focus(selectedObject)
+    elseif key == "t" then
+        ide.load()
+        ideTest = true
+    end
+
+    if ideTest == true then
+        ide.keypressed(key)
     end
 end
 

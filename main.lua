@@ -9,6 +9,7 @@ local AudioEngine = require("lib/AudioEngine")
 local TextBox = require("lib/textbox")
 local slider = require("lib/slider")
 local CheckboxLib = require("lib/checkbox")
+local dkjson = require("lib/dkjson")
 local ide = require("ide")
 local CheckboxGroup = CheckboxLib.CheckboxGroup
 
@@ -54,16 +55,16 @@ local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X", function()
 end)
 
 local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object", function()
+    -- Only handle object creation logic here
     local newObject = ObjectLibrary:new(150, 100, 50, 50)
     table.insert(objects, newObject)
-    table.insert(ObjectList, "Object " .. tostring(#objects)) -- Add only the new object to ObjectList
+    table.insert(ObjectList, "Object " .. tostring(#objects))
 end)
 
-local createSceneButton = ButtonLibrary:new(500, 150, 120, 40, "Create Scene", function()
-    -- Create a unique name for the new scene
+local createSceneButton = ButtonLibrary:new(500, 200, 120, 40, "Create Scene", function()
+    -- Only handle scene creation logic here
     local sceneName = "Scene " .. tostring(#sceneManager.scenes + 1)
     
-    -- Define the new scene with basic functionality
     local newScene = {
         name = sceneName,
         enter = function(self)
@@ -73,20 +74,15 @@ local createSceneButton = ButtonLibrary:new(500, 150, 120, 40, "Create Scene", f
             print(self.name .. " has been exited.")
         end,
         update = function(self, dt)
-            -- Scene-specific update logic here
+            -- Scene-specific update logic
         end,
         draw = function(self)
             love.graphics.print("You are in " .. self.name, 400, 300)
         end,
     }
 
-    -- Add the new scene to the SceneManager
     sceneManager:addScene(sceneName, newScene)
-    
-    -- Automatically switch to the new scene
     sceneManager:switchTo(sceneName)
-    
-    -- Add the scene name to the ObjectList for display
     table.insert(SceneList, sceneName)
 end)
 
@@ -101,16 +97,52 @@ end)
 local createProjectButton = ButtonLibrary:new(0, 150, 125, 30, "Create Project", function()
     local projectName = ProjectName.text
     if projectName and projectName ~= "" then
-        local projectPath = "assets/" .. projectName
+        local projectPath = "project/" .. projectName
         love.filesystem.createDirectory(projectPath)
+
+        local projectFile = projectPath .. "/project.json"
+        local projectData = {
+            objects = {},
+            scenes = {},
+        }
+
+        -- Encode project data to JSON
+        local projectJSON = dkjson.encode(projectData, { indent = true })
+
+        -- Write the JSON to the file
+        local success, message = love.filesystem.write(projectFile, projectJSON)
+        if success then
+            projectWin = false
+        else
+            print("Failed to create project file: " .. message)
+        end
+    else
+        print("Project name is empty.")
     end
 end)
 
 local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", function()
     local projectName = ProjectName.text
     if projectName and projectName ~= "" then
-        local projectPath = "assets/" .. projectName
-        --open project
+        local projectPath = "project/" .. projectName
+        local projectFile = projectPath .. "/project.json"
+
+        if love.filesystem.getInfo(projectFile) then
+            local projectJSON = love.filesystem.read(projectFile)
+            local projectData, _, err = dkjson.decode(projectJSON)
+
+            if projectData then
+                objects = projectData.objects or {}
+                SceneList = projectData.scenes or {}
+                projectWin = false
+            else
+                print("Failed to load project data:", err)
+            end
+        else
+            print("Project file does not exist.")
+        end
+    else
+        print("Project name is empty.")
     end
 end)
 

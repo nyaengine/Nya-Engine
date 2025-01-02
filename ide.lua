@@ -13,6 +13,7 @@ local syntaxColors = {
     keyword = {1, 0.2, 0.2},  -- Red for keywords
     functions = {0.2, 0.6, 1}, -- Blue for functions
     operator = {0.8, 0.8, 0}, -- Yellow for operators
+    lovefunctions = {1, 0.5, 0.5},
     default = {1, 1, 1}       -- White for normal text
 }
 
@@ -99,25 +100,15 @@ end
 function ide.getSyntaxColor(token)
     if syntax and table.contains(syntax.lua_keywords, token) then
         return syntaxColors.keyword
-    elseif syntax and ide.isLuaFunction(token) then
+    elseif syntax and table.contains(syntax.lua_functions, token) then
         return syntaxColors.functions
     elseif syntax and table.contains(syntax.lua_operators, token) then
         return syntaxColors.operator
-    elseif syntax and table.contains(syntax.functions, token) then
-        return syntaxColors.functions
+    elseif syntax and table.contains(syntax.functions.love, token) then
+        return syntaxColors.lovefunctions
     else
         return syntaxColors.default
     end
-end
-
--- Check if a token is a Lua function
-function ide.isLuaFunction(token)
-    for _, funcs in pairs(syntax.functions) do
-        if table.contains(funcs, token) then
-            return true
-        end
-    end
-    return false
 end
 
 function ide.textinput(text)

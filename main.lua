@@ -26,6 +26,7 @@ local isDragging = false
 local sceneManager = SceneManager:new()
 local camera = Camera:new(0, 0, 1)
 local group
+local projectName
 
 local engineVer = "1.0"
 
@@ -96,7 +97,7 @@ local createuiButton = ButtonLibrary:new(125, 225, 30, 30, "+", function()
 end)
 
 local createProjectButton = ButtonLibrary:new(0, 150, 125, 30, "Create Project", function()
-    local projectName = ProjectName.text
+    projectName = ProjectName.text
     if projectName and projectName ~= "" then
         local projectPath = "project/" .. projectName
         love.filesystem.createDirectory(projectPath)
@@ -123,7 +124,7 @@ local createProjectButton = ButtonLibrary:new(0, 150, 125, 30, "Create Project",
 end)
 
 local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", function()
-    local projectName = ProjectName.text
+    projectName = ProjectName.text
     if projectName and projectName ~= "" then
         local projectPath = "project/" .. projectName
         local projectFile = projectPath .. "/project.json"

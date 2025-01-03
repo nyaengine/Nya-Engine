@@ -12,8 +12,12 @@ local saveCodeButton = ButtonLibrary:new(150, 10, 100, 30, "Save", function()
     saveIDECode(textEditorContent)
 end)
 
-local openCodeButton = ButtonLibrary:new(200, 10, 100, 30, "Open", function()
+local openCodeButton = ButtonLibrary:new(290, 10, 100, 30, "Open", function()
     textEditorContent = openIDECode()
+end)
+
+local toggleModeButton = ButtonLibrary:new(10, 10, 100, 30, "Toggle Mode", function()
+    print("currently doing nothing")
 end)
 
 -- Colors for syntax highlighting
@@ -56,13 +60,9 @@ function ide.draw()
     love.graphics.setColor(1, 0.4, 0.7, 0.5)
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
-    -- Draw a toggle button
-    love.graphics.setColor(0.2, 0.2, 0.2, 1)
-    love.graphics.rectangle("fill", 10, 10, 100, 30)
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.print("Toggle Mode", 20, 15)
-
     saveCodeButton:draw()
+    toggleModeButton:draw()
+    openCodeButton:draw()
 end
 
 -- Update function
@@ -70,11 +70,15 @@ function ide.update(dt)
     local mouseX, mouseY = love.mouse.getPosition()
    
    saveCodeButton:update(mouseX, mouseY)
+   openCodeButton:update(mouseX, mouseY)
+   toggleModeButton:update(mouseX, mouseY)
 end
 
 -- Handle mouse pressed events
 function ide.mousepressed(x, y, button)
     saveCodeButton:mousepressed(x, y, button)
+    openCodeButton:mousepressed(x, y, button)
+    toggleModeButton:mousepressed(x, y, button)
 end
 
 -- Text mode rendering with syntax highlighting

@@ -13,7 +13,7 @@ local saveCodeButton = ButtonLibrary:new(150, 10, 100, 30, "Save", function()
 end)
 
 local openCodeButton = ButtonLibrary:new(200, 10, 100, 30, "Open", function()
-    --open code
+    textEditorContent = openIDECode()
 end)
 
 -- Colors for syntax highlighting
@@ -48,10 +48,11 @@ function ide.draw()
         ide.drawTextMode()
     end
 
-    -- Explorer Sidebar
+    -- files sidebar(all scripts)
     love.graphics.setColor(1, 0.4, 0.7)
     love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
 
+    --topbar
     love.graphics.setColor(1, 0.4, 0.7, 0.5)
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 

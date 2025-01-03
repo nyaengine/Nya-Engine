@@ -41,9 +41,19 @@ end
 
 -- Draw function to render the respective mode
 function ide.draw()
+    local windowWidth = love.graphics.getWidth()
+    local windowHeight = love.graphics.getHeight()
+
     if mode == "text" then
         ide.drawTextMode()
     end
+
+    -- Explorer Sidebar
+    love.graphics.setColor(1, 0.4, 0.7)
+    love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
+
+    love.graphics.setColor(1, 0.4, 0.7, 0.5)
+    love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
     -- Draw a toggle button
     love.graphics.setColor(0.2, 0.2, 0.2, 1)
@@ -68,7 +78,7 @@ end
 
 -- Text mode rendering with syntax highlighting
 function ide.drawTextMode()
-    local x, y = 10, 50
+    local x, y = 175, 50
     local lineHeight = love.graphics.getFont():getHeight()
     
     for line in textEditorContent:gmatch("([^\n]*)\n?") do

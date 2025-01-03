@@ -625,6 +625,10 @@ function saveIDECode(code)
     end
 end
 
+function openIDECode()
+
+end
+
 -- Key press to reset the game
 function love.keypressed(key)
     if key == "r" then

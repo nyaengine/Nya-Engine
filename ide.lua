@@ -12,6 +12,10 @@ local saveCodeButton = ButtonLibrary:new(150, 10, 100, 30, "Save", function()
     saveIDECode(textEditorContent)
 end)
 
+local openCodeButton = ButtonLibrary:new(200, 10, 100, 30, "Open", function()
+    --open code
+end)
+
 -- Colors for syntax highlighting
 local syntaxColors = {
     keyword = {1, 0.2, 0.2},  -- Red for keywords

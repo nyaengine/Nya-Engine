@@ -625,41 +625,6 @@ function saveIDECode(code)
     end
 end
 
-function openIDECode()
-    -- List all Lua files in the "scripts" directory
-    local files = {}
-    for _, filename in ipairs(love.filesystem.getDirectoryItems("project/" .. projectName .. "/scripts")) do
-        if filename:match("%.lua$") then
-            table.insert(files, filename)
-        end
-    end
-
-    -- If there are no Lua files, return early
-    if #files == 0 then
-        print("No Lua scripts found in the 'scripts' folder.")
-        return ""
-    end
-
-    -- Prompt the user to select a file (this is just a basic simulation)
-    -- In a real IDE, you would use a file dialog library
-    print("Available Lua Scripts:")
-    for i, filename in ipairs(files) do
-        print(i .. ". " .. filename)
-    end
-
-    -- Ask the user for a file number to open
-    local choice = tonumber(io.read())  -- This reads user input from the console
-    if choice and files[choice] then
-        local selectedFile = files[choice]
-        -- Read the selected file's content
-        local fileContent = love.filesystem.read("project/".. projectName .. "/scripts/" .. selectedFile)
-        return fileContent
-    else
-        print("Invalid choice.")
-        return ""
-    end
-end
-
 -- Key press to reset the game
 function love.keypressed(key)
     if key == "r" then

@@ -1,5 +1,6 @@
 local ide = {}
 local ButtonLibrary = require("lib/ButtonLibrary")
+local fileDialog = require("lib/fileDialog")
 
 -- Modes: "text" or "visual"
 local mode = "text"
@@ -13,7 +14,7 @@ local saveCodeButton = ButtonLibrary:new(150, 10, 100, 30, "Save", function()
 end)
 
 local openCodeButton = ButtonLibrary:new(290, 10, 100, 30, "Open", function()
-    textEditorContent = openIDECode()
+    fileDialog.open()
 end)
 
 local toggleModeButton = ButtonLibrary:new(10, 10, 100, 30, "Toggle Mode", function()
@@ -60,9 +61,15 @@ function ide.draw()
     love.graphics.setColor(1, 0.4, 0.7, 0.5)
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
+    --debugger
+    love.graphics.setColor(0.25,0.25,0.25)
+    love.graphics.rectangle("fill", 0, windowHeight - 125, windowWidth, 125)
+
     saveCodeButton:draw()
     toggleModeButton:draw()
     openCodeButton:draw()
+
+    fileDialog.draw()
 end
 
 -- Update function
@@ -79,6 +86,7 @@ function ide.mousepressed(x, y, button)
     saveCodeButton:mousepressed(x, y, button)
     openCodeButton:mousepressed(x, y, button)
     toggleModeButton:mousepressed(x, y, button)
+    fileDialog.mousepressed(x, y, button)
 end
 
 -- Text mode rendering with syntax highlighting
@@ -126,6 +134,10 @@ function ide.textinput(text)
     if mode == "text" then
         textEditorContent = textEditorContent .. text
     end
+end
+
+function ide.updateTextEditorContent(content)
+    textEditorContent = content
 end
 
 function ide.keypressed(key, scancode, isrepeat)

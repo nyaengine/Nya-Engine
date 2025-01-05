@@ -37,7 +37,7 @@
 
 ### 1. Clone the Repository:
 ```bash
-git clone https://github.com/Virus10Official/Nya-Engine.git
+git clone https://github.com/Virus01Official/Nya-Engine.git
 ```
 
 ### 2. Install LÖVE2D:

@@ -17,6 +17,19 @@ local assetsFolder = love.filesystem.createDirectory("project")
 
 local font = love.graphics.newFont("assets/fonts/Poppins-Regular.ttf", 15)
 
+scriptName = "unnamed_script"
+
+scriptNameInput = {
+    x = 0,
+    y = 60,
+    width = 150,
+    height = 30,
+    text = "unnamed_script",
+    isActive = false
+}
+
+scriptNameTextBox = TextBox.new(0, 60, 150, 30, "Script Name", {0.8, 0.3, 0.6}, {1,1,1})
+
 -- Game objects
 local objects = {}
 local CollisionObjects = {}
@@ -599,20 +612,24 @@ function love.textinput(text)
     end
 end
 
-function saveIDECode(code)  
+function saveIDECode(code)
     -- Define the path to the scripts folder within the project directory
     local scriptsFolder = "project/" .. projectName .. "/scripts"
 
     -- Check if the "scripts" folder exists
     local info = love.filesystem.getInfo(scriptsFolder)
-    
+
     -- If the "scripts" folder doesn't exist, create it
     if not info then
         love.filesystem.createDirectory(scriptsFolder)
     end
 
-    -- Create a file path for the code to be saved (e.g., "scripts/ide_code.lua")
-    local filePath = scriptsFolder .. "/ide_code.lua"
+    -- Use the script name from the textbox
+    local scriptName = scriptNameTextBox.text
+    if scriptName == "" then
+        scriptName = "unnamed_script" -- Default name if empty
+    end
+    local filePath = scriptsFolder .. "/" .. scriptName .. ".lua"
 
     -- Write the code to the file
     local success, message = love.filesystem.write(filePath, code)

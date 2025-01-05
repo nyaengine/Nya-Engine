@@ -1,7 +1,7 @@
 local TextBox = {}
 TextBox.__index = TextBox
 
-function TextBox.new(x, y, width, height, placeholder)
+function TextBox.new(x, y, width, height, placeholder, bgColor, textColor)
     local self = setmetatable({}, TextBox)
     self.x = x
     self.y = y
@@ -11,6 +11,8 @@ function TextBox.new(x, y, width, height, placeholder)
     self.placeholder = placeholder or "Enter text..."
     self.focused = false
     self.cursorPos = #self.text + 1
+    self.bgColor = bgColor or {1,1,1}
+    self.textColor = textColor or {0,0,0}
     return self
 end
 
@@ -28,11 +30,11 @@ end
 
 function TextBox:draw()
     -- Draw the textbox background
-    love.graphics.setColor(1, 1, 1) -- White color for background
+    love.graphics.setColor(self.bgColor) -- White color for background
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
 
     -- Draw the text
-    love.graphics.setColor(0, 0, 0) -- Black color for text
+    love.graphics.setColor(self.textColor) -- Black color for text
     if self.text == "" then
         love.graphics.print(self.placeholder, self.x + 5, self.y + (self.height / 2) - 6)
     else

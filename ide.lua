@@ -70,6 +70,7 @@ function ide.draw()
     openCodeButton:draw()
 
     fileDialog.draw()
+    scriptNameTextBox:draw()
 end
 
 -- Update function
@@ -79,6 +80,7 @@ function ide.update(dt)
    saveCodeButton:update(mouseX, mouseY)
    openCodeButton:update(mouseX, mouseY)
    toggleModeButton:update(mouseX, mouseY)
+   scriptNameTextBox:update(dt) -- Update the textbox
 end
 
 -- Handle mouse pressed events
@@ -87,6 +89,8 @@ function ide.mousepressed(x, y, button)
     openCodeButton:mousepressed(x, y, button)
     toggleModeButton:mousepressed(x, y, button)
     fileDialog.mousepressed(x, y, button)
+
+    scriptNameTextBox:mousepressed(x, y, button)
 end
 
 -- Text mode rendering with syntax highlighting
@@ -132,7 +136,11 @@ end
 
 function ide.textinput(text)
     if mode == "text" then
-        textEditorContent = textEditorContent .. text
+        if scriptNameTextBox.focused == true then
+            scriptNameTextBox:textinput(text) -- Pass input to the textbox
+        else
+            textEditorContent = textEditorContent .. text
+        end
     end
 end
 
@@ -142,12 +150,16 @@ end
 
 function ide.keypressed(key, scancode, isrepeat)
     if mode == "text" then
-        if key == "backspace" then
-            -- Remove the last character in textEditorContent
-            textEditorContent = textEditorContent:sub(1, -2)
-        elseif key == "return" then
-            -- Add a new line (newline character)
-            textEditorContent = textEditorContent .. "\n"
+         if scriptNameInput.isActive then
+            handleScriptNameInput(key)
+        else
+            if key == "backspace" then
+                -- Remove the last character in textEditorContent
+                textEditorContent = textEditorContent:sub(1, -2)
+            elseif key == "return" then
+                -- Add a new line (newline character)
+                textEditorContent = textEditorContent .. "\n"
+            end
         end
     end
 end

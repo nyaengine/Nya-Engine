@@ -29,6 +29,6 @@
         "require", "select", "setmetatable", "tonumber", "tostring", "type", "xpcall"
     ],
     "customLibraries": [
-        "ButtonLibrary", "ObjectLibrary", "checkbox", "slider", "textbox", "SceneManager", "Camera", "json", "label", "Raycast", "mobilecontrols"
+        "game","ButtonLibrary", "ObjectLibrary", "checkbox", "slider", "textbox", "SceneManager", "Camera", "json", "label", "Raycast", "mobilecontrols"
     ]
 }

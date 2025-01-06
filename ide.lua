@@ -1,10 +1,24 @@
 local ide = {}
 local ButtonLibrary = require("lib/ButtonLibrary")
 local fileDialog = require("lib/fileDialog")
+local TextBox = require("lib/textbox")
 
 -- Modes: "text" or "visual"
 local mode = "text"
 local syntax  -- Will hold the parsed syntax data
+
+scriptName = "unnamed_script"
+
+scriptNameInput = {
+    x = 0,
+    y = 60,
+    width = 150,
+    height = 30,
+    text = "unnamed_script",
+    isActive = false
+}
+
+scriptNameTextBox = TextBox.new(0, 60, 150, 30, "Script Name", {0.8, 0.3, 0.6}, {1,1,1})
 
 -- Editor states
 local textEditorContent = ""

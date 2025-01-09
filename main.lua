@@ -42,6 +42,7 @@ local sidebarButtons = {}
 local tabButtons = {}
 local ObjectList = {}
 local SceneList = {}
+local UIList = {}
 local ideTest = false
 
 --Labels
@@ -97,6 +98,10 @@ end)
 
 local createuiButton = ButtonLibrary:new(125, 225, 30, 30, "+", function()
     openUIWindow()
+end)
+
+local createButton = ButtonLibrary:new(125, 70, 30, 30, "+", function()
+        openCreateWindow()
 end)
 
 local createProjectButton = ButtonLibrary:new(0, 150, 125, 30, "Create Project", function()
@@ -182,7 +187,10 @@ function love.load()
         y = 75,
         text = "Objects",
         color = {1,1,1,1},
-        textScale = 1.25
+        textScale = 1.25,
+        background = true,
+        bgx = 120,
+        bgy = 25
     })
 
     ScenesText = Label:new({
@@ -260,12 +268,6 @@ function love.load()
     projectWindow:addElement(ProjectName)
     projectWindow:addElement(createProjectButton)
     projectWindow:addElement(openProjectButton)
-
-    -- Create the "Create Object" button
-
-    local createButton = ButtonLibrary:new(125, 70, 30, 30, "+", function()
-        openCreateWindow()
-    end)
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 40, "Run", function()
         running = not running
@@ -506,13 +508,15 @@ function love.draw()
     love.graphics.setColor(1, 0.4, 0.7)
     love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
 
+    local objectListStartY = 100 - scrollOffset -- Starting Y position for ObjectList
+
     -- Objects Label
-    love.graphics.setColor(0.8, 0.3, 0.6)
-    love.graphics.rectangle("fill", 0, 75, 150, 25)
+    ObjectsText:setPosition(0, objectListStartY - 25)
     ObjectsText:draw()
+    createButton:setPosition(125, objectListStartY - 25)
+    SidebarTitle:setPosition(0, objectListStartY - 50)
 
     -- Draw ObjectList items
-    local objectListStartY = 100 - scrollOffset -- Starting Y position for ObjectList
     for i, objName in ipairs(ObjectList) do
         love.graphics.setColor(1, 1, 1, 1) -- White text
         love.graphics.print(objName, 10, objectListStartY + (i - 1) * 20)

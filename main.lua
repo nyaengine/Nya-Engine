@@ -28,6 +28,9 @@ local camera = Camera:new(0, 0, 1)
 local group
 local projectName
 
+local scrollOffset = 0
+local scrollSpeed = 20 -- Speed of scrolling
+
 local engineVer = "1.0"
 
 local discordRPC = require 'lib/discordRPC'
@@ -509,7 +512,7 @@ function love.draw()
     ObjectsText:draw()
 
     -- Draw ObjectList items
-    local objectListStartY = 100 -- Starting Y position for ObjectList
+    local objectListStartY = 100 - scrollOffset -- Starting Y position for ObjectList
     for i, objName in ipairs(ObjectList) do
         love.graphics.setColor(1, 1, 1, 1) -- White text
         love.graphics.print(objName, 10, objectListStartY + (i - 1) * 20)
@@ -642,6 +645,14 @@ function love.keypressed(key)
 
     if ideTest == true then
         ide.keypressed(key)
+    end
+end
+
+function love.wheelmoved(x, y)
+    if x ~= 0 or y ~= 0 then
+        scrollOffset = scrollOffset - y * scrollSpeed
+        -- Clamp the scroll offset to ensure it doesn't scroll too far
+        scrollOffset = math.max(0, scrollOffset)
     end
 end
 

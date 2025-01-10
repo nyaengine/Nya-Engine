@@ -1,17 +1,17 @@
 -- Required files
 ObjectLibrary = require("lib/ObjectLibrary")
 ButtonLibrary = require("lib/ButtonLibrary")
-local window = require("window")
-local Camera = require("lib/Camera")
-local Label = require("lib/label")
-local SceneManager = require("lib/SceneManager")
-local AudioEngine = require("lib/AudioEngine")
-local TextBox = require("lib/textbox")
-local slider = require("lib/slider")
-local CheckboxLib = require("lib/checkbox")
-local dkjson = require("lib/dkjson")
-local ide = require("ide")
-local CheckboxGroup = CheckboxLib.CheckboxGroup
+window = require("window")
+Camera = require("lib/Camera")
+Label = require("lib/label")
+SceneManager = require("lib/SceneManager")
+AudioEngine = require("lib/AudioEngine")
+TextBox = require("lib/textbox")
+slider = require("lib/slider")
+CheckboxLib = require("lib/checkbox")
+dkjson = require("lib/dkjson")
+ide = require("ide")
+CheckboxGroup = CheckboxLib.CheckboxGroup
 
 local assetsFolder = love.filesystem.createDirectory("project")
 

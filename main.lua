@@ -27,6 +27,8 @@ local sceneManager = SceneManager:new()
 local camera = Camera:new(0, 0, 1)
 local group
 local projectName
+local disX, disY
+local disSizeX, disSizeY
 
 local scrollOffset = 0
 local scrollSpeed = 20 -- Speed of scrolling
@@ -252,6 +254,8 @@ function love.load()
 
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
+    positionTextbox = TextBox.new(love.graphics:getWidth() - 150, 175, 125, 30, "150, 100")
+
     nextPresenceUpdate = 0
     myWindow = window:new(100, 100, 300, 200)
     myWindow:addElement(closeButton)
@@ -337,6 +341,9 @@ function love.update(dt)
     createWindow:update(dt)
     createsceneWindow:update(dt)
     projectWindow:update(dt)
+
+    positionTextbox:update(dt)
+    
     projectWindow:setSize(love.graphics:getWidth(), love.graphics:getHeight())
 
     closeButton:update(mouseX, mouseY)
@@ -482,6 +489,7 @@ function love.mousepressed(x, y, button, istouch, presses)
         createuiButton:mousepressed(x, y, button)
         createSceneButton:mousepressed(x, y, button)
         ProjectName:mousepressed(x, y, button)
+        positionTextbox:mousepressed(x, y, button)
         createProjectButton:mousepressed(x, y, button)
         openProjectButton:mousepressed(x, y, button)
 
@@ -595,6 +603,9 @@ function love.draw()
             end
             group:draw()
             group:setPosition(windowWidth - 135, 125)
+
+            positionTextbox:draw()
+            positionTextbox:setPosition(love.graphics:getWidth() - 150, 175)
         end
     end
 
@@ -630,6 +641,10 @@ function love.textinput(text)
 
     if projectWin == true then
         ProjectName:textinput(text)
+    end
+
+    if projectWin == false and ideTest == false then
+        positionTextbox:textinput(text)
     end
 end
 
@@ -672,6 +687,9 @@ function love.keypressed(key)
         running = not running
     elseif key == "f" then
         camera:focus(selectedObject)
+    elseif key == "return" and positionTextbox:isFocused() then
+        selectedObject.x = positionTextbox.text
+        positionTextbox.focused = false
     end
 
     if ideTest == true then

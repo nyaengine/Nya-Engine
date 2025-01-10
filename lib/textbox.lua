@@ -16,6 +16,15 @@ function TextBox.new(x, y, width, height, placeholder, bgColor, textColor)
     return self
 end
 
+function TextBox:isFocused()
+    return self.focused
+end
+
+function TextBox:setPosition(x, y)
+    self.x = x
+    self.y = y
+end
+
 function TextBox:update(dt)
     if self.focused then
         -- Handle text input

@@ -22,6 +22,15 @@ scriptNameTextBox = TextBox.new(0, 60, 150, 30, "Script Name", {0.8, 0.3, 0.6}, 
 
 -- Editor states
 local textEditorContent = ""
+local cursorPos = {x = 175, y = 50} -- Track the cursor position
+local selectedText = ""  -- Hold the selected text
+local cursorVisible = true
+local cursorBlinkTime = 0 -- Time for cursor blinking
+local cursorBlinkInterval = 0.5 -- 0.5 seconds for blinking
+
+-- Undo/Redo stacks
+local undoStack = {}
+local redoStack = {}
 
 local saveCodeButton = ButtonLibrary:new(150, 10, 100, 30, "Save", function()
     saveIDECode(textEditorContent)
@@ -95,6 +104,12 @@ function ide.update(dt)
    openCodeButton:update(mouseX, mouseY)
    toggleModeButton:update(mouseX, mouseY)
    scriptNameTextBox:update(dt) -- Update the textbox
+
+   cursorBlinkTime = cursorBlinkTime + dt
+    if cursorBlinkTime >= cursorBlinkInterval then
+        cursorVisible = not cursorVisible
+        cursorBlinkTime = 0
+    end
 end
 
 -- Handle mouse pressed events
@@ -116,6 +131,18 @@ function ide.drawTextMode()
         ide.drawHighlightedLine(line, x, y)
         y = y + lineHeight
     end
+
+    -- Draw cursor if text editor is active
+    if cursorVisible then
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.line(cursorPos.x, cursorPos.y, cursorPos.x, cursorPos.y + lineHeight)  -- Draw blinking cursor
+    end
+
+    -- Draw selection if there's any selected text
+    if selectedText ~= "" then
+        love.graphics.setColor(0.2, 0.4, 0.8, 0.5)  -- Highlight color
+        love.graphics.rectangle("fill", 175, cursorPos.y, love.graphics.getFont():getWidth(selectedText), lineHeight)
+    end
 end
 
 -- Highlight a single line of text
@@ -129,6 +156,18 @@ function ide.drawHighlightedLine(line, x, y)
         love.graphics.print(token, cursor, y)
         cursor = cursor + love.graphics.getFont():getWidth(token .. " ")
     end
+end
+
+function toggleComment(content)
+    local lines = {}
+    for line in content:gmatch("[^\r\n]+") do
+        if line:sub(1, 2) == "--" then
+            table.insert(lines, line:sub(3))  -- Remove comment
+        else
+            table.insert(lines, "--" .. line)  -- Add comment
+        end
+    end
+    return table.concat(lines, "\n")
 end
 
 -- Determine the color for a token based on syntax
@@ -153,10 +192,32 @@ function ide.textinput(text)
         if scriptNameTextBox.focused == true then
             scriptNameTextBox:textinput(text) -- Pass input to the textbox
         else
+            -- Update cursor position when typing
+            local fontWidth = love.graphics.getFont():getWidth(text)
+            cursorPos.x = cursorPos.x + fontWidth
             textEditorContent = textEditorContent .. text
+
+            ide.saveToUndoStack()
         end
     end
 end
+
+-- Update the cursor position based on the current text content
+function ide.updateCursorPosition()
+    local fontWidth = love.graphics.getFont():getWidth(textEditorContent)
+    local lineHeight = love.graphics.getFont():getHeight()
+
+    -- Count the number of newlines in the content to determine the number of lines
+    local lineCount = 0
+    for _ in textEditorContent:gmatch("\n") do
+        lineCount = lineCount + 1
+    end
+
+    -- Update the cursor position
+    cursorPos.x = 175 + fontWidth  -- Update the x position based on the width of the content
+    cursorPos.y = 50 + lineHeight * lineCount  -- Update the y position based on the number of lines
+end
+
 
 function ide.updateTextEditorContent(content)
     textEditorContent = content
@@ -167,14 +228,67 @@ function ide.keypressed(key, scancode, isrepeat)
          if scriptNameInput.isActive then
             handleScriptNameInput(key)
         else
+            local fontWidth = love.graphics.getFont():getWidth(textEditorContent)
             if key == "backspace" then
-                -- Remove the last character in textEditorContent
-                textEditorContent = textEditorContent:sub(1, -2)
+                if selectedText ~= "" then
+                    textEditorContent = ""
+                    selectedText = ""
+                    cursorPos.x = 175
+                    cursorPos.y = 50
+                    ide.saveToUndoStack()
+                else
+                    -- Remove one character from the end of textEditorContent
+                    textEditorContent = textEditorContent:sub(1, -2)
+                    cursorPos.x = cursorPos.x - love.graphics.getFont():getWidth(textEditorContent:sub(-1))
+                    ide.saveToUndoStack()
+                end
             elseif key == "return" then
                 -- Add a new line (newline character)
                 textEditorContent = textEditorContent .. "\n"
+                cursorPos.x = 175  -- Reset cursor x position after a newline
+                cursorPos.y = cursorPos.y + love.graphics.getFont():getHeight()
+                ide.saveToUndoStack()
+            elseif key == "a" and love.keyboard.isDown("lctrl", "rctrl") then
+                -- Select All
+                selectedText = textEditorContent
+            elseif key == "/" and love.keyboard.isDown("lctrl", "rctrl") then
+                -- Toggle Comment
+                textEditorContent = toggleComment(textEditorContent)
+                ide.saveToUndoStack()
+            elseif key == "z" and love.keyboard.isDown("lctrl", "rctrl") then
+                -- Undo
+                ide.undo()
+            elseif key == "y" and love.keyboard.isDown("lctrl", "rctrl") then
+                -- Redo
+                ide.redo()
             end
         end
+    end
+end
+
+-- Save current text state to the undo stack
+function ide.saveToUndoStack()
+    table.insert(undoStack, textEditorContent)
+    redoStack = {}  -- Clear redo stack when new changes are made
+end
+
+-- Perform undo action
+function ide.undo()
+    if #undoStack > 0 then
+        local lastState = table.remove(undoStack)
+        table.insert(redoStack, textEditorContent)
+        textEditorContent = lastState
+        ide.updateCursorPosition()
+    end
+end
+
+-- Perform redo action
+function ide.redo()
+    if #redoStack > 0 then
+        local lastState = table.remove(redoStack)
+        table.insert(undoStack, textEditorContent)
+        textEditorContent = lastState
+        ide.updateCursorPosition()
     end
 end
 

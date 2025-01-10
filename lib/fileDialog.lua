@@ -98,6 +98,7 @@ if x >= dialogX + margin + 100 and x <= dialogX + margin + 180 and
             local fileContent = love.filesystem.read(selectedFile.path)
             if fileContent then
                 require("ide").updateTextEditorContent(fileContent)
+                require("ide").updateCursorPosition()
             else
                 print("Failed to load the file: " .. selectedFile.path)
             end

@@ -218,7 +218,6 @@ function ide.updateCursorPosition()
     cursorPos.y = 50 + lineHeight * lineCount  -- Update the y position based on the number of lines
 end
 
-
 function ide.updateTextEditorContent(content)
     textEditorContent = content
 end

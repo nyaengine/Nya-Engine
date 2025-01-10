@@ -271,6 +271,9 @@ function love.load()
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 40, "Run", function()
         running = not running
+        if running then
+        loadAndRunScripts()
+        end
     end)
 
     local settingsButton = ButtonLibrary:new(10, 10, 30, 30, "", function()
@@ -371,6 +374,30 @@ function love.update(dt)
 
     if ideTest == true then
         ide.update(dt)
+    end
+end
+
+function loadAndRunScripts()
+    local scriptsFolder = "project/" .. projectName .. "/scripts"
+    local files = love.filesystem.getDirectoryItems(scriptsFolder)
+
+    for _, filename in ipairs(files) do
+        if filename:match("%.lua$") then -- Ensure only Lua files are loaded
+            local filePath = scriptsFolder .. "/" .. filename
+            local scriptContent = love.filesystem.read(filePath)
+
+            if scriptContent then
+                local chunk, err = load(scriptContent, filename, "t", _G)
+                if chunk then
+                    local success, runtimeErr = pcall(chunk)
+                    if not success then
+                        print("Error running script " .. filename .. ": " .. runtimeErr)
+                    end
+                else
+                    print("Error loading script " .. filename .. ": " .. err)
+                end
+            end
+        end
     end
 end
 

@@ -1,5 +1,3 @@
--- Tilemap Library for LÖVE2D
-
 local Tilemap = {}
 Tilemap.__index = Tilemap
 

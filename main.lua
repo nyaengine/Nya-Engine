@@ -1,6 +1,6 @@
 -- Required files
-local ObjectLibrary = require("lib/ObjectLibrary")
-local ButtonLibrary = require("lib/ButtonLibrary")
+ObjectLibrary = require("lib/ObjectLibrary")
+ButtonLibrary = require("lib/ButtonLibrary")
 local window = require("window")
 local Camera = require("lib/Camera")
 local Label = require("lib/label")

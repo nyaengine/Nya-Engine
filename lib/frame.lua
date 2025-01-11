@@ -3,16 +3,16 @@ Frame.__index = Frame
 
 -- Create a new frame
 function Frame.new(x, y, width, height, isScrollable, direction)
-    local self = setmetatable({}, Frame)
-    self.x = x
-    self.y = y
-    self.width = width
-    self.height = height
-    self.isScrollable = isScrollable or false  -- If the frame is scrollable
-    self.direction = direction or "vertical"  -- 'vertical' or 'horizontal'
-    self.elements = {}  -- Store elements inside the frame
-    self.scrollOffset = 0  -- Scroll position (only for vertical scroll)
-    return self
+    return setmetatable({
+        x = x,
+        y = y,
+        width = width,
+        height = height,
+        isScrollable = isScrollable or false,  -- If the frame is scrollable
+        direction = direction or "vertical",  -- 'vertical' or 'horizontal'
+        elements = {},  -- Store elements inside the frame
+        scrollOffset = 0  -- Scroll position (only for vertical scroll)
+    }, Frame)
 end
 
 -- Add an element to the frame

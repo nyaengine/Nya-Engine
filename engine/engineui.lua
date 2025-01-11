@@ -1,5 +1,7 @@
 local engineui = {}
 
+local UI = require("UI")
+
 --UI objects
 local group
 local projectName
@@ -15,7 +17,6 @@ local sidebarButtons = {}
 local tabButtons = {}
 ObjectList = {}
 SceneList = {}
-local UIList = {}
 
 --UI Visibility
 ideTest = false
@@ -305,6 +306,10 @@ function engineui:update(dt)
     if ideTest == true then
         ide.update(dt)
     end
+
+    if UIWin == true then
+        UI:update(dt)
+    end
 end
 
 function openCreateWindow()
@@ -317,6 +322,7 @@ end
 
 function openUIWindow()
     UIWin = not UIWin
+    UI:load()
 end
 
 function openIDE()
@@ -458,6 +464,10 @@ function engineui:draw()
 
     if sceneWin == true then
         createsceneWindow:draw()
+    end
+
+    if UIWin == true then
+        UI:draw()
     end
 
     if projectWin == true then

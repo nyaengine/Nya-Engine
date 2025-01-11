@@ -11,6 +11,7 @@ slider = require("lib/slider")
 CheckboxLib = require("lib/checkbox")
 dkjson = require("lib/dkjson")
 ide = require("ide")
+frame = require("lib/frame")
 CheckboxGroup = CheckboxLib.CheckboxGroup
 
 local engineUI = require("engine/engineui")

@@ -241,7 +241,7 @@ function engineui:load()
     projectWindow:addElement(createProjectButton)
     projectWindow:addElement(openProjectButton)
 
-    local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 40, "Run", function()
+    local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 30, "Run", function()
         running = not running
         if running then
         loadAndRunScripts()
@@ -256,9 +256,14 @@ function engineui:load()
         openIDE()
     end)
 
+    local saveProjectButton = ButtonLibrary:new(200, 10, 120, 30, "Save", function()
+        
+    end)
+
     -- Add buttons to the buttons table
     table.insert(topbarButtons, createRunButton)
     table.insert(topbarButtons, settingsButton)
+    table.insert(topbarButtons, saveProjectButton)
     table.insert(topbarButtons, OpenIDE)
     table.insert(SidebarLabels, SidebarTitle)
     table.insert(SidebarLabels, myLabel)

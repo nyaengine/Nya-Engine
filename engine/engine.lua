@@ -84,6 +84,17 @@ function engine:mousereleased(x, y, button, istouch, presses)
     end
 end
 
+function engine:keypressed(key)
+    if key == "r" then
+        objects = {} -- Clear all objects
+        selectedObject = nil
+    elseif key == "f5" then
+        running = not running
+    elseif key == "f" then
+        camera:focus(selectedObject)
+    end
+end
+
 function engine:draw()
 	if ideTest == false then
 		love.graphics.setBackgroundColor(0.3, 0.3, 0.3)

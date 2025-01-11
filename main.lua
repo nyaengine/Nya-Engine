@@ -51,30 +51,6 @@ function love.update(dt)
     engineUI:update(dt)
 end
 
-function loadAndRunScripts()
-    local scriptsFolder = "project/" .. projectName .. "/scripts"
-    local files = love.filesystem.getDirectoryItems(scriptsFolder)
-
-    for _, filename in ipairs(files) do
-        if filename:match("%.lua$") then -- Ensure only Lua files are loaded
-            local filePath = scriptsFolder .. "/" .. filename
-            local scriptContent = love.filesystem.read(filePath)
-
-            if scriptContent then
-                local chunk, err = load(scriptContent, filename, "t", _G)
-                if chunk then
-                    local success, runtimeErr = pcall(chunk)
-                    if not success then
-                        print("Error running script " .. filename .. ": " .. runtimeErr)
-                    end
-                else
-                    print("Error loading script " .. filename .. ": " .. err)
-                end
-            end
-        end
-    end
-end
-
 function discordApplyPresence()
     detailsNow = "Developing"
     stateNow = ""
@@ -114,53 +90,10 @@ function love.textinput(text)
     engineUI:textinput(text)
 end
 
-function saveIDECode(code)
-    -- Define the path to the scripts folder within the project directory
-    local scriptsFolder = "project/" .. projectName .. "/scripts"
-
-    -- Check if the "scripts" folder exists
-    local info = love.filesystem.getInfo(scriptsFolder)
-
-    -- If the "scripts" folder doesn't exist, create it
-    if not info then
-        love.filesystem.createDirectory(scriptsFolder)
-    end
-
-    -- Use the script name from the textbox
-    local scriptName = scriptNameTextBox.text
-    if scriptName == "" then
-        scriptName = "unnamed_script" -- Default name if empty
-    end
-    local filePath = scriptsFolder .. "/" .. scriptName .. ".lua"
-
-    -- Write the code to the file
-    local success, message = love.filesystem.write(filePath, code)
-
-    -- Check if the file was successfully saved
-    if success then
-        print("Code successfully saved to " .. filePath)
-    else
-        print("Failed to save code: " .. message)
-    end
-end
-
 -- Key press to reset the game
 function love.keypressed(key)
-    if key == "r" then
-        objects = {} -- Clear all objects
-        selectedObject = nil
-    elseif key == "f5" then
-        running = not running
-    elseif key == "f" then
-        camera:focus(selectedObject)
-    elseif key == "return" and positionTextbox:isFocused() then
-        selectedObject.x = positionTextbox.text
-        positionTextbox.focused = false
-    end
-
-    if ideTest == true then
-        ide.keypressed(key)
-    end
+    engine:keypressed(key)
+    engineUI:keypressed(key)
 end
 
 function love.wheelmoved(x, y)

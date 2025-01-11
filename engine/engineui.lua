@@ -463,6 +463,30 @@ function engineui:draw()
     end
 end
 
+function loadAndRunScripts()
+    local scriptsFolder = "project/" .. projectName .. "/scripts"
+    local files = love.filesystem.getDirectoryItems(scriptsFolder)
+
+    for _, filename in ipairs(files) do
+        if filename:match("%.lua$") then -- Ensure only Lua files are loaded
+            local filePath = scriptsFolder .. "/" .. filename
+            local scriptContent = love.filesystem.read(filePath)
+
+            if scriptContent then
+                local chunk, err = load(scriptContent, filename, "t", _G)
+                if chunk then
+                    local success, runtimeErr = pcall(chunk)
+                    if not success then
+                        print("Error running script " .. filename .. ": " .. runtimeErr)
+                    end
+                else
+                    print("Error loading script " .. filename .. ": " .. err)
+                end
+            end
+        end
+    end
+end
+
 function openSettingsWindow()
     settingsVis = not settingsVis
 end
@@ -481,11 +505,47 @@ function engineui:textinput(text)
     end
 end
 
+function saveIDECode(code)
+    -- Define the path to the scripts folder within the project directory
+    local scriptsFolder = "project/" .. projectName .. "/scripts"
+
+    -- Check if the "scripts" folder exists
+    local info = love.filesystem.getInfo(scriptsFolder)
+
+    -- If the "scripts" folder doesn't exist, create it
+    if not info then
+        love.filesystem.createDirectory(scriptsFolder)
+    end
+
+    -- Use the script name from the textbox
+    local scriptName = scriptNameTextBox.text
+    if scriptName == "" then
+        scriptName = "unnamed_script" -- Default name if empty
+    end
+    local filePath = scriptsFolder .. "/" .. scriptName .. ".lua"
+
+    -- Write the code to the file
+    local success, message = love.filesystem.write(filePath, code)
+
+    -- Check if the file was successfully saved
+    if success then
+        print("Code successfully saved to " .. filePath)
+    else
+        print("Failed to save code: " .. message)
+    end
+end
+
 function engineui:wheelmoved(x, y)
     if x ~= 0 or y ~= 0 then
         scrollOffset = scrollOffset - y * scrollSpeed
         -- Clamp the scroll offset to ensure it doesn't scroll too far
         scrollOffset = math.max(0, scrollOffset)
+    end
+end
+
+function engineui:keypressed(key)
+    if ideTest == true then
+        ide.keypressed(key)
     end
 end
 

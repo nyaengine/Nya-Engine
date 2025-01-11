@@ -45,7 +45,7 @@ local tabButtons = {}
 local ObjectList = {}
 local SceneList = {}
 local UIList = {}
-local ideTest = false
+ideTest = false
 
 --Labels
 local SidebarLabels = {}

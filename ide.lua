@@ -44,6 +44,10 @@ local toggleModeButton = ButtonLibrary:new(10, 10, 100, 30, "Toggle Mode", funct
     print("currently doing nothing")
 end)
 
+local closeIDEButton = ButtonLibrary:new(love.graphics:getWidth() - 50, 10, 30, 30, "X", function()
+    ideTest = false
+end)
+
 -- Colors for syntax highlighting
 local syntaxColors = {
     keyword = {1, 0.2, 0.2},  -- Red for keywords
@@ -91,6 +95,8 @@ function ide.draw()
     saveCodeButton:draw()
     toggleModeButton:draw()
     openCodeButton:draw()
+    closeIDEButton:draw()
+    closeIDEButton.x = love.graphics:getWidth() - 50
 
     fileDialog.draw()
     scriptNameTextBox:draw()
@@ -104,6 +110,7 @@ function ide.update(dt)
    openCodeButton:update(mouseX, mouseY)
    toggleModeButton:update(mouseX, mouseY)
    scriptNameTextBox:update(dt) -- Update the textbox
+   closeIDEButton:update(mouseX, mouseY)
 
    cursorBlinkTime = cursorBlinkTime + dt
     if cursorBlinkTime >= cursorBlinkInterval then
@@ -118,6 +125,7 @@ function ide.mousepressed(x, y, button)
     openCodeButton:mousepressed(x, y, button)
     toggleModeButton:mousepressed(x, y, button)
     fileDialog.mousepressed(x, y, button)
+    closeIDEButton:mousepressed(x,y,button)
 
     scriptNameTextBox:mousepressed(x, y, button)
 end

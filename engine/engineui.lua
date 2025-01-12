@@ -337,6 +337,8 @@ function engineui:mousepressed(x, y, button, istouch, presses)
         if ideTest == false then
             group:mousepressed(x, y, button)
 
+            positionTextbox:mousepressed(x, y, button)
+
             if x >= sidebarX and x <= sidebarX + sidebarWidth and y >= sidebarY and y <= sidebarY + sidebarHeight then
                 -- Click is within the sidebar, do not deselect
                 return
@@ -360,7 +362,6 @@ function engineui:mousepressed(x, y, button, istouch, presses)
             createuiButton:mousepressed(x, y, button)
             createSceneButton:mousepressed(x, y, button)
             ProjectName:mousepressed(x, y, button)
-            positionTextbox:mousepressed(x, y, button)
             createProjectButton:mousepressed(x, y, button)
             openProjectButton:mousepressed(x, y, button)
 

@@ -26,27 +26,27 @@ function engine:update(dt)
 
     sceneManager:update(dt)
 
-    if love.keyboard.isDown("w") then
+    if love.keyboard.isDown("w") and running == false then
         camera:move(0, -10)
     end
 
-    if love.keyboard.isDown("s") then
+    if love.keyboard.isDown("s") and running == false then
         camera:move(0, 10)
     end
 
-    if love.keyboard.isDown("d") then
+    if love.keyboard.isDown("d") and running == false then
         camera:move(10, 0)
     end
 
-    if love.keyboard.isDown("a") then
+    if love.keyboard.isDown("a") and running == false then
         camera:move(-10, 0)
     end
 
-    if love.keyboard.isDown("=") then
+    if love.keyboard.isDown("=") and running == false then
         camera:zoom(1.1)
     end
 
-    if love.keyboard.isDown("-") then
+    if love.keyboard.isDown("-") and running == false then
         camera:zoom(0.9)
     end
 end

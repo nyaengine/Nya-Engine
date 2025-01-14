@@ -85,12 +85,9 @@ function engine:mousereleased(x, y, button, istouch, presses)
 end
 
 function engine:keypressed(key)
-    if key == "r" then
-        objects = {} -- Clear all objects
-        selectedObject = nil
-    elseif key == "f5" then
+    if key == "f5" and running == false then
         running = not running
-    elseif key == "f" then
+    elseif key == "f" and running == false then
         camera:focus(selectedObject)
     end
 end

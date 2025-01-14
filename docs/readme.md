@@ -23,8 +23,60 @@ for example:
 
 ```lua
     function love.load()
-      ButtonLibrary:new(0, 100, 500, 100, "Test", function()
+      Button = ButtonLibrary:new(0, 100, 500, 100, "Test", function()
         print("test")
     end)
 ```
 
+You can also change the background transparency by using this code:
+
+```lua
+    Button:IsVisibleBG(false) -- true or false
+```
+
+or 
+
+``` lua
+    Button:SetTransparency(1) -- transparency value
+```
+
+If you want to change the button position while the game is running you can do:
+
+```lua
+    function love.draw()
+        Button:setPosition(x, y)
+    end
+```
+
+This is the whole example for creating buttons:
+
+```lua
+    local ButtonPressed = false
+
+    function love.load()
+      Button = ButtonLibrary:new(0, 100, 500, 100, "Test", function()
+        ButtonPressed = not ButtonPressed
+    end)
+
+    function love.update(dt)
+        local mouseX, mouseY = love.mouse.getPosition()
+
+        Button:update(mouseX, mouseY)
+    end
+
+    function love.draw()
+        Button:draw()
+
+        if ButtonPressed == true then
+            Button:setPosition(100, 100)
+        else
+            Button:setPosition(0, 100)
+        end
+    end
+
+    function love.mousepressed(x, y, button, istouch, presses)
+        Button:mousepressed(x, y, button)
+    end
+```
+
+This code makes it so when the button is pressed then it changes the position

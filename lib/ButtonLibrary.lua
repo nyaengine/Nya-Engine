@@ -14,6 +14,7 @@ function ButtonLibrary:new(x, y, width, height, label, onClick, imagePath)
     btn.onClick = onClick or function() end
     btn.isHovered = false
     btn.background = true
+    btn.transparencyBG = 0
 
     -- Load the image if the path is provided
     btn.image = nil
@@ -32,6 +33,10 @@ function ButtonLibrary:update(mouseX, mouseY)
 
     self.isHovered = mouseX >= self.x and mouseX <= self.x + self.width and
                      mouseY >= self.y and mouseY <= self.y + self.height
+end
+
+function ButtonLibrary:SetTransparency(val)
+    self.transparencyBG = val
 end
 
 function ButtonLibrary:IsVisibleBG(vis)
@@ -55,14 +60,14 @@ function ButtonLibrary:draw()
     -- Button background
     if self.background then
         if self.isHovered then
-            love.graphics.setColor(0.8, 0.3, 0.6) -- Hover color
+            love.graphics.setColor(0.8, 0.3, 0.6, self.transparencyBG) -- Hover color
         else
-            love.graphics.setColor(1, 0.4, 0.7) -- Default color
+            love.graphics.setColor(1, 0.4, 0.7, self.transparencyBG) -- Default color
         end
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
         
         -- Button border
-        love.graphics.setColor(0, 0, 0)
+        love.graphics.setColor(0, 0, 0, self.transparencyBG)
         love.graphics.rectangle("line", self.x, self.y, self.width, self.height)
     end
 

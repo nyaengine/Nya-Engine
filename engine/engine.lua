@@ -7,6 +7,7 @@ selectedObject = nil
 local running = false
 local isDragging = false
 local IsEngine = true
+local scaling = false
 sceneManager = SceneManager:new()
 local camera = Camera:new(0, 0, 1)
 

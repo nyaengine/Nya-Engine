@@ -14,7 +14,7 @@ function ButtonLibrary:new(x, y, width, height, label, onClick, imagePath)
     btn.onClick = onClick or function() end
     btn.isHovered = false
     btn.background = true
-    btn.transparencyBG = 0
+    btn.transparencyBG = 1
 
     -- Load the image if the path is provided
     btn.image = nil

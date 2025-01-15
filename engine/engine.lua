@@ -6,7 +6,7 @@ CollisionObjects = {}
 selectedObject = nil
 local running = false
 local isDragging = false
-local engine = true
+local IsEngine = true
 sceneManager = SceneManager:new()
 local camera = Camera:new(0, 0, 1)
 
@@ -86,7 +86,7 @@ function engine:mousereleased(x, y, button, istouch, presses)
 end
 
 function engine:keypressed(key)
-    if key == "f5" and engine == true then
+    if key == "f5" and IsEngine == true then
         running = not running
     elseif key == "f" and running == false then
         camera:focus(selectedObject)

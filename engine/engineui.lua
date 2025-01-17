@@ -25,6 +25,9 @@ ideTest = false
 local SidebarLabels = {}
 local propertiesLabels = {}
 
+--Textboxes
+local ObjectTextboxes = {}
+
 -- Windows
 local settingsVis = false
 local createWin = false
@@ -45,7 +48,7 @@ end)
 
 local createSceneButton = ButtonLibrary:new(500, 200, 120, 40, "Create Scene", function()
     -- Only handle scene creation logic here
-    local sceneName = "Scene " .. tostring(#sceneManager.scenes + 1)
+    local sceneName = "Scene " .. tostring(#SceneList + 1)
     
     local newScene = {
         name = sceneName,
@@ -214,6 +217,14 @@ function engineui:load()
         textScale = 1.25
     })
 
+    PositionPropText = Label:new({
+        x = love.graphics.getWidth() - 150,
+        y = 175,
+        text = "Position: ",
+        color = {1,1,1,1},
+        textScale = 1.25
+    })
+
     SizePropText = Label:new({
         x = love.graphics.getWidth() - 150,
         y = 175,
@@ -224,7 +235,10 @@ function engineui:load()
 
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
-    positionTextbox = TextBox.new(love.graphics:getWidth() - 150, 175, 125, 30, "150, 100")
+    positionTextbox = TextBox.new(love.graphics:getWidth() - 70, 175, 70, 30, "x, y")
+    objectImgTB = TextBox.new(love.graphics:getWidth() - 150, 275, 125, 30, "")
+    sizeTextbox = TextBox.new(love.graphics:getWidth() - 150, 225, 125, 30, "x, y")
+    objectGravityTB = TextBox.new(love.graphics:getWidth() - 150, 325, 125, 30, "")
 
     myWindow = window:new(100, 100, 300, 200)
     myWindow:addElement(closeButton)
@@ -261,10 +275,15 @@ function engineui:load()
         
     end)
 
+    local scaleModeButton = ButtonLibrary:new(350, 10, 30, 30, "", function()
+        scaling = not scaling
+    end, "assets/resize.png")
+
     -- Add buttons to the buttons table
     table.insert(topbarButtons, createRunButton)
     table.insert(topbarButtons, settingsButton)
     table.insert(topbarButtons, saveProjectButton)
+    table.insert(topbarButtons, scaleModeButton)
     table.insert(topbarButtons, OpenIDE)
     table.insert(SidebarLabels, SidebarTitle)
     table.insert(SidebarLabels, myLabel)
@@ -272,7 +291,11 @@ function engineui:load()
     table.insert(tabButtons, createscenesButton)
     table.insert(tabButtons, createuiButton)
     table.insert(propertiesLabels, ObjectName)
-    table.insert(propertiesLabels, SizePropText)
+    table.insert(propertiesLabels, PositionPropText)
+    table.insert(ObjectTextboxes, positionTextbox)
+    table.insert(ObjectTextboxes, objectImgTB)
+    table.insert(ObjectTextboxes, sizeTextbox)
+    table.insert(ObjectTextboxes, objectGravityTB)
 end
 
 function engineui:update(dt)
@@ -292,7 +315,9 @@ function engineui:update(dt)
     createsceneWindow:update(dt)
     projectWindow:update(dt)
 
-    positionTextbox:update(dt)
+    for _, textboxes in ipairs(ObjectTextboxes) do
+        textboxes:update(dt)
+    end
     
     projectWindow:setSize(love.graphics:getWidth(), love.graphics:getHeight())
 
@@ -337,7 +362,9 @@ function engineui:mousepressed(x, y, button, istouch, presses)
         if ideTest == false then
             group:mousepressed(x, y, button)
 
-            positionTextbox:mousepressed(x, y, button)
+            for _, textboxes in ipairs(ObjectTextboxes) do
+                textboxes:mousepressed(x, y, button)
+            end
 
             if x >= sidebarX and x <= sidebarX + sidebarWidth and y >= sidebarY and y <= sidebarY + sidebarHeight then
                 -- Click is within the sidebar, do not deselect
@@ -450,8 +477,16 @@ function engineui:draw()
             group:draw()
             group:setPosition(windowWidth - 135, 125)
 
-            positionTextbox:draw()
-            positionTextbox:setPosition(love.graphics:getWidth() - 150, 175)
+            for _, textboxes in ipairs(ObjectTextboxes) do
+                textboxes:draw()
+            end
+
+            positionTextbox:setPosition(love.graphics:getWidth() - 70, 175)
+            positionTextbox.text = selectedObject.x .. ", " .. selectedObject.y
+            objectImgTB:setPosition(love.graphics:getWidth() - 150, 275)
+            sizeTextbox:setPosition(love.graphics:getWidth() - 150, 225)
+            sizeTextbox.text = selectedObject.width .. ", " .. selectedObject.height
+            objectGravityTB:setPosition(love.graphics:getWidth() - 150, 325)
         end
     end
 
@@ -474,6 +509,7 @@ function engineui:draw()
     if projectWin == true then
         projectWindow:draw()
     end
+
     else
         ide:draw()
     end
@@ -517,7 +553,9 @@ function engineui:textinput(text)
     end
 
     if projectWin == false and ideTest == false then
-        positionTextbox:textinput(text)
+        for _, textboxes in ipairs(ObjectTextboxes) do
+            textboxes:textinput(text)
+        end
     end
 end
 

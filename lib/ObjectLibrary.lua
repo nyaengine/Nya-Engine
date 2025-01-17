@@ -30,7 +30,7 @@ function ObjectLibrary:new(x, y, width, height, imagePath)
     obj.accelerationY = 0
     obj.mass = 1
     obj.gravity = 500  -- acceleration due to gravity, adjust as needed
-
+    
     return obj
 end
 

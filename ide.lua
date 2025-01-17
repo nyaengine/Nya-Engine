@@ -3,8 +3,15 @@ local ButtonLibrary = require("lib/ButtonLibrary")
 local fileDialog = require("lib/fileDialog")
 local TextBox = require("lib/textbox")
 
+--[[
+    TODO:
+    1. Add support for shader coding
+    2. Add the fucking visual coding
+]]
+
 -- Modes: "text" or "visual"
 local mode = "text"
+local editingMode = "luascript" -- lua or shaders(currently unused)
 local syntax  -- Will hold the parsed syntax data
 
 scriptName = "unnamed_script"

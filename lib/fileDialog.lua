@@ -1,5 +1,11 @@
 local fileDialog = {}
 
+--[[
+    TODO:
+    1. Make it so this fileDialog can be used in other places than just IDE.
+    2. Make the fileDialog open image files
+]]
+
 -- Dialog state
 local isDialogOpen = false
 local currentPath = "project"  -- Set this to your starting folder

@@ -7,13 +7,15 @@ selectedObject = nil
 local running = false
 local isDragging = false
 local IsEngine = true
-local scaling = false
+scaling = false
 sceneManager = SceneManager:new()
 local camera = Camera:new(0, 0, 1)
+local dragOffsetX = 0
+local dragOffsetY = 0
 
 function engine:update(dt)
-	-- Update all objects
-	if running then
+    -- Update all objects
+    if running then
         for _, obj in ipairs(objects) do
             obj:update(dt)
         end
@@ -22,8 +24,9 @@ function engine:update(dt)
     -- Dragging logic
     if isDragging and selectedObject then
         local mouseX, mouseY = love.mouse.getPosition()
-        selectedObject.x = mouseX / camera.scale - camera.x - selectedObject.width / 2
-        selectedObject.y = mouseY / camera.scale - camera.y - selectedObject.height / 2
+        local camX, camY = mouseX / camera.scale + camera.x, mouseY / camera.scale + camera.y
+        selectedObject.x = camX - dragOffsetX
+        selectedObject.y = camY - dragOffsetY
     end
 
     sceneManager:update(dt)
@@ -54,29 +57,33 @@ function engine:update(dt)
 end
 
 function engine:mousepressed(x, y, button, istouch, presses)
-	if button == 1 then -- Left mouse button
-		if ideTest == false then
-			if x >= sidebarX and x <= sidebarX + sidebarWidth and y >= sidebarY and y <= sidebarY + sidebarHeight then
+    if button == 1 then -- Left mouse button
+        if ideTest == false then
+            if x >= sidebarX and x <= sidebarX + sidebarWidth and y >= sidebarY and y <= sidebarY + sidebarHeight then
                 -- Click is within the sidebar, do not deselect
                 return
             end
             
-        -- Check if an object is clicked
-        camX, camY = x / camera.scale + camera.x, y / camera.scale + camera.y
-        for index, obj in ipairs(objects) do
-            if obj:isClicked(camX, camY) then
-                selectedObject = obj
-                isDragging = true
-                
-                -- Update ObjectName label with the corresponding name from ObjectList
-                ObjectName:setText(ObjectList[index])
-                return
-            end
-        end
+            -- Check if an object is clicked
+            camX, camY = x / camera.scale + camera.x, y / camera.scale + camera.y
+            for index, obj in ipairs(objects) do
+                if obj:isClicked(camX, camY) then
+                    selectedObject = obj
+                    isDragging = true
 
-        -- Deselect if clicked outside any object
-        selectedObject = nil
-    	end
+                    -- Calculate the drag offset
+                    dragOffsetX = camX - selectedObject.x
+                    dragOffsetY = camY - selectedObject.y
+
+                    -- Update ObjectName label with the corresponding name from ObjectList
+                    ObjectName:setText(ObjectList[index])
+                    return
+                end
+            end
+
+            -- Deselect if clicked outside any object
+            selectedObject = nil
+        end
     end
 end
 
@@ -91,6 +98,16 @@ function engine:keypressed(key)
         running = not running
     elseif key == "f" and running == false then
         camera:focus(selectedObject)
+    elseif key == "delete" and IsEngine == true and running == false and selectedObject then
+        -- Find the index of the selected object in the objects table
+        for i, obj in ipairs(objects) do
+            if obj == selectedObject then
+                table.remove(objects, i) -- Remove the selected object
+                table.remove(ObjectList, i)
+                selectedObject = nil -- Deselect the object
+                break
+            end
+        end
     end
 end
 

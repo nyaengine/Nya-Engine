@@ -8,6 +8,7 @@ local projectName
 local disX, disY
 local disSizeX, disSizeY
 local FontDropdown
+local ThemeDropdown
 
 local scrollOffset = 0
 local scrollSpeed = 20 -- Speed of scrolling
@@ -138,6 +139,7 @@ end)
 
 function engineui:load()
     FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Comic Sans"})
+    ThemeDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Nya Mode", "Dark Mode"})
     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
     group:setOnToggle(function(checked)
         table.insert(CollisionObjects, selectedObject)
@@ -238,6 +240,7 @@ function engineui:load()
     myWindow:addElement(closeButton)
     myWindow:addElement(EngineSetText)
     myWindow:addElement(FontDropdown)
+    myWindow:addElement(ThemeDropdown)
 
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
@@ -356,6 +359,7 @@ function engineui:mousepressed(x, y, button, istouch, presses)
         if ideTest == false then
             if settingsVis == true then
                 FontDropdown:update(x, y, button)
+                ThemeDropdown:update(x, y, button)
                 closeButton:mousepressed(x, y, button)
             else
                 group:mousepressed(x, y, button)
@@ -493,6 +497,7 @@ function engineui:draw()
         closeButton:setPosition(myWindow.x, myWindow.y)
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
         FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
+        ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 150)
     end
 
     if createWin == true then

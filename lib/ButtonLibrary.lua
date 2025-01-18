@@ -60,9 +60,9 @@ function ButtonLibrary:draw()
     -- Button background
     if self.background then
         if self.isHovered then
-            love.graphics.setColor(0.8, 0.3, 0.6, self.transparencyBG) -- Hover color
+            love.graphics.setColor(UIButtonColors, self.transparencyBG) -- Hover color
         else
-            love.graphics.setColor(1, 0.4, 0.7, self.transparencyBG) -- Default color
+            love.graphics.setColor(UIButtonHoverColors, self.transparencyBG) -- Default color
         end
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
         

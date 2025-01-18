@@ -14,6 +14,7 @@ ide = require("ide")
 frame = require("lib/frame")
 CheckboxGroup = CheckboxLib.CheckboxGroup
 DropdownLibrary = require("lib/DropdownLibrary")
+Themes = require("themes")
 
 local engineUI = require("engine/engineui")
 local engine = require("engine/engine")

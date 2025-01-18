@@ -13,9 +13,6 @@ local ThemeDropdown
 local scrollOffset = 0
 local scrollSpeed = 20 -- Speed of scrolling
 
-UIClrs = {1, 0.4, 0.7}
-UIClrsTB = {1, 0.4, 0.7, 0.5}
-
 -- Buttons
 local topbarButtons = {}
 local sidebarButtons = {}
@@ -501,19 +498,19 @@ function engineui:draw()
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
         FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
         ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 150)
-        if FontDropdown.selected == "Poppins" then 
-            love.graphics.setFont(font)
+        --[[if FontDropdown.selected == "Poppins" then 
+            selectedFont = font
         elseif FontDropdown.selected == "Noto Sans" then
-            love.graphics.setFont(font2)
+            selectedFont = font2
+        elseif FontDropdown.selected == "OpenDyslexic" then
+            selectedFont = font3
         end
 
         if ThemeDropdown.selected == "Nya Mode" then
-            UIClrs = {1, 0.4, 0.7}
-            UIClrsTB = {1, 0.4, 0.7, 0.5}
+            Themes:applyTheme("Nya Mode")
         elseif ThemeDropdown.selected == "Dark Mode" then
-            UIClrs = {0.1, 0.1, 0.1}
-            UIClrsTB = {0.1, 0.1, 0.1, 0.5}
-        end
+            Themes:applyTheme("Dark Mode")
+        end]]
     end
 
     if createWin == true then

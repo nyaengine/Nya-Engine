@@ -58,7 +58,7 @@ function Label:draw()
     love.graphics.scale(self.textScale)  -- Apply the scaling factor
 
     if self.background == true then
-        love.graphics.setColor(0.8, 0.3, 0.6)
+        love.graphics.setColor(UILabelBGColor)
         love.graphics.rectangle("fill", 0, 0, self.bgx, self.bgy)
         love.graphics.setColor(1, 1, 1, 1) -- Reset to default color
     end

@@ -1,6 +1,10 @@
 -- This is the window for building the UI
 local UI = {}
 
+--[[ To-Do 
+    Fix the frame library, make all of this work
+]]
+
 -- Correctly import the Frame module
 local Frame = require("lib/frame") -- Ensure this module exists and is correct
 

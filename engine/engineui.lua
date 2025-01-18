@@ -13,6 +13,9 @@ local ThemeDropdown
 local scrollOffset = 0
 local scrollSpeed = 20 -- Speed of scrolling
 
+UIClrs = {1, 0.4, 0.7}
+UIClrsTB = {1, 0.4, 0.7, 0.5}
+
 -- Buttons
 local topbarButtons = {}
 local sidebarButtons = {}
@@ -138,7 +141,7 @@ local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", f
 end)
 
 function engineui:load()
-    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Comic Sans"})
+    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans"})
     ThemeDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Nya Mode", "Dark Mode"})
     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
     group:setOnToggle(function(checked)
@@ -410,13 +413,13 @@ end
 
 function engineui:draw()
     if ideTest == false then
-        -- Sidebar
-    love.graphics.setColor(1, 0.4, 0.7)
+    -- Sidebar
+    love.graphics.setColor(UIClrs)
     love.graphics.rectangle("fill", windowWidth - 150, 50, 150, windowHeight - 50)
     myLabel:setPosition(windowWidth - 150, 50)
 
     -- Explorer Sidebar
-    love.graphics.setColor(1, 0.4, 0.7)
+    love.graphics.setColor(UIClrs)
     love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
 
     local objectListStartY = 100 - scrollOffset -- Starting Y position for ObjectList
@@ -452,7 +455,7 @@ function engineui:draw()
     createuiButton:setPosition(125, uiTextY)
 
     -- Topbar
-    love.graphics.setColor(1, 0.4, 0.7, 0.5)
+    love.graphics.setColor(UIClrsTB)
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
     -- Draw all buttons
@@ -498,6 +501,19 @@ function engineui:draw()
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
         FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
         ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 150)
+        if FontDropdown.selected == "Poppins" then 
+            love.graphics.setFont(font)
+        elseif FontDropdown.selected == "Noto Sans" then
+            love.graphics.setFont(font2)
+        end
+
+        if ThemeDropdown.selected == "Nya Mode" then
+            UIClrs = {1, 0.4, 0.7}
+            UIClrsTB = {1, 0.4, 0.7, 0.5}
+        elseif ThemeDropdown.selected == "Dark Mode" then
+            UIClrs = {0.1, 0.1, 0.1}
+            UIClrsTB = {0.1, 0.1, 0.1, 0.5}
+        end
     end
 
     if createWin == true then

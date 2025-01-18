@@ -21,6 +21,7 @@ local engine = require("engine/engine")
 local assetsFolder = love.filesystem.createDirectory("project")
 
 font = love.graphics.newFont("assets/fonts/Poppins-Regular.ttf", 15)
+font2 = love.graphics.newFont("assets/fonts/Noto Sans/NotoSans-Regular.ttf", 15)
 
 local engineVer = "Prototype"
 local inEngine = true
@@ -69,10 +70,10 @@ function discordApplyPresence()
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
-            sidebarX = love.graphics.getWidth() - 150
-            sidebarY = 50
-            sidebarWidth = 150
-            sidebarHeight = love.graphics.getHeight() - 50
+    sidebarX = love.graphics.getWidth() - 150
+    sidebarY = 50
+    sidebarWidth = 150
+    sidebarHeight = love.graphics.getHeight() - 50
 
     engine:mousepressed(x, y, button)
     engineUI:mousepressed(x, y, button)

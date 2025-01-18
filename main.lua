@@ -21,7 +21,7 @@ local assetsFolder = love.filesystem.createDirectory("project")
 
 local font = love.graphics.newFont("assets/fonts/Poppins-Regular.ttf", 15)
 
-local engineVer = "Development"
+local engineVer = "Prototype"
 local inEngine = true
 
 local discordRPC = require 'lib/discordRPC'

@@ -278,7 +278,7 @@ function engineui:load()
     local scaleModeButton = ButtonLibrary:new(350, 10, 30, 30, "", function()
         scaling = not scaling
     end, "assets/resize.png")
-
+    
     -- Add buttons to the buttons table
     table.insert(topbarButtons, createRunButton)
     table.insert(topbarButtons, settingsButton)

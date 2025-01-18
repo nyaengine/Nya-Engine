@@ -13,6 +13,7 @@ dkjson = require("lib/dkjson")
 ide = require("ide")
 frame = require("lib/frame")
 CheckboxGroup = CheckboxLib.CheckboxGroup
+DropdownLibrary = require("lib/DropdownLibrary")
 
 local engineUI = require("engine/engineui")
 local engine = require("engine/engine")

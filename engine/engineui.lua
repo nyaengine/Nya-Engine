@@ -136,7 +136,7 @@ local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", f
 end)
 
 function engineui:load()
-     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
+    group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
     group:setOnToggle(function(checked)
         table.insert(CollisionObjects, selectedObject)
     end)

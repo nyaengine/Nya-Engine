@@ -20,7 +20,7 @@ local engine = require("engine/engine")
 
 local assetsFolder = love.filesystem.createDirectory("project")
 
-local font = love.graphics.newFont("assets/fonts/Poppins-Regular.ttf", 15)
+font = love.graphics.newFont("assets/fonts/Poppins-Regular.ttf", 15)
 
 local engineVer = "Prototype"
 local inEngine = true

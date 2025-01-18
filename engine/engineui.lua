@@ -7,6 +7,7 @@ local group
 local projectName
 local disX, disY
 local disSizeX, disSizeY
+local FontDropdown
 
 local scrollOffset = 0
 local scrollSpeed = 20 -- Speed of scrolling
@@ -136,6 +137,7 @@ local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", f
 end)
 
 function engineui:load()
+    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Comic Sans"})
     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
     group:setOnToggle(function(checked)
         table.insert(CollisionObjects, selectedObject)
@@ -201,14 +203,6 @@ function engineui:load()
         bgy = 25
     })
 
-    ComingSoon = Label:new({
-        x = 150,
-        y = 150,
-        text = "Coming Soon",
-        color = {1,0,0,1},
-        textScale = 1.25
-    })
-
     EngineSetText = Label:new({
         x = 150,
         y = 100,
@@ -240,10 +234,10 @@ function engineui:load()
     sizeTextbox = TextBox.new(love.graphics:getWidth() - 150, 225, 125, 30, "x, y")
     objectGravityTB = TextBox.new(love.graphics:getWidth() - 150, 325, 125, 30, "")
 
-    myWindow = window:new(100, 100, 300, 200)
+    myWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
     myWindow:addElement(closeButton)
-    myWindow:addElement(ComingSoon)
     myWindow:addElement(EngineSetText)
+    myWindow:addElement(FontDropdown)
 
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
@@ -360,7 +354,11 @@ end
 function engineui:mousepressed(x, y, button, istouch, presses)
     if button == 1 then -- Left mouse button
         if ideTest == false then
-            group:mousepressed(x, y, button)
+            if settingsVis == true then
+                FontDropdown:update(x, y, button)
+                closeButton:mousepressed(x, y, button)
+            else
+                group:mousepressed(x, y, button)
 
             for _, textboxes in ipairs(ObjectTextboxes) do
                 textboxes:mousepressed(x, y, button)
@@ -383,8 +381,6 @@ function engineui:mousepressed(x, y, button, istouch, presses)
                     return
                 end
             end
-
-            closeButton:mousepressed(x, y, button)
             createObjectButton:mousepressed(x, y, button)
             createuiButton:mousepressed(x, y, button)
             createSceneButton:mousepressed(x, y, button)
@@ -401,6 +397,7 @@ function engineui:mousepressed(x, y, button, istouch, presses)
 
             -- Reset the ObjectName label if no object is selected
             ObjectName:setText("ObjectName")
+            end
         else
             ide.mousepressed(x, y, button)
         end
@@ -492,6 +489,10 @@ function engineui:draw()
 
     if settingsVis == true then
         myWindow:draw()
+        myWindow:setSize(love.graphics:getWidth() - 100, love.graphics:getHeight() - 100)
+        closeButton:setPosition(myWindow.x, myWindow.y)
+        EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
+        FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
     end
 
     if createWin == true then

@@ -43,9 +43,18 @@ end)
 
 local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object", function()
     -- Only handle object creation logic here
-    local newObject = ObjectLibrary:new(150, 100, 50, 50)
+    --local newObject = ObjectLibrary:new(150, 100, 50, 50)
+    local newObject = GameObject:new({
+        x = 150,
+        y = 100,
+        width = 50,
+        height = 50,
+        name = "Object " .. tostring(#ObjectList + 1),
+        isCollidable = false,
+    })
     table.insert(objects, newObject)
-    table.insert(ObjectList, "Object " .. tostring(#objects))
+    table.insert(ObjectList, newObject.name)
+    --table.insert(ObjectList, "Object " .. tostring(#objects))
 end)
 
 local createSceneButton = ButtonLibrary:new(500, 200, 120, 40, "Create Scene", function()

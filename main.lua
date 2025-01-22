@@ -1,5 +1,4 @@
 -- Required files
-ObjectLibrary = require("lib/ObjectLibrary")
 ButtonLibrary = require("lib/ButtonLibrary")
 window = require("window")
 Camera = require("lib/Camera")
@@ -17,7 +16,7 @@ CheckboxGroup = CheckboxLib.CheckboxGroup
 DropdownLibrary = require("lib/DropdownLibrary")
 Themes = require("themes")
 SaveLoad = require("lib/save_load")
-GameObject = require("engine/GameObject") -- Prototype of the new Object system
+GameObject = require("engine/GameObject")
 UIManager = require("engine/UIManager") -- Prototype of the new UI system
 
 local engineUI = require("engine/engineui")

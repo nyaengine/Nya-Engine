@@ -20,12 +20,22 @@ function GameObject:update(dt)
 end
 
 function GameObject:draw()
-    -- To be overridden by subclasses
+    if self.texture then
+        -- Calculate scaling factors based on the desired width and height
+        local scaleX = self.width / self.texture:getWidth()
+        local scaleY = self.height / self.texture:getHeight()
+        
+        -- Draw the texture with scaling applied
+        love.graphics.draw(self.texture, self.x, self.y, 0, scaleX, scaleY)
+    else
+        love.graphics.setColor(1, 1, 1) -- white color for the square
+        love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
+    end
 end
 
-function GameObject:containsPoint(px, py)
-    return px >= self.x and px <= (self.x + self.width) and
-           py >= self.y and py <= (self.y + self.height)
+function GameObject:isClicked(x, y)
+    return x >= self.x and x <= (self.x + self.width) and
+           y >= self.y and y <= (self.y + self.height)
 end
 
 return GameObject

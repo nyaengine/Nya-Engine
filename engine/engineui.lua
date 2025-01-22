@@ -505,6 +505,7 @@ function engineui:draw()
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
         FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
         ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 150)
+        
         if FontDropdown.selected == "Poppins" then 
             selectedFont = "Poppins"
         elseif FontDropdown.selected == "Noto Sans" then

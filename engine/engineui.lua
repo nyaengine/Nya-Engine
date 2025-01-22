@@ -78,7 +78,7 @@ local createSceneButton = ButtonLibrary:new(500, 200, 120, 40, "Create Scene", f
     }
 
     sceneManager:addScene(sceneName, newScene)
-    sceneManager:switchTo(sceneName)
+    sceneManager:changeScene(sceneName)
     table.insert(SceneList, sceneName)
 end)
 

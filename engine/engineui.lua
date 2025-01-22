@@ -1,7 +1,5 @@
 local engineui = {}
 
-local UI = require("UI")
-
 --UI objects
 local group
 local projectName
@@ -420,12 +418,12 @@ end
 function engineui:draw()
     if ideTest == false then
     -- Sidebar
-    love.graphics.setColor(UIClrs)
+    love.graphics.setColor(customization.getColor("primary"))
     love.graphics.rectangle("fill", windowWidth - 150, 50, 150, windowHeight - 50)
     myLabel:setPosition(windowWidth - 150, 50)
 
     -- Explorer Sidebar
-    love.graphics.setColor(UIClrs)
+    love.graphics.setColor(customization.getColor("primary"))
     love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
 
     local objectListStartY = 100 - scrollOffset -- Starting Y position for ObjectList
@@ -461,7 +459,7 @@ function engineui:draw()
     createuiButton:setPosition(125, uiTextY)
 
     -- Topbar
-    love.graphics.setColor(UIClrsTB)
+    love.graphics.setColor(customization.getColor("topbar"))
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
     -- Draw all buttons
@@ -507,19 +505,11 @@ function engineui:draw()
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
         FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
         ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 150)
-        --[[if FontDropdown.selected == "Poppins" then 
-            selectedFont = font
+        if FontDropdown.selected == "Poppins" then 
+            selectedFont = "Poppins"
         elseif FontDropdown.selected == "Noto Sans" then
-            selectedFont = font2
-        elseif FontDropdown.selected == "OpenDyslexic" then
-            selectedFont = font3
+            selectedFont = "Noto Sans"
         end
-
-        if ThemeDropdown.selected == "Nya Mode" then
-            Themes:applyTheme("Nya Mode")
-        elseif ThemeDropdown.selected == "Dark Mode" then
-            Themes:applyTheme("Dark Mode")
-        end]]
     end
 
     if createWin == true then

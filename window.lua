@@ -9,8 +9,8 @@ function window:new(x, y, width, height, fill, line)
     self.width = width
     self.height = height
     self.elements = {} -- Table to hold child elements
-    self.fill = fill or WindowsColors
-    self.line = line or WindowsLineClr
+    self.fill = fill or customization.getColor("primary")
+    self.line = line or customization.getColor("secondary")
     return self
 end
 

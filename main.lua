@@ -3,7 +3,7 @@ ButtonLibrary = require("lib/ButtonLibrary")
 window = require("window")
 Camera = require("lib/Camera")
 Label = require("lib/label")
-SceneManager = require("engine/SceneManager") -- Prototype of the new scene system
+SceneManager = require("engine/SceneManager")
 --SceneManager = require("lib/SceneManager") -- old scene system
 AudioEngine = require("lib/AudioEngine")
 TextBox = require("lib/textbox")
@@ -14,18 +14,18 @@ ide = require("ide")
 frame = require("lib/frame")
 CheckboxGroup = CheckboxLib.CheckboxGroup
 DropdownLibrary = require("lib/DropdownLibrary")
-Themes = require("themes")
 SaveLoad = require("lib/save_load")
 GameObject = require("engine/GameObject")
-UIManager = require("engine/UIManager") -- Prototype of the new UI system
+UIManager = require("engine/UIManager")
+customization = require("customization")
 
 local engineUI = require("engine/engineui")
 local engine = require("engine/engine")
 
 local assetsFolder = love.filesystem.createDirectory("project")
 
-font = love.graphics.newFont("assets/fonts/Poppins-Regular.ttf", 15)
-font2 = love.graphics.newFont("assets/fonts/Noto Sans/NotoSans-Regular.ttf", 15)
+selectedFont = "Poppins"
+font = customization.getFont(selectedFont)
 
 local engineVer = "Prototype"
 local inEngine = true
@@ -36,6 +36,7 @@ local appId = require 'applicationId'
 -- Initialize the game
 function love.load()
     love.graphics.setFont(font)
+
     love.graphics.setDefaultFilter("nearest", "nearest")
 
     nextPresenceUpdate = 0

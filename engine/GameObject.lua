@@ -23,7 +23,6 @@ function GameObject:draw()
     -- To be overridden by subclasses
 end
 
--- Add this to your GameObject library
 function GameObject:containsPoint(px, py)
     return px >= self.x and px <= (self.x + self.width) and
            py >= self.y and py <= (self.y + self.height)

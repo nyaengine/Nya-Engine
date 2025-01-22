@@ -19,7 +19,6 @@ Themes = require("themes")
 SaveLoad = require("lib/save_load")
 GameObject = require("engine/GameObject") -- Prototype of the new Object system
 UIManager = require("engine/UIManager") -- Prototype of the new UI system
---CameraNew = require("lib/CameraNew") -- Prototype of the new camera system (currently disabled, don't know if it works yet :3)
 
 local engineUI = require("engine/engineui")
 local engine = require("engine/engine")

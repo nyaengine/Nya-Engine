@@ -88,11 +88,11 @@ function ide.draw()
     end
 
     -- files sidebar(all scripts)
-    love.graphics.setColor(UIClrs)
+    love.graphics.setColor(customization.getColor("primary"))
     love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
 
     --topbar
-    love.graphics.setColor(UIClrsTB)
+    love.graphics.setColor(customization.getColor("topbar"))
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
     --debugger

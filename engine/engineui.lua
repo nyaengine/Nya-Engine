@@ -351,7 +351,6 @@ end
 
 function openUIWindow()
     UIWin = not UIWin
-    UI:load()
 end
 
 function openIDE()

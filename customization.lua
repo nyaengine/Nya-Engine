@@ -24,6 +24,16 @@ customization.fonts = {
     ["Noto Sans"] = love.graphics.newFont("assets/fonts/Noto Sans/NotoSans-Regular.ttf", 15),
 }
 
+customization.themes = {
+    "Default" = {
+
+    },
+
+    ["Dark Mode"] = {
+        customization.colors.primary = {},
+    },
+}
+
 -- Function to get a font by name
 function customization.getFont(name)
     return customization.fonts[name] or love.graphics.getFont() -- Default to LOVE's current font if not found

@@ -35,13 +35,14 @@ local sceneWin = false
 local UIWin = false
 local projectWin = true -- set to false when testing the engine
 
+local SidebarUI = UIManager:new()
+
 local closeButton = ButtonLibrary:new(100, 100, 30, 30, "X", function()
     settingsVis = not settingsVis
 end)
 
 local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object", function()
     -- Only handle object creation logic here
-    --local newObject = ObjectLibrary:new(150, 100, 50, 50)
     local newObject = GameObject:new({
         x = 150,
         y = 100,
@@ -49,10 +50,10 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
         height = 50,
         name = "Object " .. tostring(#ObjectList + 1),
         isCollidable = false,
+        texture = nil,
     })
     table.insert(objects, newObject)
     table.insert(ObjectList, newObject.name)
-    --table.insert(ObjectList, "Object " .. tostring(#objects))
 end)
 
 local createSceneButton = ButtonLibrary:new(500, 200, 120, 40, "Create Scene", function()
@@ -241,13 +242,20 @@ function engineui:load()
     positionTextbox = TextBox.new(love.graphics:getWidth() - 70, 175, 70, 30, "x, y")
     objectImgTB = TextBox.new(love.graphics:getWidth() - 150, 275, 125, 30, "")
     sizeTextbox = TextBox.new(love.graphics:getWidth() - 150, 225, 125, 30, "x, y")
-    objectGravityTB = TextBox.new(love.graphics:getWidth() - 150, 325, 125, 30, "")
 
     myWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
     myWindow:addElement(closeButton)
     myWindow:addElement(EngineSetText)
     myWindow:addElement(FontDropdown)
     myWindow:addElement(ThemeDropdown)
+
+    SidebarUI:addElement(ObjectName)
+    SidebarUI:addElement(PositionPropText)
+    SidebarUI:addElement(group)
+    SidebarUI:addElement(positionTextbox)
+    SidebarUI:addElement(objectImgTB)
+    SidebarUI:addElement(sizeTextbox)
+    SidebarUI:addElement(SizePropText)
 
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
@@ -424,6 +432,7 @@ function engineui:draw()
     -- Sidebar
     love.graphics.setColor(customization.getColor("primary"))
     love.graphics.rectangle("fill", windowWidth - 150, 50, 150, windowHeight - 50)
+    myLabel:draw()
     myLabel:setPosition(windowWidth - 150, 50)
 
     -- Explorer Sidebar
@@ -482,23 +491,17 @@ function engineui:draw()
 
     for _, v in ipairs(objects) do
         if selectedObject == v then
+            SidebarUI:draw()
             for _, lbl in ipairs(propertiesLabels) do
-                lbl:draw()
                 lbl:setPosition(windowWidth - 150, lbl.y)
             end
-            group:draw()
             group:setPosition(windowWidth - 135, 125)
-
-            for _, textboxes in ipairs(ObjectTextboxes) do
-                textboxes:draw()
-            end
 
             positionTextbox:setPosition(love.graphics:getWidth() - 70, 175)
             positionTextbox.text = selectedObject.x .. ", " .. selectedObject.y
             objectImgTB:setPosition(love.graphics:getWidth() - 150, 275)
             sizeTextbox:setPosition(love.graphics:getWidth() - 150, 225)
             sizeTextbox.text = selectedObject.width .. ", " .. selectedObject.height
-            objectGravityTB:setPosition(love.graphics:getWidth() - 150, 325)
         end
     end
 

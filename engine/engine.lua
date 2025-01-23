@@ -22,11 +22,22 @@ function engine:update(dt)
     end
 
     -- Dragging logic
-    if isDragging and selectedObject then
+    if isDragging and selectedObject and not scaling then
         local mouseX, mouseY = love.mouse.getPosition()
         local camX, camY = mouseX / camera.scale + camera.x, mouseY / camera.scale + camera.y
         selectedObject.x = camX - dragOffsetX
         selectedObject.y = camY - dragOffsetY
+    elseif isDragging and selectedObject and scaling then
+        local mouseX, mouseY = love.mouse.getPosition()
+        local camX, camY = mouseX / camera.scale + camera.x, mouseY / camera.scale + camera.y
+
+        -- Calculate new width and height based on mouse position
+        local newWidth = camX - selectedObject.x
+        local newHeight = camY - selectedObject.y
+
+        -- Make sure the width and height are non-negative
+        selectedObject.width = math.max(newWidth, 1)
+        selectedObject.height = math.max(newHeight, 1)
     end
 
     sceneManager:update(dt)

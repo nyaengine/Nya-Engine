@@ -391,9 +391,14 @@ function engineui:mousepressed(x, y, button, istouch, presses)
                     return
                 end
             end
+
+            if createWin == true then
             createObjectButton:mousepressed(x, y, button)
+            end
             createuiButton:mousepressed(x, y, button)
+            if sceneWin == true then
             createSceneButton:mousepressed(x, y, button)
+            end
             ProjectName:mousepressed(x, y, button)
             createProjectButton:mousepressed(x, y, button)
             openProjectButton:mousepressed(x, y, button)

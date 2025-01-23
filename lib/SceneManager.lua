@@ -31,7 +31,7 @@ function SceneManager:removeScene(name)
 end
 
 -- Switch to a specific scene
-function SceneManager:switchTo(name)
+function SceneManager:changeScene(name)
     if self.scenes[name] then
         if self.currentScene and self.currentScene.exit then
             self.currentScene:exit()

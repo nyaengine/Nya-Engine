@@ -25,12 +25,8 @@ customization.fonts = {
 }
 
 customization.themes = {
-    "Default" = {
+    default = {
 
-    },
-
-    ["Dark Mode"] = {
-        customization.colors.primary = {},
     },
 }
 

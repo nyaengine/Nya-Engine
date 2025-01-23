@@ -76,3 +76,5 @@ function Frame:update(dt)
         end
     end
 end
+
+return Frame

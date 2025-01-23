@@ -231,7 +231,7 @@ function engineui:load()
 
     SizePropText = Label:new({
         x = love.graphics.getWidth() - 150,
-        y = 175,
+        y = 225,
         text = "Size: ",
         color = {1,1,1,1},
         textScale = 1.25
@@ -241,7 +241,7 @@ function engineui:load()
 
     positionTextbox = TextBox.new(love.graphics:getWidth() - 70, 175, 70, 30, "x, y")
     objectImgTB = TextBox.new(love.graphics:getWidth() - 150, 275, 125, 30, "")
-    sizeTextbox = TextBox.new(love.graphics:getWidth() - 150, 225, 125, 30, "x, y")
+    sizeTextbox = TextBox.new(love.graphics:getWidth() - 150, 225, 100, 30, "x, y")
 
     myWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
     myWindow:addElement(closeButton)
@@ -304,6 +304,7 @@ function engineui:load()
     table.insert(tabButtons, createuiButton)
     table.insert(propertiesLabels, ObjectName)
     table.insert(propertiesLabels, PositionPropText)
+    table.insert(propertiesLabels, SizePropText)
     table.insert(ObjectTextboxes, positionTextbox)
     table.insert(ObjectTextboxes, objectImgTB)
     table.insert(ObjectTextboxes, sizeTextbox)
@@ -496,11 +497,10 @@ function engineui:draw()
                 lbl:setPosition(windowWidth - 150, lbl.y)
             end
             group:setPosition(windowWidth - 135, 125)
-
             positionTextbox:setPosition(love.graphics:getWidth() - 70, 175)
             positionTextbox.text = selectedObject.x .. ", " .. selectedObject.y
             objectImgTB:setPosition(love.graphics:getWidth() - 150, 275)
-            sizeTextbox:setPosition(love.graphics:getWidth() - 150, 225)
+            sizeTextbox:setPosition(love.graphics:getWidth() - 100, 225)
             sizeTextbox.text = selectedObject.width .. ", " .. selectedObject.height
         end
     end

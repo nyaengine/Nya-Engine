@@ -17,6 +17,7 @@ SaveLoad = require("lib/save_load")
 GameObject = require("engine/GameObject")
 UIManager = require("engine/UIManager")
 customization = require("customization")
+love3d = require("lib/3d_library")
 
 local engineUI = require("engine/engineui")
 local engine = require("engine/engine")

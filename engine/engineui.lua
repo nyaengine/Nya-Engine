@@ -17,6 +17,7 @@ local sidebarButtons = {}
 local tabButtons = {}
 ObjectList = {}
 SceneList = {}
+AudioList = {}
 
 --UI Visibility
 ideTest = false
@@ -91,6 +92,10 @@ end)
 
 local createButton = ButtonLibrary:new(125, 70, 30, 30, "+", function()
         openCreateWindow()
+end)
+
+local createAudioButton = ButtonLibrary:new(125, 300, 30, 30, "+", function()
+
 end)
 
 local createProjectButton = ButtonLibrary:new(0, 150, 125, 30, "Create Project", function()
@@ -184,6 +189,17 @@ function engineui:load()
         x = 0,
         y = 150,
         text = "Scenes",
+        color = {1,1,1,1},
+        textScale = 1.25,
+        background = true,
+        bgx = 120,
+        bgy = 25
+    })
+
+    AudiosText = Label:new({
+        x = 0,
+        y = 150,
+        text = "Audios",
         color = {1,1,1,1},
         textScale = 1.25,
         background = true,
@@ -302,6 +318,7 @@ function engineui:load()
     table.insert(tabButtons, createButton)
     table.insert(tabButtons, createscenesButton)
     table.insert(tabButtons, createuiButton)
+    table.insert(tabButtons, createAudioButton)
     table.insert(propertiesLabels, ObjectName)
     table.insert(propertiesLabels, PositionPropText)
     table.insert(propertiesLabels, SizePropText)
@@ -471,6 +488,11 @@ function engineui:draw()
     UISText:setPosition(0, uiTextY)
     UISText:draw()
     createuiButton:setPosition(125, uiTextY)
+
+    local AudioTextY = sceneListStartY + #SceneList * 20 + 45 -- Add some padding
+    AudiosText:setPosition(0, AudioTextY)
+    AudiosText:draw()
+    createAudioButton:setPosition(125, AudioTextY)
 
     -- Topbar
     love.graphics.setColor(customization.getColor("topbar"))

@@ -30,5 +30,8 @@
     ],
     "customLibraries": [
         "game","ButtonLibrary", "ObjectLibrary", "checkbox", "slider", "textbox", "SceneManager", "Camera", "json", "label", "Raycast", "mobilecontrols", "frame"
+    ],
+    "GLSL": [
+        
     ]
 }

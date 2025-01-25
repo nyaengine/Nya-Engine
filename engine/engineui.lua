@@ -253,6 +253,14 @@ function engineui:load()
         textScale = 1.25
     })
 
+    TextureFileText = Label:new({
+        x = love.graphics.getWidth() - 150,
+        y = 275,
+        text = "Texture: ",
+        color = {1,1,1,1},
+        textScale = 1.25
+    })
+
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
     positionTextbox = TextBox.new(love.graphics:getWidth() - 70, 175, 70, 30, "x, y")
@@ -272,6 +280,7 @@ function engineui:load()
     SidebarUI:addElement(objectImgTB)
     SidebarUI:addElement(sizeTextbox)
     SidebarUI:addElement(SizePropText)
+    SidebarUI:addElement(TextureFileText)
 
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
@@ -326,6 +335,7 @@ function engineui:load()
     table.insert(ObjectTextboxes, objectImgTB)
     table.insert(ObjectTextboxes, sizeTextbox)
     table.insert(ObjectTextboxes, objectGravityTB)
+    table.insert(propertiesLabels, TextureFileText)
 end
 
 function engineui:update(dt)
@@ -389,6 +399,19 @@ end
 function engineui:mousepressed(x, y, button, istouch, presses)
     if button == 1 then -- Left mouse button
         if ideTest == false then
+
+            -- Handle clicks on ObjectList labels
+            local objectListStartY = 100 - scrollOffset
+            for i, objName in ipairs(ObjectList) do
+                local labelX, labelY = 10, objectListStartY + (i - 1) * 20
+                local labelWidth, labelHeight = 120, 20 -- Adjust based on font size
+                if x >= labelX and x <= labelX + labelWidth and y >= labelY and y <= labelY + labelHeight then
+                    selectedObject = objects[i]
+                    ObjectName:setText(objName)
+                    return
+                end
+            end
+
             if settingsVis == true then
                 FontDropdown:update(x, y, button)
                 ThemeDropdown:update(x, y, button)
@@ -460,15 +483,24 @@ function engineui:draw()
     local objectListStartY = 100 - scrollOffset -- Starting Y position for ObjectList
 
     -- Objects Label
-    ObjectsText:setPosition(0, objectListStartY - 25)
+    ObjectsText:setPosition(0, objectListStartY - 30)
     ObjectsText:draw()
-    createButton:setPosition(125, objectListStartY - 25)
+    createButton:setPosition(125, objectListStartY - 30)
     SidebarTitle:setPosition(0, objectListStartY - 50)
 
     -- Draw ObjectList items
     for i, objName in ipairs(ObjectList) do
-        love.graphics.setColor(1, 1, 1, 1) -- White text
-        love.graphics.print(objName, 10, objectListStartY + (i - 1) * 20)
+        local labelX, labelY = 10, objectListStartY + (i - 1) * 20
+        local labelWidth, labelHeight = 120, 20 -- Adjust based on font size
+
+        -- Highlight selected label
+        if objects[i] == selectedObject then
+            love.graphics.setColor(0.8, 0.8, 0.8, 1) -- Light gray background for selection
+            love.graphics.rectangle("fill", labelX, labelY, labelWidth, labelHeight)
+        end
+
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.print(objName, labelX, labelY)
     end
 
     -- Adjust ScenesText position dynamically based on ObjectList size
@@ -478,7 +510,7 @@ function engineui:draw()
     ScenesText:draw()
 
     -- Draw SceneList items
-    local sceneListStartY = scenesTextY + 25 -- Start rendering SceneList just below ScenesText
+    local sceneListStartY = scenesTextY + 30 -- Start rendering SceneList just below ScenesText
     for i, sceneName in ipairs(SceneList) do
         love.graphics.setColor(1, 1, 1, 1) -- White text
         love.graphics.print(sceneName, 10, sceneListStartY + (i - 1) * 20)
@@ -521,7 +553,7 @@ function engineui:draw()
             group:setPosition(windowWidth - 135, 125)
             positionTextbox:setPosition(love.graphics:getWidth() - 70, 175)
             positionTextbox.text = selectedObject.x .. ", " .. selectedObject.y
-            objectImgTB:setPosition(love.graphics:getWidth() - 150, 275)
+            objectImgTB:setPosition(love.graphics:getWidth() - 70, 275)
             sizeTextbox:setPosition(love.graphics:getWidth() - 100, 225)
             sizeTextbox.text = selectedObject.width .. ", " .. selectedObject.height
         end

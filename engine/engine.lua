@@ -147,6 +147,7 @@ function engine:draw()
     	camera:reset()
 
     	sceneManager:draw()
+
     end
 end
 

@@ -734,7 +734,7 @@ function saveIDECode(code)
     if scriptName == "" then
         scriptName = "unnamed_script" -- Default name if empty
     end
-    local filePath = scriptsFolder .. "/" .. scriptName .. ".lua"
+    local filePath = scriptsFolder .. "/" .. scriptName
 
     -- Write the code to the file
     local success, message = love.filesystem.write(filePath, code)

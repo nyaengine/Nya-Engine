@@ -32,6 +32,7 @@ local inEngine = true
 
 local discordRPC = require 'lib/discordRPC'
 local appId = require 'applicationId'
+local Steam = require 'luasteam'
 
 -- Initialize the game
 function love.load()
@@ -42,6 +43,7 @@ function love.load()
     nextPresenceUpdate = 0
     
     discordRPC.initialize(appId, true)
+    Steam.init()
 
     engineUI:load()
 end
@@ -110,4 +112,5 @@ end
 
 function love.quit()
     discordRPC.shutdown()
+    Steam.shutdown()
 end

@@ -14,7 +14,7 @@ local mode = "text"
 local editingMode = "luascript" -- lua or shaders(currently unused)
 local syntax  -- Will hold the parsed syntax data
 
-scriptName = "unnamed_script"
+scriptName = "unnamed_script.lua"
 
 scriptNameInput = {
     x = 0,

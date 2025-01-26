@@ -50,28 +50,32 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
         y = 100,
         width = 50,
         height = 50,
+        icon = nil,
         name = "Object " .. tostring(#ObjectList + 1),
         isCollidable = false,
         texture = nil,
+        character = false,
     })
     table.insert(objects, newObject)
     table.insert(ObjectList, newObject.name)
 end)
 
-local createCharacterObjectButton = ButtonLibrary:new(500, 200, 120, 40, "Create Character Object", function()
+local createCharacterObjectButton = ButtonLibrary:new(500, 200, 250, 40, "Create Character Object", function()
     -- Only handle object creation logic here
     local newObject = GameObject:new({
         x = 150,
         y = 100,
         width = 50,
         height = 50,
-        name = "Character Object " .. tostring(#CharacterObjList + 1),
+        icon = nil,
+        name = "Char Object " .. tostring(#CharacterObjList + 1),
         isCollidable = false,
         texture = nil,
         character = true,
     })
     table.insert(objects, newObject)
-    table.insert(CharacterObjList, newObject.name)
+    table.insert(ObjectList, newObject.name)
+    table.insert(CharacterObjList, newObject)
 end)
 
 local createSceneButton = ButtonLibrary:new(500, 200, 120, 40, "Create Scene", function()
@@ -150,7 +154,8 @@ local saveProjectButton = ButtonLibrary:new(200, 10, 120, 30, "Save", function()
         -- Prepare project data
         local projectData = {
             objects = {},
-            scenes = SceneList
+            scenes = SceneList,
+            CharacterObjList = {}
         }
 
         -- Capture object data
@@ -196,12 +201,16 @@ local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", f
                 -- Clear existing objects
                 objects = {}
                 ObjectList = {}
+                CharacterObjList = {}
 
                 -- Load objects from the project data
                 for _, obj in ipairs(projectData.objects or {}) do
                     local newObject = GameObject:new(obj)
                     table.insert(objects, newObject)
                     table.insert(ObjectList, newObject.name)
+                    if obj.character == true then
+                        table.insert(CharacterObjList, newObject)
+                    end
                 end
 
                 -- Load scenes
@@ -330,14 +339,6 @@ function engineui:load()
         textScale = 1.25
     })
 
-    ObjectNameText = Label:new({
-        x = love.graphics.getWidth() - 150,
-        y = 275,
-        text = "Name: ",
-        color = {1,1,1,1},
-        textScale = 1.25
-    })
-
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
     positionTextbox = TextBox.new(love.graphics:getWidth() - 70, 175, 70, 30, "x, y")
@@ -359,7 +360,6 @@ function engineui:load()
     SidebarUI:addElement(sizeTextbox)
     SidebarUI:addElement(SizePropText)
     SidebarUI:addElement(TextureFileText)
-    SidebarUI:addElement(ObjectNameText)
 
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
@@ -407,7 +407,6 @@ function engineui:load()
     table.insert(propertiesLabels, ObjectName)
     table.insert(propertiesLabels, PositionPropText)
     table.insert(propertiesLabels, SizePropText)
-    table.insert(propertiesLabels, ObjectNameText)
     table.insert(ObjectTextboxes, positionTextbox)
     table.insert(ObjectTextboxes, objectImgTB)
     table.insert(ObjectTextboxes, sizeTextbox)
@@ -440,6 +439,7 @@ function engineui:update(dt)
 
     closeButton:update(mouseX, mouseY)
     createObjectButton:update(mouseX, mouseY)
+    createCharacterObjectButton:update(mouseX, mouseY)
     createSceneButton:update(mouseX, mouseY)
     createuiButton:update(mouseX, mouseY)
     createProjectButton:update(mouseX, mouseY)
@@ -520,6 +520,7 @@ function engineui:mousepressed(x, y, button, istouch, presses)
 
             if createWin == true then
             createObjectButton:mousepressed(x, y, button)
+            createCharacterObjectButton:mousepressed(x, y, button)
             end
             createuiButton:mousepressed(x, y, button)
             if sceneWin == true then

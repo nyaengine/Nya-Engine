@@ -34,6 +34,8 @@ local discordRPC = require 'lib/discordRPC'
 local appId = require 'applicationId'
 local Steam = require 'luasteam'
 
+local appId
+
 -- Initialize the game
 function love.load()
     love.graphics.setFont(font)
@@ -43,7 +45,7 @@ function love.load()
     nextPresenceUpdate = 0
     
     discordRPC.initialize(appId, true)
-    Steam.init()
+    Steam.init(appId)
 
     engineUI:load()
 end

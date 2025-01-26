@@ -1,5 +1,3 @@
--- Self-contained 3D library for LÖVE2D with Walls and Mesh Support
-
 local love3d = {}
 
 -- Helper function to create a perspective projection matrix
@@ -14,7 +12,7 @@ function love3d.perspective(fov, aspect, near, far)
 end
 
 -- Multiply a matrix by a vector
-function multiplyMatrixVector(matrix, vector)
+local function multiplyMatrixVector(matrix, vector)
     local result = {}
     for i = 1, 4 do
         result[i] = 0
@@ -60,7 +58,38 @@ function love3d.drawTriangle(p1, p2, p3, viewMatrix, projectionMatrix, screenWid
     love.graphics.polygon("fill", x1, y1, x2, y2, x3, y3)
 end
 
--- Draw a mesh from vertices and faces
+function love3d.loadMesh(filePath)
+    local mesh = { vertices = {}, faces = {} }
+    for line in love.filesystem.lines(filePath) do
+        local prefix, rest = line:match("^(%S+)%s+(.*)")
+        if prefix == "v" then
+            local x, y, z = rest:match("(%S+)%s+(%S+)%s+(%S+)")
+            table.insert(mesh.vertices, { x = tonumber(x), y = tonumber(y), z = tonumber(z) })
+        elseif prefix == "f" then
+            local indices = {}
+            for index in rest:gmatch("%d+") do
+                table.insert(indices, tonumber(index))
+            end
+            -- Validate indices
+            local isValid = true
+            for _, index in ipairs(indices) do
+                if not mesh.vertices[index] then
+                    isValid = false
+                    break
+                end
+            end
+            -- Triangulate and add valid faces
+            if isValid and #indices >= 3 then
+                for i = 2, #indices - 1 do
+                    table.insert(mesh.faces, { indices[1], indices[i], indices[i + 1] })
+                end
+            end
+        end
+    end
+    return mesh
+end
+
+-- Draw a mesh
 function love3d.drawMesh(mesh, viewMatrix, projectionMatrix, screenWidth, screenHeight)
     for _, face in ipairs(mesh.faces) do
         local p1 = mesh.vertices[face[1]]
@@ -68,45 +97,6 @@ function love3d.drawMesh(mesh, viewMatrix, projectionMatrix, screenWidth, screen
         local p3 = mesh.vertices[face[3]]
         love3d.drawTriangle(p1, p2, p3, viewMatrix, projectionMatrix, screenWidth, screenHeight)
     end
-end
-
--- Draw a cube (including walls)
-function love3d.drawCube(cube, viewMatrix, projectionMatrix, screenWidth, screenHeight)
-    -- Draw edges
-    for _, edge in ipairs(cube.edges) do
-        local p1 = cube.vertices[edge[1]]
-        local p2 = cube.vertices[edge[2]]
-        love3d.drawLine(p1, p2, viewMatrix, projectionMatrix, screenWidth, screenHeight)
-    end
-
-    -- Draw faces (walls)
-    for _, face in ipairs(cube.faces) do
-        local p1 = cube.vertices[face[1]]
-        local p2 = cube.vertices[face[2]]
-        local p3 = cube.vertices[face[3]]
-        local p4 = cube.vertices[face[4]]
-
-        love3d.drawTriangle(p1, p2, p3, viewMatrix, projectionMatrix, screenWidth, screenHeight)
-        love3d.drawTriangle(p1, p3, p4, viewMatrix, projectionMatrix, screenWidth, screenHeight)
-    end
-end
-
--- Load a mesh from a file (supports simple OBJ format)
-function love3d.loadMesh(filePath)
-    local mesh = { vertices = {}, faces = {} }
-
-    for line in love.filesystem.lines(filePath) do
-        local prefix, rest = line:match("^(%w)%s+(.*)")
-        if prefix == "v" then
-            local x, y, z = rest:match("([%-%.%d]+)%s+([%-%.%d]+)%s+([%-%.%d]+)")
-            table.insert(mesh.vertices, { x = tonumber(x), y = tonumber(y), z = tonumber(z) })
-        elseif prefix == "f" then
-            local v1, v2, v3 = rest:match("(%d+)%s+(%d+)%s+(%d+)")
-            table.insert(mesh.faces, { tonumber(v1), tonumber(v2), tonumber(v3) })
-        end
-    end
-
-    return mesh
 end
 
 return love3d

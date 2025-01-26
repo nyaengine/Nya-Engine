@@ -16,6 +16,7 @@ local topbarButtons = {}
 local sidebarButtons = {}
 local tabButtons = {}
 ObjectList = {}
+CharacterObjList = {}
 SceneList = {}
 AudioList = {}
 
@@ -55,6 +56,22 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
     })
     table.insert(objects, newObject)
     table.insert(ObjectList, newObject.name)
+end)
+
+local createCharacterObjectButton = ButtonLibrary:new(500, 200, 120, 40, "Create Character Object", function()
+    -- Only handle object creation logic here
+    local newObject = GameObject:new({
+        x = 150,
+        y = 100,
+        width = 50,
+        height = 50,
+        name = "Character Object " .. tostring(#CharacterObjList + 1),
+        isCollidable = false,
+        texture = nil,
+        character = true,
+    })
+    table.insert(objects, newObject)
+    table.insert(CharacterObjList, newObject.name)
 end)
 
 local createSceneButton = ButtonLibrary:new(500, 200, 120, 40, "Create Scene", function()
@@ -125,6 +142,46 @@ local createProjectButton = ButtonLibrary:new(0, 150, 125, 30, "Create Project",
     end
 end)
 
+local saveProjectButton = ButtonLibrary:new(200, 10, 120, 30, "Save", function()
+    if projectName and projectName ~= "" then
+        local projectPath = "project/" .. projectName
+        local projectFile = projectPath .. "/project.json"
+
+        -- Prepare project data
+        local projectData = {
+            objects = {},
+            scenes = SceneList
+        }
+
+        -- Capture object data
+        for _, obj in ipairs(objects) do
+            table.insert(projectData.objects, {
+                x = obj.x,
+                y = obj.y,
+                width = obj.width,
+                height = obj.height,
+                name = obj.name,
+                isCollidable = obj.isCollidable,
+                texture = obj.texture,
+                character = obj.character
+            })
+        end
+
+        -- Encode project data to JSON
+        local projectJSON = dkjson.encode(projectData, { indent = true })
+
+        -- Write the JSON to the file
+        local success, message = love.filesystem.write(projectFile, projectJSON)
+        if success then
+            print("Project saved successfully!")
+        else
+            print("Failed to save project: " .. message)
+        end
+    else
+        print("Project name is empty. Save failed.")
+    end
+end)
+
 local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", function()
     projectName = ProjectName.text
     if projectName and projectName ~= "" then
@@ -136,8 +193,20 @@ local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", f
             local projectData, _, err = dkjson.decode(projectJSON)
 
             if projectData then
-                objects = projectData.objects or {}
+                -- Clear existing objects
+                objects = {}
+                ObjectList = {}
+
+                -- Load objects from the project data
+                for _, obj in ipairs(projectData.objects or {}) do
+                    local newObject = GameObject:new(obj)
+                    table.insert(objects, newObject)
+                    table.insert(ObjectList, newObject.name)
+                end
+
+                -- Load scenes
                 SceneList = projectData.scenes or {}
+
                 projectWin = false
             else
                 print("Failed to load project data:", err)
@@ -261,11 +330,20 @@ function engineui:load()
         textScale = 1.25
     })
 
+    ObjectNameText = Label:new({
+        x = love.graphics.getWidth() - 150,
+        y = 275,
+        text = "Name: ",
+        color = {1,1,1,1},
+        textScale = 1.25
+    })
+
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
     positionTextbox = TextBox.new(love.graphics:getWidth() - 70, 175, 70, 30, "x, y")
     objectImgTB = TextBox.new(love.graphics:getWidth() - 150, 275, 125, 30, "")
     sizeTextbox = TextBox.new(love.graphics:getWidth() - 150, 225, 100, 30, "x, y")
+    ObjectNameTextbox = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "ObjectName")
 
     myWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
     myWindow:addElement(closeButton)
@@ -281,9 +359,11 @@ function engineui:load()
     SidebarUI:addElement(sizeTextbox)
     SidebarUI:addElement(SizePropText)
     SidebarUI:addElement(TextureFileText)
+    SidebarUI:addElement(ObjectNameText)
 
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
+    createWindow:addElement(createCharacterObjectButton)
 
     createsceneWindow = window:new(500, 100, 300, 300)
     createsceneWindow:addElement(createSceneButton)
@@ -308,10 +388,6 @@ function engineui:load()
         openIDE()
     end)
 
-    local saveProjectButton = ButtonLibrary:new(200, 10, 120, 30, "Save", function()
-        
-    end)
-
     local scaleModeButton = ButtonLibrary:new(350, 10, 30, 30, "", function()
         scaling = not scaling
     end, "assets/resize.png")
@@ -331,6 +407,7 @@ function engineui:load()
     table.insert(propertiesLabels, ObjectName)
     table.insert(propertiesLabels, PositionPropText)
     table.insert(propertiesLabels, SizePropText)
+    table.insert(propertiesLabels, ObjectNameText)
     table.insert(ObjectTextboxes, positionTextbox)
     table.insert(ObjectTextboxes, objectImgTB)
     table.insert(ObjectTextboxes, sizeTextbox)

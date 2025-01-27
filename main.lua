@@ -28,7 +28,7 @@ selectedFont = "Poppins"
 font = customization.getFont(selectedFont)
 
 local engineVer = "Prototype"
-local inEngine = true
+inEngine = true
 
 local discordRPC = require 'lib/discordRPC'
 local appId = require 'applicationId'

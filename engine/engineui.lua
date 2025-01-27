@@ -547,7 +547,7 @@ function engineui:mousepressed(x, y, button, istouch, presses)
 end
 
 function engineui:draw()
-    if ideTest == false then
+    if ideTest == false and inEngine == true then
     -- Sidebar
     love.graphics.setColor(customization.getColor("primary"))
     love.graphics.rectangle("fill", windowWidth - 150, 50, 150, windowHeight - 50)
@@ -668,7 +668,7 @@ function engineui:draw()
         projectWindow:draw()
     end
 
-    else
+    elseif ideTest == true and inEngine then
         ide:draw()
     end
 end

@@ -526,9 +526,12 @@ function engineui:mousepressed(x, y, button, istouch, presses)
             if sceneWin == true then
             createSceneButton:mousepressed(x, y, button)
             end
+
+            if projectWin == true then
             ProjectName:mousepressed(x, y, button)
             createProjectButton:mousepressed(x, y, button)
             openProjectButton:mousepressed(x, y, button)
+        end
 
             for index, obj in ipairs(objects) do
             if obj:isClicked(camX, camY) then

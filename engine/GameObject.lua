@@ -38,4 +38,41 @@ function GameObject:isClicked(x, y)
            y >= self.y and y <= (self.y + self.height)
 end
 
+function GameObject:checkCollision(other)
+    return self.x < other.x + other.width and
+           other.x < self.x + self.width and
+           self.y < other.y + other.height and
+           other.y < self.y + self.height
+end
+
+-- Handle collision response to prevent movement overlap
+function GameObject:resolveCollision(other)
+    if self:checkCollision(other) then
+        self.isColliding = true
+
+        -- Calculate overlap on each axis
+        local overlapX = math.min(self.x + self.width - other.x, other.x + other.width - self.x)
+        local overlapY = math.min(self.y + self.height - other.y, other.y + other.height - self.y)
+
+        -- Resolve the smallest overlap to separate the objects
+        if overlapX < overlapY then
+            -- Push left or right
+            if self.x < other.x then
+                self.x = self.x - overlapX
+            else
+                self.x = self.x + overlapX
+            end
+        else
+            -- Push up or down
+            if self.y < other.y then
+                self.y = self.y - overlapY
+            else
+                self.y = self.y + overlapY
+            end
+        end
+    else
+        self.isColliding = false
+    end
+end
+
 return GameObject

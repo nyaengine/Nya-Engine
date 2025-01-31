@@ -30,8 +30,8 @@ font = customization.getFont(selectedFont)
 local engineVer = "Prototype"
 inEngine = true
 
-local discordRPC = require 'lib/discordRPC'
-local appId = require 'applicationId'
+--local discordRPC = require 'lib/discordRPC' --temporary removed due to there being no Linux support
+--local appId = require 'applicationId'
 local Steam = require 'luasteam'
 
 local appId
@@ -42,9 +42,9 @@ function love.load()
 
     love.graphics.setDefaultFilter("nearest", "nearest")
 
-    nextPresenceUpdate = 0
+    --nextPresenceUpdate = 0
     
-    discordRPC.initialize(appId, true)
+    --discordRPC.initialize(appId, true)
     Steam.init(appId)
 
     engineUI:load()
@@ -52,12 +52,12 @@ end
 
 -- Update the game
 function love.update(dt)
-    if nextPresenceUpdate < love.timer.getTime() then
+    --[[if nextPresenceUpdate < love.timer.getTime() then
         discordRPC.updatePresence(discordApplyPresence())
         nextPresenceUpdate = love.timer.getTime() + 2.0
     end
 
-    discordRPC.runCallbacks()
+    discordRPC.runCallbacks()]]
 
     engine:update(dt)
     engineUI:update(dt)
@@ -113,6 +113,6 @@ function love.wheelmoved(x, y)
 end
 
 function love.quit()
-    discordRPC.shutdown()
+    --discordRPC.shutdown()
     Steam.shutdown()
 end

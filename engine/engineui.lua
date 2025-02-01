@@ -1,5 +1,8 @@
 local engineui = {}
 
+--engine ui only libraries
+local something = require("lib/something")
+
 --UI objects
 local group
 local projectName
@@ -368,6 +371,8 @@ function engineui:load()
         color = {1,1,1,1},
         textScale = 1.25
     })
+
+    pajac = 
 
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 

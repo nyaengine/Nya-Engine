@@ -1,7 +1,6 @@
 local ide = {}
-local ButtonLibrary = require("lib/ButtonLibrary")
 local fileDialog = require("lib/fileDialog")
-local TextBox = require("lib/textbox")
+local nodes = require("engine/nodes")
 
 --[[
     TODO:
@@ -35,6 +34,8 @@ local cursorVisible = true
 local cursorBlinkTime = 0 -- Time for cursor blinking
 local cursorBlinkInterval = 0.5 -- 0.5 seconds for blinking
 
+local nodewinvis = false
+
 -- Undo/Redo stacks
 local undoStack = {}
 local redoStack = {}
@@ -48,7 +49,11 @@ local openCodeButton = ButtonLibrary:new(290, 10, 100, 30, "Open", function()
 end)
 
 local toggleModeButton = ButtonLibrary:new(10, 10, 100, 30, "Toggle Mode", function()
-    print("currently doing nothing")
+    if mode == "text" then
+        mode = "visual"
+    else
+        mode = "text"
+    end
 end)
 
 local closeIDEButton = ButtonLibrary:new(love.graphics:getWidth() - 50, 10, 30, 30, "X", function()
@@ -62,6 +67,7 @@ local syntaxColors = {
     operator = {0.8, 0.8, 0}, -- Yellow for operators
     lovefunctions = {1, 0.5, 0.5},
     customlibs = {0.5,1,1},
+    glsl = {0.337, 0.714, 0.761},
     default = {1, 1, 1}       -- White for normal text
 }
 
@@ -76,6 +82,8 @@ function ide.load()
     else
         print("Failed to load syntax.json!")
     end
+
+    chooseNodeWin = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
 end
 
 -- Draw function to render the respective mode
@@ -85,6 +93,8 @@ function ide.draw()
 
     if mode == "text" then
         ide.drawTextMode()
+    else 
+        ide.drawVisualMode()
     end
 
     -- files sidebar(all scripts)
@@ -107,6 +117,10 @@ function ide.draw()
 
     fileDialog.draw()
     scriptNameTextBox:draw()
+
+    if nodewinvis then
+            chooseNodeWin:draw()
+    end
 end
 
 -- Update function
@@ -119,11 +133,19 @@ function ide.update(dt)
    scriptNameTextBox:update(dt) -- Update the textbox
    closeIDEButton:update(mouseX, mouseY)
 
+   if nodewinvis then
+            chooseNodeWin:update(dt)
+    end
+
    cursorBlinkTime = cursorBlinkTime + dt
     if cursorBlinkTime >= cursorBlinkInterval then
         cursorVisible = not cursorVisible
         cursorBlinkTime = 0
     end
+end
+
+function ide.createNode()
+
 end
 
 -- Handle mouse pressed events
@@ -135,6 +157,15 @@ function ide.mousepressed(x, y, button)
     closeIDEButton:mousepressed(x,y,button)
 
     scriptNameTextBox:mousepressed(x, y, button)
+    if button == 2 then
+        if mode == "visual" then
+
+        end
+    end
+end
+
+function ide.drawVisualMode()
+
 end
 
 -- Text mode rendering with syntax highlighting
@@ -197,6 +228,8 @@ function ide.getSyntaxColor(token)
         return syntaxColors.lovefunctions
     elseif syntax and table.contains(syntax.customLibraries, token) then
         return syntaxColors.customlibs
+    elseif syntax and table.contains(syntax.GLSL, token) then
+        return syntaxColors.glsl
     else
         return syntaxColors.default
     end

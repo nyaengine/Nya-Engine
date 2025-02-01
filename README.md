@@ -97,6 +97,8 @@ We welcome contributions from the community! Here's how you can get involved:
 
 You can also contribute to our [documentation](https://github.com/nyaengine/Documentation)
 
+or our [to-do list](https://app.milanote.com/1TDU7N11sJQy5t?p=MhTE3dKrqnb)
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

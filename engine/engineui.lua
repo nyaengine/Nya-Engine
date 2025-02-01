@@ -770,7 +770,14 @@ function loadAndRunScripts()
                 end
             end
         elseif filename:match("%.glsl$") then
-            print("glsl isn't supported YET")
+            local filePath = scriptsFolder .. "/" .. filename
+            local scriptContent = love.filesystem.read(filePath)
+            if scriptContent then
+                local chunk, err = load(scriptContent, filename, "t", _G)
+                love.graphics.newShader(scriptContent)
+            else
+                print("Error loading shaders " .. filename .. ":" .. err)
+            end
         end
     end
 end

@@ -30,12 +30,31 @@ local selectedText = ""  -- Hold the selected text
 local cursorVisible = true
 local cursorBlinkTime = 0 -- Time for cursor blinking
 local cursorBlinkInterval = 0.5 -- 0.5 seconds for blinking
+local consoleOutput = {}
+local originalPrint = print
+local debuggerScrollY = 0  -- Tracks how much the debugger is scrolled
+local debuggerMaxScroll = 0  -- Tracks the maximum scrollable height
+local debuggerVisibleHeight = 115  -- Height of the visible debugger area
+local debuggerLineHeight = 15  -- Height of each line of text
 
 local nodewinvis = false
 
 -- Undo/Redo stacks
 local undoStack = {}
 local redoStack = {}
+
+-- Override the print function
+print = function(...)
+    local message = ""
+    for i = 1, select("#", ...) do
+        message = message .. tostring(select(i, ...)) .. "\t"
+    end
+    table.insert(consoleOutput, message)
+    originalPrint(...)  -- Call the original print function
+
+    -- Update the maximum scrollable height
+    debuggerMaxScroll = math.max(0, #consoleOutput * debuggerLineHeight - debuggerVisibleHeight)
+end
 
 local saveCodeButton = ButtonLibrary:new(150, 10, 100, 30, "Save", function()
     saveIDECode(textEditorContent)
@@ -83,7 +102,6 @@ function ide.load()
     chooseNodeWin = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
 end
 
--- Draw function to render the respective mode
 function ide.draw()
     local windowWidth = love.graphics.getWidth()
     local windowHeight = love.graphics.getHeight()
@@ -94,18 +112,41 @@ function ide.draw()
         ide.drawVisualMode()
     end
 
-    -- files sidebar(all scripts)
+    -- Files sidebar (all scripts)
     love.graphics.setColor(customization.getColor("primary"))
     love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
 
-    --topbar
+    -- Topbar
     love.graphics.setColor(customization.getColor("topbar"))
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
-    --debugger
-    love.graphics.setColor(0.25,0.25,0.25)
-    love.graphics.rectangle("fill", 0, windowHeight - 125, windowWidth, 125)
+    -- Debugger
+    love.graphics.setColor(0.25, 0.25, 0.25)
+    love.graphics.rectangle("fill", 0, windowHeight - debuggerVisibleHeight, windowWidth, debuggerVisibleHeight)
 
+    -- Draw console output in the debugger section
+    love.graphics.setColor(1, 1, 1)
+    local debuggerX, debuggerY = 10, windowHeight - debuggerVisibleHeight + 10 - debuggerScrollY
+    for i, message in ipairs(consoleOutput) do
+        love.graphics.print(message, debuggerX, debuggerY)
+        debuggerY = debuggerY + debuggerLineHeight
+        if debuggerY > windowHeight - 10 then
+            break  -- Stop drawing if we run out of space
+        end
+    end
+
+    -- Draw scrollbar
+    if debuggerMaxScroll > 0 then
+        local scrollbarWidth = 5
+        local scrollbarHeight = debuggerVisibleHeight * (debuggerVisibleHeight / (#consoleOutput * debuggerLineHeight))
+        local scrollbarX = windowWidth - scrollbarWidth - 5
+        local scrollbarY = windowHeight - debuggerVisibleHeight + (debuggerScrollY / debuggerMaxScroll) * (debuggerVisibleHeight - scrollbarHeight)
+
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.rectangle("fill", scrollbarX, scrollbarY, scrollbarWidth, scrollbarHeight)
+    end
+
+    -- Draw buttons and other UI elements
     saveCodeButton:draw()
     toggleModeButton:draw()
     openCodeButton:draw()
@@ -116,7 +157,7 @@ function ide.draw()
     scriptNameTextBox:draw()
 
     if nodewinvis then
-            chooseNodeWin:draw()
+        chooseNodeWin:draw()
     end
 end
 
@@ -199,6 +240,23 @@ function ide.drawHighlightedLine(line, x, y)
         love.graphics.print(token, cursor, y)
         cursor = cursor + love.graphics.getFont():getWidth(token .. " ")
     end
+end
+
+function ide.wheelmoved(x, y)
+    if y ~= 0 then
+        -- Update the scroll position based on the mouse wheel movement
+        debuggerScrollY = debuggerScrollY - y * debuggerLineHeight  -- Adjust scroll speed
+
+        -- Clamp the scroll position to prevent scrolling too far
+        debuggerMaxScroll = math.max(0, #consoleOutput * debuggerLineHeight - debuggerVisibleHeight)
+        debuggerScrollY = math.max(0, math.min(debuggerScrollY, debuggerMaxScroll))
+    end
+end
+
+function ide.clearConsole()
+    consoleOutput = {}
+    debuggerScrollY = 0
+    debuggerMaxScroll = 0
 end
 
 function toggleComment(content)

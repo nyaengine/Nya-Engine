@@ -26,7 +26,27 @@ customization.fonts = {
 
 customization.themes = {
     default = {
-        
+        background = {0.3, 0.3, 0.3}, -- Dark grey
+        text = {1, 1, 1},            -- White
+        primary = {1, 0.4, 0.7},
+        topbar = {1, 0.4, 0.7, 0.5},
+        secondary = {0.8, 0.3, 0.6},
+        textbox = {1, 1, 1},      
+        success = {0.4, 0.8, 0.4},   -- Green
+        warning = {0.9, 0.7, 0.2},   -- Yellow
+        error = {0.9, 0.2, 0.2},     -- Bright red
+    },
+
+    ["Dark Mode"] = {
+        background = {0.3, 0.3, 0.3}, -- Dark grey
+        text = {1, 1, 1},            -- White
+        primary = {0.5,0.5,0.5},
+        topbar = {1, 0.4, 0.7, 0.5},
+        secondary = {0.8, 0.3, 0.6},
+        textbox = {1, 1, 1},      
+        success = {0.4, 0.8, 0.4},   -- Green
+        warning = {0.9, 0.7, 0.2},   -- Yellow
+        error = {0.9, 0.2, 0.2},     -- Bright red
     },
 }
 

@@ -111,6 +111,7 @@ end
 
 function love.wheelmoved(x, y)
     engineUI:wheelmoved(x,y)
+    ide.wheelmoved(x, y)
 end
 
 function love.quit()

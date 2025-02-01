@@ -380,6 +380,14 @@ function engineui:load()
         bgClr = customization.getColor("primary")
     })
 
+    wtf = something:new({
+        x = love.graphics:getWidth() - 50, 
+        y = 0,
+        width = 50,
+        height = love.graphics:getHeight() - 50, 
+        bgClr = customization.getColor("primary")
+    })
+
     versionText = Label:new({
         x = 0,
         y = 0,
@@ -424,6 +432,7 @@ function engineui:load()
     projectWindow:addElement(openProjectButton)
     projectWindow:addElement(pajac)
     projectWindow:addElement(versionText)
+    projectWindow:addElement(wtf)
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 30, "Run", function()
         running = not running
@@ -584,7 +593,7 @@ function engineui:mousepressed(x, y, button, istouch, presses)
             ProjectName:mousepressed(x, y, button)
             createProjectButton:mousepressed(x, y, button)
             openProjectButton:mousepressed(x, y, button)
-        end
+            end
 
             for index, obj in ipairs(objects) do
             if obj:isClicked(camX, camY) then
@@ -832,7 +841,7 @@ function updateUIText(language)
     ScenesText:setText(localizationData.scenes)
     UISText:setText(localizationData.ui)
     AudiosText:setText(localizationData.audios)
-    SizePropText:setText(localizationData.size)
+    EngineSetText:setText(localizationData.enginesettings)
 end
 
 function engineui:wheelmoved(x, y)

@@ -11,6 +11,7 @@ CheckboxLib = require("lib/checkbox")
 dkjson = require("lib/dkjson")
 ide = require("ide")
 frame = require("lib/frame")
+fileDialog = require("lib/fileDialog")
 CheckboxGroup = CheckboxLib.CheckboxGroup
 DropdownLibrary = require("lib/DropdownLibrary")
 SaveLoad = require("lib/save_load")

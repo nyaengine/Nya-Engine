@@ -1,6 +1,8 @@
 local something = {}
 something.__index = something
 
+--this is a useless library that i use to write cool rectangles ¯\_(ツ)_/¯
+
 function something:new(smth)
 		smth = smth or {}
 		setmetatable(smth, self)
@@ -26,6 +28,15 @@ end
 function something:setSize(width, height)
 		self.width = width 
 		self.height = height
+end
+
+function something:setPosition(x, y)
+	self.x = x 
+	self.y = y
+end
+
+function setBGColor(color)
+	self.bgClr = color
 end
 
 return something

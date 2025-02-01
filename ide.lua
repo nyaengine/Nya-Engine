@@ -1,16 +1,13 @@
 local ide = {}
-local fileDialog = require("lib/fileDialog")
 local nodes = require("engine/nodes")
 
 --[[
     TODO:
-    1. Add support for shader coding
     2. Add the fucking visual coding
 ]]
 
 -- Modes: "text" or "visual"
 local mode = "text"
-local editingMode = "luascript" -- lua or shaders(currently unused)
 local syntax  -- Will hold the parsed syntax data
 
 scriptName = "unnamed_script.lua"
@@ -159,7 +156,7 @@ function ide.mousepressed(x, y, button)
     scriptNameTextBox:mousepressed(x, y, button)
     if button == 2 then
         if mode == "visual" then
-
+                nodewinvis = true
         end
     end
 end

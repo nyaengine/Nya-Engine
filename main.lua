@@ -103,6 +103,10 @@ end
 function love.keypressed(key)
     engine:keypressed(key)
     engineUI:keypressed(key)
+
+    if key == "escape" then
+        love.event.quit()
+    end
 end
 
 function love.wheelmoved(x, y)

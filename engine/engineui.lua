@@ -380,6 +380,14 @@ function engineui:load()
         bgClr = customization.getColor("primary")
     })
 
+    versionText = Label:new({
+        x = 0,
+        y = 0,
+        text = "Ver: " .. engineVer,
+        color = {1,1,1,1},
+        textScale = 1.25
+    })
+
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
     positionTextbox = TextBox.new(love.graphics:getWidth() - 70, 175, 70, 30, "x, y")
@@ -415,6 +423,7 @@ function engineui:load()
     projectWindow:addElement(createProjectButton)
     projectWindow:addElement(openProjectButton)
     projectWindow:addElement(pajac)
+    projectWindow:addElement(versionText)
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 30, "Run", function()
         running = not running
@@ -722,6 +731,7 @@ function engineui:draw()
     end
 
     if projectWin == true then
+        projectWindow.fill = customization.getColor("background")
         projectWindow:draw()
     end
 
@@ -750,6 +760,8 @@ function loadAndRunScripts()
                     print("Error loading script " .. filename .. ": " .. err)
                 end
             end
+        elseif filename:match("%.glsl$") then
+            print("glsl isn't supported YET")
         end
     end
 end

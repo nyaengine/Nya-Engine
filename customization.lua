@@ -2,7 +2,7 @@ local customization = {}
 
 -- Define colors as a table of named color presets
 customization.colors = {
-    background = {0.1, 0.1, 0.1}, -- Dark grey
+    background = {0.3, 0.3, 0.3}, -- Dark grey
     text = {1, 1, 1},            -- White
     primary = {1, 0.4, 0.7},
     topbar = {1, 0.4, 0.7, 0.5},

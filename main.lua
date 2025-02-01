@@ -27,7 +27,7 @@ local assetsFolder = love.filesystem.createDirectory("project")
 selectedFont = "Poppins"
 font = customization.getFont(selectedFont)
 
-local engineVer = "Prototype"
+engineVer = "Prototype"
 inEngine = true
 
 --local discordRPC = require 'lib/discordRPC' --temporary removed due to there being no Linux support

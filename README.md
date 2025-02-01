@@ -93,7 +93,9 @@ We welcome contributions from the community! Here's how you can get involved:
    git checkout -b feature/AmazingFeature
    ```
 2. **Commit your changes** and submit a pull request.
-3. Join our [Discord server](ttps://discord.gg/SnAnC4x7VT) to discuss features, report bugs, and meet the community.
+3. Join our [Discord server](https://discord.gg/SnAnC4x7VT) to discuss features, report bugs, and meet the community.
+
+You can also contribute to our [documentation](https://github.com/nyaengine/Documentation)
 
 ## License
 

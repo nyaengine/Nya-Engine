@@ -114,6 +114,12 @@ function love.wheelmoved(x, y)
     ide.wheelmoved(x, y)
 end
 
+function love.resize(w, h)
+    if engineUI then
+        engineUI:resize(w, h)
+    end
+end
+
 function love.quit()
     --discordRPC.shutdown()
 end

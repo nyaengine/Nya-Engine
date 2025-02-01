@@ -527,6 +527,22 @@ function openUIWindow()
     UIWin = not UIWin
 end
 
+function engineui:resize(w, h)
+    -- Update the dimensions and positions of the something objects
+    pajac:setSize(w, 100)  -- pajac should span the entire width of the screen
+    wtf:setSize(50, h - 50)  -- wtf should span the height of the screen minus 50 pixels
+    wtf:setPosition(w - 50, 0)  -- wtf should be positioned at the right edge of the screen
+
+    -- Update other UI elements as needed
+    projectWindow:setSize(w, h)
+    myWindow:setSize(w - 100, h - 100)
+    closeButton:setPosition(myWindow.x, myWindow.y)
+    EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
+    FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
+    ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 150)
+    LangDropdown:setPosition(myWindow.x + 20, myWindow.y + 250)
+end
+
 function openIDE()
     if projectWin == false then
         ide.load()

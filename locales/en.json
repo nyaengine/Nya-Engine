@@ -1,0 +1,12 @@
+{
+    "settings": "Settings",
+    "createObject": "Create Object",
+    "createCharacterObject": "Create Character Object",
+    "createScene": "Create Scene",
+    "explorer": "Explorer",
+    "properties": "Properties",
+    "objects": "Objects",
+    "scenes": "Scenes",
+    "ui": "UI",
+    "audios": "Audios"
+}

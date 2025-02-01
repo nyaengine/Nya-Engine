@@ -39,6 +39,10 @@ function ButtonLibrary:SetTransparency(val)
     self.transparencyBG = val
 end
 
+function ButtonLibrary:setText(text)
+    self.label = text
+end
+
 function ButtonLibrary:IsVisibleBG(vis)
     self.background = vis
 end

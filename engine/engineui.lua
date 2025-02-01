@@ -11,6 +11,24 @@ local ThemeDropdown
 local scrollOffset = 0
 local scrollSpeed = 20 -- Speed of scrolling
 
+function loadLocalization(language)
+    local filePath = "locales/" .. language .. ".json"
+    local fileContent = love.filesystem.read(filePath)
+    if fileContent then
+        local success, data = pcall(dkjson.decode, fileContent)
+        if success then
+            return data
+        else
+            error("Failed to parse JSON: " .. data)
+        end
+    else
+        error("Failed to load localization file: " .. filePath)
+    end
+end
+
+local currentLanguage = "en" -- Default language
+local localizationData = loadLocalization(currentLanguage)
+
 -- Buttons
 local topbarButtons = {}
 local sidebarButtons = {}
@@ -230,8 +248,19 @@ end)
 
 function engineui:load()
     FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans"})
-    LangDropdown = DropdownLibrary:new(50, 50, 100, 25, {"English, Polish"})
+    LangDropdown = DropdownLibrary:new(50, 50, 100, 25, {"English", "Polish"})
     ThemeDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Nya Mode", "Dark Mode"})
+
+    -- Add callback for language dropdown
+    LangDropdown.onSelect = function(selectedLanguage)
+        if selectedLanguage == "English" then
+            currentLanguage = "en"
+        elseif selectedLanguage == "Polish" then
+            currentLanguage = "pl"
+        end
+        updateUIText(currentLanguage)
+    end
+    
     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
     group:setOnToggle(function(checked)
         table.insert(CollisionObjects, selectedObject)
@@ -352,6 +381,7 @@ function engineui:load()
     myWindow:addElement(EngineSetText)
     myWindow:addElement(FontDropdown)
     myWindow:addElement(ThemeDropdown)
+    myWindow:addElement(LangDropdown)
 
     SidebarUI:addElement(ObjectName)
     SidebarUI:addElement(PositionPropText)
@@ -492,6 +522,7 @@ function engineui:mousepressed(x, y, button, istouch, presses)
 
             if settingsVis == true then
                 FontDropdown:update(x, y, button)
+                LangDropdown:update(x, y, button)
                 ThemeDropdown:update(x, y, button)
                 closeButton:mousepressed(x, y, button)
             else
@@ -648,12 +679,22 @@ function engineui:draw()
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
         FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
         ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 150)
+        LangDropdown:setPosition(myWindow.x + 20, myWindow.y + 250)
         
         if FontDropdown.selected == "Poppins" then 
             selectedFont = "Poppins"
         elseif FontDropdown.selected == "Noto Sans" then
             selectedFont = "Noto Sans"
         end
+
+        -- Update language when dropdown selection changes
+    if LangDropdown.selected == "English" and currentLanguage ~= "en" then
+        currentLanguage = "en"
+        updateUIText(currentLanguage)
+    elseif LangDropdown.selected == "Polish" and currentLanguage ~= "pl" then
+        currentLanguage = "pl"
+        updateUIText(currentLanguage)
+    end
     end
 
     if createWin == true then
@@ -749,6 +790,24 @@ function saveIDECode(code)
     else
         print("Failed to save code: " .. message)
     end
+end
+
+function updateUIText(language)
+    currentLanguage = language
+    localizationData = loadLocalization(language)
+
+    -- Update button texts
+    createObjectButton:setText(localizationData.createObject)
+    createCharacterObjectButton:setText(localizationData.createCharacterObject)
+    createSceneButton:setText(localizationData.createScene)
+
+    -- Update label texts
+    SidebarTitle:setText(localizationData.explorer)
+    myLabel:setText(localizationData.properties)
+    ObjectsText:setText(localizationData.objects)
+    ScenesText:setText(localizationData.scenes)
+    UISText:setText(localizationData.ui)
+    AudiosText:setText(localizationData.audios)
 end
 
 function engineui:wheelmoved(x, y)

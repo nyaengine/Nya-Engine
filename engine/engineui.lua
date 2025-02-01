@@ -230,6 +230,7 @@ end)
 
 function engineui:load()
     FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans"})
+    LangDropdown = DropdownLibrary:new(50, 50, 100, 25, {"English, Polish"})
     ThemeDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Nya Mode", "Dark Mode"})
     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
     group:setOnToggle(function(checked)

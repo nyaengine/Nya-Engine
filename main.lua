@@ -37,7 +37,7 @@ inEngine = true
 function love.load()
     love.graphics.setFont(font)
 
-    love.graphics.setDefaultFilter("nearest", "nearest")
+    love.graphics.setDefaultFilter("linear", "linear")
 
     --nextPresenceUpdate = 0
     

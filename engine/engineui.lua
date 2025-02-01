@@ -808,6 +808,7 @@ function updateUIText(language)
     ScenesText:setText(localizationData.scenes)
     UISText:setText(localizationData.ui)
     AudiosText:setText(localizationData.audios)
+    SizePropText:setText(localizationData.size)
 end
 
 function engineui:wheelmoved(x, y)

@@ -372,7 +372,13 @@ function engineui:load()
         textScale = 1.25
     })
 
-    pajac = 
+    pajac = something:new({
+        x = 0,
+        y = 0,
+        width = love.graphics:getWidth(),
+        height = 100,
+        bgClr = customization.getColor("primary")
+    })
 
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
@@ -408,6 +414,7 @@ function engineui:load()
     projectWindow:addElement(ProjectName)
     projectWindow:addElement(createProjectButton)
     projectWindow:addElement(openProjectButton)
+    projectWindow:addElement(pajac)
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 30, "Run", function()
         running = not running

@@ -21,4 +21,9 @@ function something:draw()
 		love.graphics.setColor(1, 1, 1, 1)
 end
 
+function something:setSize(width, height)
+		self.width = width 
+		self.height = height
+end
+
 return something

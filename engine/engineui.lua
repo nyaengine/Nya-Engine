@@ -381,9 +381,9 @@ function engineui:load()
     })
 
     wtf = something:new({
-        x = love.graphics:getWidth() - 50, 
-        y = 0,
-        width = 50,
+        x = love.graphics:getWidth() - 200, 
+        y = 100,
+        width = 200,
         height = love.graphics:getHeight() - 50, 
         bgClr = customization.getColor("primary")
     })
@@ -530,8 +530,8 @@ end
 function engineui:resize(w, h)
     -- Update the dimensions and positions of the something objects
     pajac:setSize(w, 100)  -- pajac should span the entire width of the screen
-    wtf:setSize(50, h - 50)  -- wtf should span the height of the screen minus 50 pixels
-    wtf:setPosition(w - 50, 0)  -- wtf should be positioned at the right edge of the screen
+    wtf:setSize(200, h - 100)  -- wtf should span the height of the screen minus 50 pixels
+    wtf:setPosition(w - 200, 100)  -- wtf should be positioned at the right edge of the screen
 
     -- Update other UI elements as needed
     projectWindow:setSize(w, h)

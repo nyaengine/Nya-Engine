@@ -1,12 +1,10 @@
 local engine = {}
 
 --Game objects
-objects = {}
 CollisionObjects = {}
 selectedObject = nil
 running = false
 local isDragging = false
-local IsEngine = true
 scaling = false
 sceneManager = SceneManager:new()
 local camera = Camera:new(0, 0, 1)
@@ -105,11 +103,11 @@ function engine:mousereleased(x, y, button, istouch, presses)
 end
 
 function engine:keypressed(key)
-    if key == "f5" and IsEngine == true then
+    if key == "f5" and InEngine then
         running = not running
     elseif key == "f" and running == false then
         camera:focus(selectedObject)
-    elseif key == "delete" and IsEngine == true and running == false and selectedObject then
+    elseif key == "delete" and InEngine and running == false and selectedObject then
         -- Find the index of the selected object in the objects table
         for i, obj in ipairs(objects) do
             if obj == selectedObject then
@@ -123,31 +121,37 @@ function engine:keypressed(key)
 end
 
 function engine:draw()
-	if ideTest == false then
-		love.graphics.setBackgroundColor(0.3, 0.3, 0.3)
-		windowWidth = love.graphics.getWidth()
-    	windowHeight = love.graphics.getHeight()
+    if ideTest == false then
+        if InEngine then
+            love.graphics.setBackgroundColor(0.3, 0.3, 0.3)
+            windowWidth = love.graphics.getWidth()
+            windowHeight = love.graphics.getHeight()
 
-    	-- Apply camera
-    	camera:apply()
+            -- Apply camera
+            camera:apply()
 
-    	-- Draw all objects
-    	for _, obj in ipairs(objects) do
-        	obj:draw()
-    	end
+            -- Draw all objects
+            for _, obj in ipairs(objects) do
+                obj:draw()
+            end
 
-    	-- Highlight the selected object
-    	if selectedObject then
-        	love.graphics.setColor(1, 0, 0, 0.5)
-        	love.graphics.rectangle("line", selectedObject.x, selectedObject.y, selectedObject.width, selectedObject.height)
-        	love.graphics.setColor(1, 1, 1, 1) -- Reset color
-    	end
+            -- Highlight the selected object
+            if selectedObject then
+                love.graphics.setColor(1, 0, 0, 0.5)
+                love.graphics.rectangle("line", selectedObject.x, selectedObject.y, selectedObject.width, selectedObject.height)
+                love.graphics.setColor(1, 1, 1, 1) -- Reset color
+            end
 
-    	-- Reset camera
-    	camera:reset()
+            -- Reset camera
+            camera:reset()
 
-    	sceneManager:draw()
-
+            sceneManager:draw()
+        else
+            -- Draw game objects when not in engine
+            for _, obj in ipairs(objects) do
+                obj:draw()
+            end
+        end
     end
 end
 

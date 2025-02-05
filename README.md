@@ -112,7 +112,6 @@ You can contact us through any of the following ways:
 - **BlueSky**: [@NyaEngine](https://nyaengine.bsky.social)
 - **Discord**: [Join our Discord community](https://discord.gg/SnAnC4x7VT)
 
-
 ## Support
 If you find this engine useful and would like to support its development, consider making a donation. Your contributions help cover development costs and improve the engine. Here’s how you can support:
 

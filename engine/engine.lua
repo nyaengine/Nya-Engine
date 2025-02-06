@@ -1,7 +1,6 @@
 local engine = {}
 
 --Game objects
-CollisionObjects = {}
 selectedObject = nil
 running = false
 local isDragging = false

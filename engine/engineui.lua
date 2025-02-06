@@ -263,6 +263,10 @@ function engineui:load()
         end
         updateUIText(currentLanguage)
     end
+
+    if not InEngine then
+        projectWin = false
+    end
     
     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
     group:setOnToggle(function(checked)
@@ -402,6 +406,7 @@ function engineui:load()
     objectImgTB = TextBox.new(love.graphics:getWidth() - 150, 275, 125, 30, "")
     sizeTextbox = TextBox.new(love.graphics:getWidth() - 150, 225, 100, 30, "x, y")
     ObjectNameTextbox = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "ObjectName")
+    objectGravityTB = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "50")
 
     myWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
     myWindow:addElement(closeButton)
@@ -418,6 +423,7 @@ function engineui:load()
     SidebarUI:addElement(sizeTextbox)
     SidebarUI:addElement(SizePropText)
     SidebarUI:addElement(TextureFileText)
+    SidebarUI:addElement(objectGravityTB)
 
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
@@ -715,6 +721,8 @@ function engineui:draw()
             objectImgTB:setPosition(love.graphics:getWidth() - 70, 275)
             sizeTextbox:setPosition(love.graphics:getWidth() - 100, 225)
             sizeTextbox.text = selectedObject.width .. ", " .. selectedObject.height
+            objectGravityTB:setPosition(love.graphics:getWidth() - 150, objectGravityTB.y)
+            v.gravity = objectGravityTB.text
         end
     end
 

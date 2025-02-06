@@ -23,6 +23,7 @@ love3d = require("lib/3d_library")
 local assetsFolder = love.filesystem.createDirectory("project")
 
 objects = {}
+collisionObjects = {}
 selectedFont = "Poppins"
 font = customization.getFont(selectedFont)
 
@@ -102,7 +103,9 @@ end
 
 -- Handle mouse release
 function love.mousereleased(x, y, button, istouch, presses)
+    if InEngine then
     engine:mousereleased(x, y, button)
+end
 end
 
 function love.draw()
@@ -127,9 +130,9 @@ end
 -- Key press to reset the game
 function love.keypressed(key)
     if InEngine then
-    engine:keypressed(key)
-    engineUI:keypressed(key)
-end
+        engine:keypressed(key)
+        engineUI:keypressed(key)
+    end
 
     if key == "escape" then
         love.event.quit()

@@ -765,6 +765,14 @@ function engineui:draw()
             selectedFont = "RobotoMono"
         end
 
+        if ThemeDropdown.selected == "Nya Mode" and selectedTheme ~= "default" then 
+            selectedTheme = "default"
+            preferences.setTheme(selectedTheme)
+        elseif ThemeDropdown.selected == "Dark Mode" and selectedTheme ~= "dark_mode" then
+            selectedTheme = "dark_mode"
+            preferences.setTheme(selectedTheme)
+        end
+
         -- Update language when dropdown selection changes
     if LangDropdown.selected == "English" and currentLanguage ~= "en" then
         currentLanguage = "en"

@@ -12,25 +12,31 @@ function loadJsonFile(filePath)
     return dkjson.decode(content)
 end
 
--- Load the theme and fonts JSON files
-local themeData, err = loadJsonFile("preferences/" .. selectedTheme .. ".json")
-if not themeData then
-    error("Error loading theme: " .. err)
+-- Function to load a theme
+function loadTheme(themeName)
+    local themeData, err = loadJsonFile("preferences/" .. themeName .. ".json")
+    if not themeData then
+        error("Error loading theme: " .. err)
+    end
+
+    -- Update preferences with the new theme data
+    preferences.button = themeData.button
+    preferences.label = themeData.label
+    preferences.topbar = themeData.topbar
+    preferences.textbox = themeData.textbox
+    preferences.windows = themeData.windows
+    preferences.general = themeData.general
+    preferences.dropdown = themeData.dropdown
 end
 
+-- Load the initial theme
+loadTheme(selectedTheme)  -- Default theme
+
+-- Load the fonts JSON file
 local fontsData, err = loadJsonFile("preferences/fonts.json")
 if not fontsData then
     error("Error loading fonts: " .. err)
 end
-
--- Define colors and settings from theme
-preferences.button = themeData.button
-preferences.label = themeData.label
-preferences.topbar = themeData.topbar
-preferences.textbox = themeData.textbox
-preferences.windows = themeData.windows
-preferences.general = themeData.general
-preferences.dropdown = themeData.dropdown
 
 -- Define fonts from fonts JSON
 preferences.fonts = {}
@@ -50,6 +56,11 @@ end
 -- Function to get a font by name
 function preferences.getFont(name)
     return preferences.fonts[name] or love.graphics.getFont()  -- Default to LOVE's current font if not found
+end
+
+-- Function to change the theme dynamically
+function preferences.setTheme(themeName)
+    loadTheme(themeName)
 end
 
 return preferences

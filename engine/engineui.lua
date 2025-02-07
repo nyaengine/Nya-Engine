@@ -403,6 +403,15 @@ function engineui:load()
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
     positionTextbox = TextBox.new(love.graphics:getWidth() - 70, 175, 70, 30, "x, y")
+    positionTextbox:setCallback(function(text)
+        if selectedObject then
+            local x, y = text:match("(%d+),%s*(%d+)")
+            if x and y then
+                selectedObject.x = tonumber(x)
+                selectedObject.y = tonumber(y)
+            end
+        end
+    end)
     objectImgTB = TextBox.new(love.graphics:getWidth() - 150, 275, 125, 30, "")
     sizeTextbox = TextBox.new(love.graphics:getWidth() - 150, 225, 100, 30, "x, y")
     ObjectNameTextbox = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "ObjectName")
@@ -717,7 +726,9 @@ function engineui:draw()
             end
             group:setPosition(windowWidth - 135, 125)
             positionTextbox:setPosition(love.graphics:getWidth() - 70, 175)
-            positionTextbox.placeholder= selectedObject.x .. ", " .. selectedObject.y
+            if not positionTextbox.focused then
+                positionTextbox.text = selectedObject.x .. ", " .. selectedObject.y
+            end
             objectImgTB:setPosition(love.graphics:getWidth() - 70, 275)
             sizeTextbox:setPosition(love.graphics:getWidth() - 100, 225)
             sizeTextbox.placeholder = selectedObject.width .. ", " .. selectedObject.height

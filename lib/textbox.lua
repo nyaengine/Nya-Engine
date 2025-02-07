@@ -25,6 +25,10 @@ function TextBox:setPosition(x, y)
     self.y = y
 end
 
+function TextBox:setCallback(callback)
+    self.callback = callback
+end
+
 function TextBox:update(dt)
     if self.focused then
         -- Handle text input
@@ -63,6 +67,9 @@ end
 function TextBox:textinput(text)
     if self.focused then
         self:textInputHandler(text)  -- Pass `self` to the handler
+        if self.callback then
+            self.callback(self.text)
+        end
     end
 end
 

@@ -22,6 +22,7 @@ end
 customization.fonts = {
     Poppins = love.graphics.newFont("assets/fonts/Poppins-Regular.ttf", 15),
     ["Noto Sans"] = love.graphics.newFont("assets/fonts/Noto Sans/NotoSans-Regular.ttf", 15),
+    "RobotoMono" = love.graphics.newFont("assets/fonts/Roboto/RobotoMono-Regular.ttf", 15)
 }
 
 customization.themes = {

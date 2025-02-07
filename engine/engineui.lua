@@ -250,7 +250,7 @@ local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", f
 end)
 
 function engineui:load()
-    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans"})
+    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono"})
     LangDropdown = DropdownLibrary:new(50, 50, 100, 25, {"English", "Polish"})
     ThemeDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Nya Mode", "Dark Mode"})
 
@@ -717,10 +717,10 @@ function engineui:draw()
             end
             group:setPosition(windowWidth - 135, 125)
             positionTextbox:setPosition(love.graphics:getWidth() - 70, 175)
-            positionTextbox.text = selectedObject.x .. ", " .. selectedObject.y
+            positionTextbox.placeholder= selectedObject.x .. ", " .. selectedObject.y
             objectImgTB:setPosition(love.graphics:getWidth() - 70, 275)
             sizeTextbox:setPosition(love.graphics:getWidth() - 100, 225)
-            sizeTextbox.text = selectedObject.width .. ", " .. selectedObject.height
+            sizeTextbox.placeholder = selectedObject.width .. ", " .. selectedObject.height
             objectGravityTB:setPosition(love.graphics:getWidth() - 150, objectGravityTB.y)
             v.gravity = objectGravityTB.text
         end
@@ -739,6 +739,8 @@ function engineui:draw()
             selectedFont = "Poppins"
         elseif FontDropdown.selected == "Noto Sans" then
             selectedFont = "Noto Sans"
+        elseif FontDropdown.selected == "RobotoMono" then
+            selectedFont = "RobotoMono"
         end
 
         -- Update language when dropdown selection changes

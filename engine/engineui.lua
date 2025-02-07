@@ -414,6 +414,15 @@ function engineui:load()
     end)
     objectImgTB = TextBox.new(love.graphics:getWidth() - 150, 275, 125, 30, "")
     sizeTextbox = TextBox.new(love.graphics:getWidth() - 150, 225, 100, 30, "x, y")
+    sizeTextbox:setCallback(function(text)
+        if selectedObject then
+            local width, height = text:match("(%d+),%s*(%d+)")
+            if width and height then
+                selectedObject.width = tonumber(width)
+                selectedObject.height = tonumber(height)
+            end
+        end
+    end)
     ObjectNameTextbox = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "ObjectName")
     objectGravityTB = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "50")
 
@@ -731,7 +740,9 @@ function engineui:draw()
             end
             objectImgTB:setPosition(love.graphics:getWidth() - 70, 275)
             sizeTextbox:setPosition(love.graphics:getWidth() - 100, 225)
-            sizeTextbox.placeholder = selectedObject.width .. ", " .. selectedObject.height
+            if not sizeTextbox.focused then
+                sizeTextbox.text = selectedObject.width .. ", " .. selectedObject.height
+            end
             objectGravityTB:setPosition(love.graphics:getWidth() - 150, objectGravityTB.y)
             v.gravity = objectGravityTB.text
         end

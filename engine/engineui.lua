@@ -656,7 +656,7 @@ function engineui:draw()
     -- Sidebar
     love.graphics.setColor(preferences.getColor("general", "primary"))
     love.graphics.rectangle("fill", windowWidth - 150, 50, 150, windowHeight - 50)
-    myLabel:draw()
+    myLabel:draw(preferences.getColor("general", "primary"))
     myLabel:setPosition(windowWidth - 150, 50)
 
     -- Explorer Sidebar

@@ -13,7 +13,7 @@ function loadJsonFile(filePath)
 end
 
 -- Load the theme and fonts JSON files
-local themeData, err = loadJsonFile("preferences/default.json")
+local themeData, err = loadJsonFile("preferences/" .. selectedTheme .. ".json")
 if not themeData then
     error("Error loading theme: " .. err)
 end
@@ -30,6 +30,7 @@ preferences.topbar = themeData.topbar
 preferences.textbox = themeData.textbox
 preferences.windows = themeData.windows
 preferences.general = themeData.general
+preferences.dropdown = themeData.dropdown
 
 -- Define fonts from fonts JSON
 preferences.fonts = {}

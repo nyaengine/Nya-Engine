@@ -11,8 +11,8 @@ function TextBox.new(x, y, width, height, placeholder, bgColor, textColor)
     self.placeholder = placeholder or "Enter text..."
     self.focused = false
     self.cursorPos = #self.text + 1
-    self.bgColor = bgColor or {1,1,1}
-    self.textColor = textColor or {0,0,0}
+    self.bgColor = bgColor or preferences.getColor("textbox", "background")
+    self.textColor = textColor or preferences.getColor("textbox", "color")
     return self
 end
 

@@ -1,7 +1,7 @@
 {
     "button": {
-        "background": [1, 0.4, 0.7],
-        "hover": [0.8, 0.3, 0.6],
+        "background": [0.4, 0.4, 0.4],
+        "hover": [0.2, 0.2, 0.2],
         "textColor": [1, 1, 1],
         "borderRadius": 5,
         "padding": 10
@@ -9,26 +9,26 @@
     "label": {
         "textColor": [1, 1, 1],
         "fontSize": 14,
-        "background": [0.8, 0.3, 0.6]
+        "background": [0.2, 0.2, 0.2]
     },
     "topbar": {
-    	"color": [1, 0.4, 0.7, 0.5],
+    	"color": [0.2, 0.2, 0.2, 0.5],
     },
     "dropdown": {
-        "background": [0.8, 0.3, 0.6],
+        "background": [0.2, 0.2, 0.2],
         "textColor": [1, 1, 1]
     },
     "textbox": {
     	"color": [1, 1, 1],
     	"textColor": [0, 0, 0],
-        "background": [1, 0.4, 0.7]
+        "background": [0.2, 0.2, 0.2]
     },
     "windows": {
-        "color": [1, 0.4, 0.7],
-        "borderColor": [0.8, 0.3, 0.6]
+        "color": [0.4, 0.4, 0.4],
+        "borderColor": [0, 0, 0]
     },
     "general": {
-        "background": [0.3, 0.3, 0.3],
-        "primary": [1, 0.4, 0.7],
+        "background": [0, 0, 0],
+        "primary": [0.4, 0.4, 0.4],
     }
 }

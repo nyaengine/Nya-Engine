@@ -25,9 +25,9 @@ end
 
 function Dropdown:draw()
     -- Draw the selected option
-    love.graphics.setColor(0.8, 0.3, 0.6)
+    love.graphics.setColor(preferences.getColor("dropdown", "background"))
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(preferences.getColor("dropdown", "textColor"))
     love.graphics.print(self.selected, self.x + 5, self.y + (self.height - font:getHeight()) / 2)
 
     -- Draw the dropdown arrow
@@ -36,9 +36,9 @@ function Dropdown:draw()
     -- Draw the options if the dropdown is open
     if self.isOpen then
         for i, option in ipairs(self.options) do
-            love.graphics.setColor(0.8, 0.3, 0.6)
+            love.graphics.setColor(preferences.getColor("dropdown", "background"))
             love.graphics.rectangle("fill", self.x, self.y + self.height + (i - 1) * self.optionHeight, self.width, self.optionHeight)
-            love.graphics.setColor(1, 1, 1)
+            love.graphics.setColor(preferences.getColor("dropdown", "textColor"))
             love.graphics.print(option, self.x + 5, self.y + self.height + (i - 1) * self.optionHeight + (self.optionHeight - font:getHeight()) / 2)
         end
     end

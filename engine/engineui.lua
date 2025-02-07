@@ -381,7 +381,7 @@ function engineui:load()
         y = 0,
         width = love.graphics:getWidth(),
         height = 100,
-        bgClr = customization.getColor("primary")
+        bgClr = preferences.getColor("general", "primary")
     })
 
     wtf = something:new({
@@ -389,7 +389,7 @@ function engineui:load()
         y = 100,
         width = 200,
         height = love.graphics:getHeight() - 50, 
-        bgClr = customization.getColor("primary")
+        bgClr = preferences.getColor("general", "primary")
     })
 
     versionText = Label:new({
@@ -636,13 +636,13 @@ end
 function engineui:draw()
     if ideTest == false and InEngine then
     -- Sidebar
-    love.graphics.setColor(customization.getColor("primary"))
+    love.graphics.setColor(preferences.getColor("general", "primary"))
     love.graphics.rectangle("fill", windowWidth - 150, 50, 150, windowHeight - 50)
     myLabel:draw()
     myLabel:setPosition(windowWidth - 150, 50)
 
     -- Explorer Sidebar
-    love.graphics.setColor(customization.getColor("primary"))
+    love.graphics.setColor(preferences.getColor("general", "primary"))
     love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
 
     local objectListStartY = 100 - scrollOffset -- Starting Y position for ObjectList
@@ -692,7 +692,7 @@ function engineui:draw()
     createAudioButton:setPosition(125, AudioTextY)
 
     -- Topbar
-    love.graphics.setColor(customization.getColor("topbar"))
+    love.graphics.setColor(preferences.getColor("topbar", "color"))
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
     -- Draw all buttons
@@ -766,7 +766,7 @@ function engineui:draw()
     end
 
     if projectWin == true then
-        projectWindow.fill = customization.getColor("background")
+        projectWindow.fill = preferences.getColor("general", "background")
         projectWindow:draw()
     end
 

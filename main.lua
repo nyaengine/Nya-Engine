@@ -17,15 +17,15 @@ DropdownLibrary = require("lib/DropdownLibrary")
 SaveLoad = require("lib/save_load")
 GameObject = require("engine/GameObject")
 UIManager = require("engine/UIManager")
-customization = require("customization")
 love3d = require("lib/3d_library")
+preferences = require("preferences")
 
 local assetsFolder = love.filesystem.createDirectory("project")
 
 objects = {}
 collisionObjects = {}
 selectedFont = "Poppins"
-font = customization.getFont(selectedFont)
+font = preferences.getFont(selectedFont)
 
 engineVer = "Prototype"
 InEngine = true

@@ -64,9 +64,9 @@ function ButtonLibrary:draw()
     -- Button background
     if self.background then
         if self.isHovered then
-            love.graphics.setColor(customization.getColor("secondary"), self.transparencyBG) -- Hover color
+            love.graphics.setColor(preferences.getColor("button", "hover"), self.transparencyBG) -- Hover color
         else
-            love.graphics.setColor(customization.getColor("primary"), self.transparencyBG) -- Default color
+            love.graphics.setColor(preferences.getColor("button", "background"), self.transparencyBG) -- Default color
         end
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
         

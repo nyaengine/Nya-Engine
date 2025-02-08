@@ -15,6 +15,7 @@ function ButtonLibrary:new(x, y, width, height, label, onClick, imagePath)
     btn.isHovered = false
     btn.background = true
     btn.transparencyBG = 1
+    btn.font = love.graphics.getFont()
 
     -- Load the image if the path is provided
     btn.image = nil
@@ -45,6 +46,10 @@ end
 
 function ButtonLibrary:IsVisibleBG(vis)
     self.background = vis
+end
+
+function ButtonLibrary:setFont(font)
+    self.font = font
 end
 
 -- Check if the button is clicked
@@ -88,6 +93,7 @@ function ButtonLibrary:draw()
     -- Button label
     if self.label then
         love.graphics.setColor(0, 0, 0)
+        love.graphics.setFont(self.font) -- Use the assigned font
         love.graphics.printf(self.label, self.x, self.y + self.height / 4, self.width, "center")
     end
 end

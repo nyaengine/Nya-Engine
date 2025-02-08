@@ -113,11 +113,11 @@ function ide.draw()
     end
 
     -- Files sidebar (all scripts)
-    love.graphics.setColor(customization.getColor("primary"))
+    love.graphics.setColor(preferences.getColor("general", "primary"))
     love.graphics.rectangle("fill", 0, 50, 150, windowHeight - 50)
 
     -- Topbar
-    love.graphics.setColor(customization.getColor("topbar"))
+    love.graphics.setColor(preferences.getColor("topbar", "color"))
     love.graphics.rectangle("fill", 0, 0, windowWidth, 50)
 
     -- Debugger

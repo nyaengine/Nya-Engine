@@ -13,6 +13,7 @@ function TextBox.new(x, y, width, height, placeholder, bgColor, textColor)
     self.cursorPos = #self.text + 1
     self.bgColor = bgColor or preferences.getColor("textbox", "background")
     self.textColor = textColor or preferences.getColor("textbox", "color")
+    self.font = love.graphics.getFont()
     return self
 end
 
@@ -41,6 +42,10 @@ function TextBox:update(dt)
     end
 end
 
+function TextBox:setFont(font)
+    self.font = font
+end
+
 function TextBox:draw()
     -- Draw the textbox background
     love.graphics.setColor(self.bgColor) -- White color for background
@@ -48,6 +53,7 @@ function TextBox:draw()
 
     -- Draw the text
     love.graphics.setColor(self.textColor) -- Black color for text
+    love.graphics.setFont(self.font) -- Use the assigned font
     if self.text == "" then
         love.graphics.print(self.placeholder, self.x + 5, self.y + (self.height / 2) - 6)
     else

@@ -251,6 +251,11 @@ end)
 
 function engineui:load()
     FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono"})
+    FontDropdown.onSelect = function(selectedFontName)
+        selectedFont = selectedFontName
+        applyFont(selectedFont)
+    end
+    
     LangDropdown = DropdownLibrary:new(50, 50, 100, 25, {"English", "Polish"})
     ThemeDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Nya Mode", "Dark Mode"})
 
@@ -497,6 +502,32 @@ function engineui:load()
     table.insert(ObjectTextboxes, sizeTextbox)
     table.insert(ObjectTextboxes, objectGravityTB)
     table.insert(propertiesLabels, TextureFileText)
+end
+
+function applyFont(fontName)
+    local font = preferences.getFont(fontName)
+    love.graphics.setFont(font)
+
+    -- Update fonts for all labels and textboxes
+    for _, label in ipairs(SidebarLabels) do
+        label:setFont(font)
+    end
+
+    for _, label in ipairs(propertiesLabels) do
+        label:setFont(font)
+    end
+
+    for _, textbox in ipairs(ObjectTextboxes) do
+        textbox:setFont(font)
+    end
+
+    for _, button in ipairs(topbarButtons) do
+        button:setFont(font)
+    end
+
+    for _, button in ipairs(tabButtons) do
+        button:setFont(font)
+    end
 end
 
 function engineui:update(dt)
@@ -759,10 +790,13 @@ function engineui:draw()
         
         if FontDropdown.selected == "Poppins" then 
             selectedFont = "Poppins"
+            applyFont(selectedFont)
         elseif FontDropdown.selected == "Noto Sans" then
             selectedFont = "Noto Sans"
+            applyFont(selectedFont)
         elseif FontDropdown.selected == "RobotoMono" then
-            selectedFont = "RobotoMono"
+            selectedFont = "Roboto"
+            applyFont(selectedFont)
         end
 
         if ThemeDropdown.selected == "Nya Mode" and selectedTheme ~= "default" then 

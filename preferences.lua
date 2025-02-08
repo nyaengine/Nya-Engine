@@ -41,7 +41,7 @@ end
 -- Define fonts from fonts JSON
 preferences.fonts = {}
 for fontName, fontData in pairs(fontsData) do
-    preferences.fonts[fontName] = love.graphics.newFont(fontData[1], 15)  -- Assuming size 15 by default
+    preferences.fonts[fontName] = love.graphics.newFont(fontData[1], 16)  -- Assuming size 15 by default
 end
 
 -- Function to get a color by name from the theme

@@ -1,5 +1,5 @@
 {
-    "Poppins": ["assets/fonts/Poppins-Regular.ttf"],
+    "Poppins": ["assets/fonts/Poppins/Poppins-Regular.ttf"],
     "Noto Sans": ["assets/fonts/Noto Sans/NotoSans-Regular.ttf"],
     "Roboto": ["assets/fonts/Roboto/RobotoMono-Regular.ttf"]
 }

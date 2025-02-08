@@ -43,6 +43,7 @@ end
 
 -- Initialize the game
 function love.load()
+    love.graphics.setFont(font)
     love.graphics.setDefaultFilter("linear", "linear")
 
     --nextPresenceUpdate = 0

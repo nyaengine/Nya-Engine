@@ -55,7 +55,7 @@ end
 
 -- Function to get a font by name
 function preferences.getFont(name)
-    return preferences.fonts[name] or love.graphics.getFont()  -- Default to LOVE's current font if not found
+    return preferences.fonts[name] or preferences.fonts.Poppins  -- Default to LOVE's current font if not found
 end
 
 -- Function to change the theme dynamically

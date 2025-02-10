@@ -18,9 +18,28 @@ function Dropdown:toggle()
     self.isOpen = not self.isOpen
 end
 
-function Dropdown:selectOption(index)
-    self.selected = self.options[index]
+function Dropdown:selectOption(option)
+    if type(option) == "number" then
+        -- If the option is a number, treat it as an index
+        self.selected = self.options[option]
+    elseif type(option) == "string" then
+        -- If the option is a string, find the corresponding index
+        for i, opt in ipairs(self.options) do
+            if opt == option then
+                self.selected = self.options[i]
+                break
+            end
+        end
+    else
+        -- Handle invalid input
+        error("Invalid option type. Expected number or string, got " .. type(option))
+    end
     self.isOpen = false
+
+    -- Call the onSelect callback if it exists
+    if self.onSelect then
+        self.onSelect(self.selected)
+    end
 end
 
 function Dropdown:draw()

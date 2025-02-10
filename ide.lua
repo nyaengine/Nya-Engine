@@ -100,6 +100,11 @@ function ide.load()
     end
 
     chooseNodeWin = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
+
+    table.insert(otherStuff, toggleModeButton)
+    table.insert(otherStuff, scriptNameTextBox)
+    table.insert(otherStuff, openCodeButton)
+    table.insert(otherStuff, saveCodeButton)
 end
 
 function ide.draw()

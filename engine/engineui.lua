@@ -48,6 +48,9 @@ ideTest = false
 local SidebarLabels = {}
 local propertiesLabels = {}
 
+-- table for buttons and labels from other windows(for example IDE)
+otherStuff = {}
+
 --Textboxes
 local ObjectTextboxes = {}
 
@@ -255,6 +258,8 @@ function engineui:load()
         selectedFont = selectedFontName
         applyFont(selectedFont)
     end
+
+    FontDropdown:selectOption("Poppins")
     
     LangDropdown = DropdownLibrary:new(50, 50, 100, 25, {"English", "Polish"})
     ThemeDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Nya Mode", "Dark Mode"})
@@ -527,6 +532,10 @@ function applyFont(fontName)
 
     for _, button in ipairs(tabButtons) do
         button:setFont(font)
+    end
+
+    for _, stuff in ipairs(otherStuff) do
+        stuff:setFont(font)
     end
 end
 

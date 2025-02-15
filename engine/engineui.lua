@@ -60,6 +60,7 @@ local createWin = false
 local sceneWin = false
 local UIWin = false
 local projectWin = true -- set to false when testing the engine
+local AudioWin = false
 
 local SidebarUI = UIManager:new()
 
@@ -82,6 +83,21 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
     })
     table.insert(objects, newObject)
     table.insert(ObjectList, newObject.name)
+end)
+
+local createAudioObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Audio", function()
+    local AudioObj = GameObject:new({
+        x = 150,
+        y = 100,
+        width = 50, 
+        height = 50,
+        icon = nil,
+        name = "Audio " .. tostring(#AudioList + 1),
+        texture = nil,
+        Audio = true,
+    })
+    table.insert(AudioList, AudioObj)
+    table.insert(audios, AudioObj)
 end)
 
 local createCharacterObjectButton = ButtonLibrary:new(500, 200, 250, 40, "Create Character Object", function()
@@ -140,7 +156,7 @@ local createButton = ButtonLibrary:new(125, 70, 30, 30, "+", function()
 end)
 
 local createAudioButton = ButtonLibrary:new(125, 300, 30, 30, "+", function()
-
+    openAudioWindow()
 end)
 
 local createProjectButton = ButtonLibrary:new(0, 150, 125, 30, "Create Project", function()
@@ -251,6 +267,10 @@ local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", f
         print("Project name is empty.")
     end
 end)
+
+function openAudioWindow()
+    AudioWin = not AudioWin
+end
 
 function engineui:load()
     FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono"})
@@ -467,6 +487,8 @@ function engineui:load()
     projectWindow:addElement(pajac)
     projectWindow:addElement(versionText)
     projectWindow:addElement(wtf)
+
+    createAudioWindow = window:new(0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 30, "Run", function()
         running = not running
@@ -826,24 +848,28 @@ function engineui:draw()
     end
     end
 
-    if createWin == true then
+    if createWin then
         createWindow:draw()
     end
 
-    if sceneWin == true then
+    if sceneWin then
         createsceneWindow:draw()
     end
 
-    if UIWin == true then
+    if AudioWin then 
+        createAudioWindow:draw()
+    end
+
+    if UIWin then
         UI:draw()
     end
 
-    if projectWin == true then
+    if projectWin then
         projectWindow.fill = preferences.getColor("general", "background")
         projectWindow:draw()
     end
 
-    elseif ideTest == true and InEngine then
+    elseif ideTest and InEngine then
         ide:draw()
     end
 end

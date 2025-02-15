@@ -27,6 +27,7 @@ preferences = require("preferences")
 local assetsFolder = love.filesystem.createDirectory("project")
 
 objects = {}
+audios = {}
 CollisionObjects = {}
 font = preferences.getFont(selectedFont)
 

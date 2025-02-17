@@ -1,4 +1,6 @@
 -- Required files
+preferences = require("preferences")
+
 ButtonLibrary = require("lib/ButtonLibrary")
 window = require("window")
 Camera = require("lib/Camera")
@@ -19,10 +21,7 @@ GameObject = require("engine/GameObject")
 UIManager = require("engine/UIManager")
 love3d = require("lib/3d_library")
 
-selectedTheme = "default"
 selectedFont = "Poppins"
-
-preferences = require("preferences")
 
 local assetsFolder = love.filesystem.createDirectory("project")
 

@@ -489,6 +489,7 @@ function engineui:load()
     projectWindow:addElement(wtf)
 
     createAudioWindow = window:new(0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    createAudioWindow:addElement(createAudioObjectButton)
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 30, "Run", function()
         running = not running

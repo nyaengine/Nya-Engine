@@ -21,7 +21,7 @@ scriptNameInput = {
     isActive = false
 }
 
-scriptNameTextBox = TextBox.new(0, 60, 150, 30, "Script Name", {0.8, 0.3, 0.6}, {1,1,1})
+local scriptNameTextBox = TextBox.new(0, 60, 150, 30, "Script Name", preferences.getColor("textbox", "background"), preferences.getColor("textbox", "textColor"))
 
 -- Editor states
 local textEditorContent = ""

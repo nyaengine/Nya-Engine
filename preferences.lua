@@ -1,4 +1,7 @@
 local preferences = {}
+local dkjson = require("lib/dkjson")
+
+selectedTheme = "default"  -- Set a fallback theme name if nil
 
 -- Function to load a JSON file and parse it into a Lua table
 function loadJsonFile(filePath)

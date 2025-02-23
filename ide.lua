@@ -21,7 +21,9 @@ scriptNameInput = {
     isActive = false
 }
 
-local scriptNameTextBox = TextBox.new(0, 60, 150, 30, "Script Name", preferences.getColor("textbox", "background"), preferences.getColor("textbox", "textColor"))
+scriptNameTextBox = TextBox.new(0, 60, 150, 30, "Script Name", preferences.getColor("textbox", "background"), preferences.getColor("textbox", "textColor"))
+
+nodeWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
 
 -- Editor states
 local textEditorContent = ""
@@ -177,7 +179,7 @@ function ide.update(dt)
    closeIDEButton:update(mouseX, mouseY)
 
    if nodewinvis then
-            chooseNodeWin:update(dt)
+        chooseNodeWin:update(dt)
     end
 
    cursorBlinkTime = cursorBlinkTime + dt

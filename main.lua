@@ -20,6 +20,7 @@ SaveLoad = require("lib/save_load")
 GameObject = require("engine/GameObject")
 UIManager = require("engine/UIManager")
 love3d = require("lib/3d_library")
+--SVG = require("lib/svg_images")
 
 selectedFont = "Poppins"
 
@@ -38,17 +39,10 @@ if InEngine then
     engine = require("engine/engine")
 end
 
---local discordRPC = require 'lib/discordRPC' --temporary removed due to there being no Linux support
---local appId = require 'applicationId'
-
 -- Initialize the game
 function love.load()
     love.graphics.setFont(font)
     love.graphics.setDefaultFilter("linear", "linear")
-
-    --nextPresenceUpdate = 0
-    
-    --discordRPC.initialize(appId, true)
 
     if InEngine then
         engineUI:load()
@@ -57,12 +51,6 @@ end
 
 -- Update the game
 function love.update(dt)
-    --[[if nextPresenceUpdate < love.timer.getTime() then
-        discordRPC.updatePresence(discordApplyPresence())
-        nextPresenceUpdate = love.timer.getTime() + 2.0
-    end
-
-    discordRPC.runCallbacks()]]
 
     if InEngine then
         engine:update(dt)
@@ -74,21 +62,6 @@ function love.update(dt)
             obj:update(dt)
         end
     end
-end
-
-function discordApplyPresence()
-    detailsNow = "Developing"
-    stateNow = ""
-
-    presence = {
-        largeImageKey = "nyaengine_icon",
-        largeImageText = "Nya Engine 1.0",
-        details = detailsNow,
-        state = stateNow,
-        startTimestamp = now,
-    }
-
-    return presence
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
@@ -155,5 +128,4 @@ function love.resize(w, h)
 end
 
 function love.quit()
-    --discordRPC.shutdown()
 end

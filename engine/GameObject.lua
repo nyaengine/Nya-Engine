@@ -6,6 +6,9 @@ function GameObject:new(o)
     setmetatable(o, self)
     self.__index = self
 
+    local obj = setmetatable(params or {}, GameObject)
+    obj.children = {} -- Initialize the children table
+
     -- Default properties
     o.x = o.x or 0
     o.y = o.y or 0
@@ -48,6 +51,48 @@ function GameObject:update(dt)
     -- Reset accelerations after each update
     self.accelerationX = 0
     self.accelerationY = 0
+end
+
+function GameObject:addChild(child)
+    table.insert(self.children, child)
+    child.parent = self
+end
+
+function GameObject:removeChild(child)
+    for i, c in ipairs(self.children) do
+        if c == child then
+            table.remove(self.children, i)
+            child.parent = nil
+            break
+        end
+    end
+end
+
+function drawObjectList(objects, startY, indent)
+    for i, obj in ipairs(objects) do
+        if not obj then
+            print("Error: Object at index " .. i .. " is nil.")
+            return
+        end
+
+        local objectName = obj.name or "Unnamed Object" -- Fallback for nil names
+        local labelX, labelY = 10 + indent, startY + (i - 1) * 20
+        local labelWidth, labelHeight = 120, 20
+
+        -- Highlight selected label
+        if obj == selectedObject then
+            love.graphics.setColor(0.8, 0.8, 0.8, 1)
+            love.graphics.rectangle("fill", labelX, labelY, labelWidth, labelHeight)
+        end
+
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.print(objectName, labelX, labelY)
+
+        -- Recursively draw children (if they exist)
+        if obj.children and #obj.children > 0 then
+            drawObjectList(obj.children, labelY + 20, indent + 20)
+        end
+    end
 end
 
 function GameObject:draw()

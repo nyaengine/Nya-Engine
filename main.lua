@@ -20,11 +20,12 @@ SaveLoad = require("lib/save_load")
 GameObject = require("engine/GameObject")
 UIManager = require("engine/UIManager")
 love3d = require("lib/3d_library")
---SVG = require("lib/svg_images")
+SVG = require("lib/svg_images")
 
 selectedFont = "Poppins"
 
 local assetsFolder = love.filesystem.createDirectory("project")
+local svgMeshes = {}
 
 objects = {}
 audios = {}
@@ -43,6 +44,7 @@ end
 function love.load()
     love.graphics.setFont(font)
     love.graphics.setDefaultFilter("linear", "linear")
+    svgMeshes = SVG.load("3D.svg")
 
     if InEngine then
         engineUI:load()
@@ -94,6 +96,8 @@ end
             obj:draw()
         end
     end
+
+    SVG.draw(svgMeshes)
 end
 
 function love.textinput(text)

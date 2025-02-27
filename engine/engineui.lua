@@ -78,7 +78,7 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
         icon = nil,
         name = "Object " .. tostring(#ObjectList + 1),
         isCollidable = false,
-        texture = nil,
+        texture = love.graphics.newImage("assets/nyaengine_icon.jpg"),
         character = false,
     })
     table.insert(objects, newObject)
@@ -806,6 +806,11 @@ function engineui:draw()
             if not sizeTextbox.focused then
                 sizeTextbox.text = selectedObject.width .. ", " .. selectedObject.height
             end
+
+            if not TextureFileText.focused then
+                TextureFileText.text = "Texture: " .. tostring(selectedObject.texture)
+            end
+
             objectGravityTB:setPosition(love.graphics:getWidth() - 150, objectGravityTB.y)
             v.gravity = objectGravityTB.text
         end

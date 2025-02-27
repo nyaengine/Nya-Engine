@@ -78,7 +78,7 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
         icon = nil,
         name = "Object " .. tostring(#ObjectList + 1),
         isCollidable = false,
-        texture = love.graphics.newImage("assets/nyaengine_icon.jpg"),
+        texture = "assets/nyaengine_icon.jpg",
         character = false,
     })
     table.insert(objects, newObject)

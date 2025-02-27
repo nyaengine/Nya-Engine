@@ -97,12 +97,13 @@ end
 
 function GameObject:draw()
     if self.texture then
+        local txtr = love.graphics.newImage(self.texture)
         -- Calculate scaling factors based on the desired width and height
-        local scaleX = self.width / self.texture:getWidth()
-        local scaleY = self.height / self.texture:getHeight()
+        local scaleX = self.width / txtr:getWidth()
+        local scaleY = self.height / txtr:getHeight()
         
         -- Draw the texture with scaling applied
-        love.graphics.draw(self.texture, self.x, self.y, 0, scaleX, scaleY)
+        love.graphics.draw(txtr, self.x, self.y, 0, scaleX, scaleY)
     else
         love.graphics.setColor(1, 1, 1) -- white color for the square
         love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)

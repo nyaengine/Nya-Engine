@@ -273,7 +273,7 @@ function openAudioWindow()
 end
 
 function engineui:load()
-    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono"})
+    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono", "Inter"})
     FontDropdown.onSelect = function(selectedFontName)
         selectedFont = selectedFontName
         applyFont(selectedFont)
@@ -822,8 +822,8 @@ function engineui:draw()
         closeButton:setPosition(myWindow.x, myWindow.y)
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
         FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
-        ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 150)
-        LangDropdown:setPosition(myWindow.x + 20, myWindow.y + 250)
+        ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 250)
+        LangDropdown:setPosition(myWindow.x + 180, myWindow.y + 50)
         
         if FontDropdown.selected == "Poppins" then 
             selectedFont = "Poppins"
@@ -833,6 +833,9 @@ function engineui:draw()
             applyFont(selectedFont)
         elseif FontDropdown.selected == "RobotoMono" then
             selectedFont = "Roboto"
+            applyFont(selectedFont)
+        elseif FontDropdown.selected == "Inter" then
+            selectedFont = "Inter"
             applyFont(selectedFont)
         end
 

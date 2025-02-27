@@ -272,17 +272,81 @@ function openAudioWindow()
     AudioWin = not AudioWin
 end
 
+function saveSettings()
+    local settings = {
+        selectedFont = selectedFont,
+        selectedTheme = selectedTheme,
+        currentLanguage = currentLanguage,
+        scrollSpeed = scrollSpeed,
+        -- Add other settings you want to save here
+    }
+
+    local settingsJSON = dkjson.encode(settings, { indent = true })
+    local success, message = love.filesystem.write("settings.json", settingsJSON)
+
+    if success then
+        print("Settings saved successfully!")
+    else
+        print("Failed to save settings: " .. message)
+    end
+end
+
+function loadSettings()
+    local filePath = "settings.json"
+    if love.filesystem.getInfo(filePath) then
+        local settingsJSON = love.filesystem.read(filePath)
+        local settings, _, err = dkjson.decode(settingsJSON)
+
+        if settings then
+            selectedFont = settings.selectedFont or "Poppins"
+            selectedTheme = settings.selectedTheme or "default"
+            currentLanguage = settings.currentLanguage or "en"
+            scrollSpeed = settings.scrollSpeed or 20
+            -- Apply other settings as needed
+
+            -- Apply the loaded settings to the UI
+            applyFont(selectedFont)
+            preferences.setTheme(selectedTheme)
+            --updateUIText(currentLanguage)
+
+            print("Settings loaded successfully!")
+        else
+            print("Failed to load settings:", err)
+        end
+    else
+        print("No settings file found. Using default settings.")
+    end
+end
+
 function engineui:load()
+    loadSettings()
     FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono", "Inter"})
     FontDropdown.onSelect = function(selectedFontName)
         selectedFont = selectedFontName
         applyFont(selectedFont)
+        saveSettings()
     end
 
-    FontDropdown:selectOption("Poppins")
+    FontDropdown:selectOption(selectedFont)
     
     LangDropdown = DropdownLibrary:new(50, 50, 100, 25, {"English", "Polish"})
     ThemeDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Nya Mode", "Dark Mode"})
+
+    if selectedTheme == "default" then
+        ThemeDropdown:selectOption("Nya Mode")
+    elseif selectedTheme == "dark_mode" then
+        ThemeDropdown:selectOption("Dark Mode")
+    end
+
+    ThemeDropdown.onSelect = function(selectedThemeName)
+        if selectedThemeName == "Dark Mode" then
+            selectedTheme = "dark_mode"
+        elseif selectedThemeName == "Nya Mode" then
+            selectedTheme = "default"
+        end
+        preferences.setTheme(selectedTheme)
+        saveSettings()
+    end
 
     -- Add callback for language dropdown
     LangDropdown.onSelect = function(selectedLanguage)
@@ -292,6 +356,7 @@ function engineui:load()
             currentLanguage = "pl"
         end
         updateUIText(currentLanguage)
+        saveSettings()
     end
 
     if not InEngine then

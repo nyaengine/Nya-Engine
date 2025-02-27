@@ -132,4 +132,6 @@ function love.resize(w, h)
 end
 
 function love.quit()
+    saveSettings()
+    return false
 end

@@ -818,6 +818,8 @@ function engineui:draw()
 
     if settingsVis == true then
         myWindow:draw()
+        myWindow.fill = preferences.getColor("windows", "color")
+        myWindow.line = preferences.getColor("windows", "borderColor")
         myWindow:setSize(love.graphics:getWidth() - 100, love.graphics:getHeight() - 100)
         closeButton:setPosition(myWindow.x, myWindow.y)
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
@@ -859,10 +861,14 @@ function engineui:draw()
 
     if createWin then
         createWindow:draw()
+        createWindow.fill = preferences.getColor("windows", "color")
+        createWindow.line = preferences.getColor("windows", "borderColor")
     end
 
     if sceneWin then
         createsceneWindow:draw()
+        createsceneWindow.fill = preferences.getColor("windows", "color")
+        createsceneWindow.line = preferences.getColor("windows", "borderColor")
     end
 
     if AudioWin then 
@@ -874,8 +880,8 @@ function engineui:draw()
     end
 
     if projectWin then
-        projectWindow.fill = preferences.getColor("general", "background")
         projectWindow:draw()
+        projectWindow.fill = preferences.getColor("general", "background")
     end
 
     elseif ideTest and InEngine then

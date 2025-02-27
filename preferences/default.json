@@ -12,7 +12,7 @@
         "background": [0.8, 0.3, 0.6]
     },
     "topbar": {
-    	"color": [1, 0.4, 0.7, 0.5],
+    	"color": [1, 0.4, 0.7, 0.5]
     },
     "dropdown": {
         "background": [0.8, 0.3, 0.6],
@@ -29,6 +29,6 @@
     },
     "general": {
         "background": [0.3, 0.3, 0.3],
-        "primary": [1, 0.4, 0.7],
+        "primary": [1, 0.4, 0.7]
     }
 }

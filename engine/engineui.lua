@@ -93,7 +93,7 @@ local createAudioObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Aud
         height = 50,
         icon = nil,
         name = "Audio " .. tostring(#AudioList + 1),
-        texture = nil,
+        texture = "assets/nyaengine_icon.jpg",
         Audio = true,
     })
     table.insert(AudioList, AudioObj)
@@ -110,7 +110,7 @@ local createCharacterObjectButton = ButtonLibrary:new(500, 200, 250, 40, "Create
         icon = nil,
         name = "Char Object " .. tostring(#CharacterObjList + 1),
         isCollidable = false,
-        texture = nil,
+        texture = "assets/nyaengine_icon.jpg",
         character = true,
     })
     table.insert(objects, newObject)

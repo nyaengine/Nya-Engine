@@ -7,7 +7,8 @@ SceneManager.__index = SceneManager
 function SceneManager:new()
     local instance = {
         scenes = {},
-        currentScene = nil
+        currentScene = nil,
+        SceneObj = {}
     }
     setmetatable(instance, SceneManager)
     return instance
@@ -28,6 +29,10 @@ function SceneManager:removeScene(name)
     else
         error("Scene '" .. name .. "' does not exist!")
     end
+end
+
+function SceneManager:addObject(name)
+    table.insert(self.SceneObj, name)
 end
 
 -- Switch to a specific scene

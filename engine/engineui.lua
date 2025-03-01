@@ -96,7 +96,7 @@ local createAudioObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Aud
         texture = "assets/nyaengine_icon.jpg",
         Audio = true,
     })
-    table.insert(AudioList, AudioObj)
+    table.insert(AudioList, AudioObj.name)
     table.insert(audios, AudioObj)
 end)
 
@@ -553,7 +553,7 @@ function engineui:load()
     projectWindow:addElement(versionText)
     projectWindow:addElement(wtf)
 
-    createAudioWindow = window:new(0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    createAudioWindow = window:new(500, 100, 300, 300)
     createAudioWindow:addElement(createAudioObjectButton)
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 30, "Run", function()
@@ -643,6 +643,7 @@ function engineui:update(dt)
     createWindow:update(dt)
     createsceneWindow:update(dt)
     projectWindow:update(dt)
+    createAudioWindow:update(dt)
 
     for _, textboxes in ipairs(ObjectTextboxes) do
         textboxes:update(dt)
@@ -657,6 +658,7 @@ function engineui:update(dt)
     createuiButton:update(mouseX, mouseY)
     createProjectButton:update(mouseX, mouseY)
     openProjectButton:update(mouseX, mouseY)
+    createAudioObjectButton:update(mouseX, mouseY)
 
     if ideTest == true then
         ide.update(dt)
@@ -757,6 +759,10 @@ function engineui:mousepressed(x, y, button, istouch, presses)
             createSceneButton:mousepressed(x, y, button)
             end
 
+            if AudioWin == true then
+                createAudioObjectButton:mousepressed(x, y, button)
+            end
+
             if projectWin == true then
             ProjectName:mousepressed(x, y, button)
             createProjectButton:mousepressed(x, y, button)
@@ -836,6 +842,12 @@ function engineui:draw()
     AudiosText:setPosition(0, AudioTextY)
     AudiosText:draw()
     createAudioButton:setPosition(125, AudioTextY)
+
+    local audioListStartY = AudioTextY + 30 
+    for i, audioName in ipairs(AudioList) do
+        love.graphics.setColor(1, 1, 1, 1) -- White text
+        love.graphics.print(audioName, 10, audioListStartY + (i - 1) * 20)
+    end
 
     -- Topbar
     love.graphics.setColor(preferences.getColor("topbar", "color"))

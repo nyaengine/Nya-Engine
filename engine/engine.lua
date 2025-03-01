@@ -134,6 +134,10 @@ function engine:draw()
                 obj:draw()
             end
 
+            for _, aud in ipairs(audios) do
+                aud:draw()
+            end
+
             -- Highlight the selected object
             if selectedObject then
                 love.graphics.setColor(1, 0, 0, 0.5)
@@ -149,6 +153,10 @@ function engine:draw()
             -- Draw game objects when not in engine
             for _, obj in ipairs(objects) do
                 obj:draw()
+            end
+
+            for _, aud in ipairs(audios) do
+                aud:draw()
             end
         end
     end

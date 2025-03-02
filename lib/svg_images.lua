@@ -1,4 +1,4 @@
--- Advanced SVG Loader Library for LOVE2D
+-- it's not functional YET
 local SVG = {}
 
 -- Function to parse an SVG path and convert it to mesh-friendly data

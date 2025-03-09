@@ -320,7 +320,7 @@ end
 
 function engineui:load()
     loadSettings()
-    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono", "Inter"})
+    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono", "Inter", "JetbrainsMono"})
     FontDropdown.onSelect = function(selectedFontName)
         selectedFont = selectedFontName
         applyFont(selectedFont)
@@ -915,6 +915,9 @@ function engineui:draw()
             applyFont(selectedFont)
         elseif FontDropdown.selected == "Inter" then
             selectedFont = "Inter"
+            applyFont(selectedFont)
+        elseif FontDropdown.selected == "JetbrainsMono" then
+            selectedFont = "JetbrainsMono"
             applyFont(selectedFont)
         end
 

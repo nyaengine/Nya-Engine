@@ -6,6 +6,8 @@ local nodes = require("engine/nodes")
     2. Add the fucking visual coding
 ]]
 
+local font = love.graphics.newFont("assets/fonts/JetbrainsMono/JetbrainsMono-Regular.ttf")
+
 -- Modes: "text" or "visual"
 local mode = "text"
 local syntax  -- Will hold the parsed syntax data
@@ -27,7 +29,7 @@ nodeWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:ge
 
 -- Editor states
 local textEditorContent = ""
-local cursorPos = {x = 175, y = 50} -- Track the cursor position
+local cursorPos = {x = 180, y = 50} -- Track the cursor position
 local selectedText = ""  -- Hold the selected text
 local cursorVisible = true
 local cursorBlinkTime = 0 -- Time for cursor blinking
@@ -215,6 +217,12 @@ end
 
 -- Text mode rendering with syntax highlighting
 function ide.drawTextMode()
+    -- Save the current font to restore it later
+    local previousFont = love.graphics.getFont()
+
+    -- Set the JetBrains Mono font for the code editor
+    love.graphics.setFont(font)
+
     local x, y = 175, 50
     local lineHeight = love.graphics.getFont():getHeight()
     
@@ -234,6 +242,9 @@ function ide.drawTextMode()
         love.graphics.setColor(0.2, 0.4, 0.8, 0.5)  -- Highlight color
         love.graphics.rectangle("fill", 175, cursorPos.y, love.graphics.getFont():getWidth(selectedText), lineHeight)
     end
+
+    -- Restore the previous font to avoid affecting the rest of the UI
+    love.graphics.setFont(previousFont)
 end
 
 -- Highlight a single line of text
@@ -245,7 +256,7 @@ function ide.drawHighlightedLine(line, x, y)
         local color = ide.getSyntaxColor(token)
         love.graphics.setColor(color)
         love.graphics.print(token, cursor, y)
-        cursor = cursor + love.graphics.getFont():getWidth(token .. " ")
+        cursor = cursor + font:getWidth(token .. " ")  -- Use the JetBrains Mono font for width calculations
     end
 end
 
@@ -314,8 +325,8 @@ end
 
 -- Update the cursor position based on the current text content
 function ide.updateCursorPosition()
-    local fontWidth = love.graphics.getFont():getWidth(textEditorContent)
-    local lineHeight = love.graphics.getFont():getHeight()
+    local fontWidth = font:getWidth(textEditorContent)  -- Use the JetBrains Mono font for width calculations
+    local lineHeight = font:getHeight()  -- Use the height of the JetBrains Mono font
 
     -- Count the number of newlines in the content to determine the number of lines
     local lineCount = 0
@@ -324,7 +335,7 @@ function ide.updateCursorPosition()
     end
 
     -- Update the cursor position
-    cursorPos.x = 175 + fontWidth  -- Update the x position based on the width of the content
+    cursorPos.x = 180 + fontWidth  -- Update the x position based on the width of the content
     cursorPos.y = 50 + lineHeight * lineCount  -- Update the y position based on the number of lines
 end
 
@@ -342,7 +353,7 @@ function ide.keypressed(key, scancode, isrepeat)
                 if selectedText ~= "" then
                     textEditorContent = ""
                     selectedText = ""
-                    cursorPos.x = 175
+                    cursorPos.x = 180
                     cursorPos.y = 50
                     ide.saveToUndoStack()
                 else

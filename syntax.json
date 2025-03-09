@@ -32,19 +32,15 @@
         "game","ButtonLibrary", "ObjectLibrary", "checkbox", "slider", "textbox", "SceneManager", "Camera", "json", "label", "Raycast", "mobilecontrols", "frame"
     ],
     "GLSL": [
-    // Keywords
     "attribute", "const", "uniform", "varying", "buffer", "shared", 
     "coherent", "volatile", "restrict", "readonly", "writeonly",
     "atomic_uint", "layout", "centroid", "flat", "smooth", "noperspective", 
     "patch", "sample", "invariant", "precise",
 
-    // Storage Qualifiers
     "in", "out", "inout", 
 
-    // Precision Qualifiers
     "highp", "mediump", "lowp", "precision",
 
-    // Types
     "void", "bool", "int", "uint", "float", "double", 
     "bvec2", "bvec3", "bvec4",
     "ivec2", "ivec3", "ivec4",
@@ -75,12 +71,10 @@
     "usampler2DMS", "usampler2DMSArray",
     "usamplerBuffer", "usampler2DRect",
 
-    // Control Flow
     "if", "else", "switch", "case", "default",
     "while", "do", "for", "continue", "break",
     "return", "discard",
 
-    // Built-in Functions
     "radians", "degrees", "sin", "cos", "tan",
     "asin", "acos", "atan", "sinh", "cosh", "tanh",
     "asinh", "acosh", "atanh", "pow", "exp", "log",
@@ -92,20 +86,16 @@
     "intBitsToFloat", "uintBitsToFloat", "fma",
     "frexp", "ldexp",
 
-    // Geometry
     "length", "distance", "dot", "cross",
     "normalize", "faceforward", "reflect", "refract",
 
-    // Matrix Functions
     "matrixCompMult", "outerProduct", "transpose",
     "determinant", "inverse",
 
-    // Vector Relational Functions
     "lessThan", "lessThanEqual", "greaterThan",
     "greaterThanEqual", "equal", "notEqual",
     "any", "all", "not",
 
-    // Texture Functions
     "textureSize", "texture", "textureProj",
     "textureLod", "textureOffset", "texelFetch",
     "texelFetchOffset", "textureProjOffset",
@@ -114,10 +104,8 @@
     "textureGradOffset", "textureProjGrad",
     "textureProjGradOffset",
 
-    // Fragment Shader Specific
     "dFdx", "dFdy", "fwidth",
 
-    // Compute Shader
     "barrier", "memoryBarrier",
     "groupMemoryBarrier", "imageLoad",
     "imageStore", "imageAtomicAdd",

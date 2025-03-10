@@ -3,5 +3,5 @@
     "Noto Sans": ["assets/fonts/Noto Sans/NotoSans-Regular.ttf", 16],
     "Roboto": ["assets/fonts/Roboto/RobotoMono-Regular.ttf", 16],
     "Inter": ["assets/fonts/Inter/Inter-Regular.ttf", 16],
-    "Jetbrains Mono": ["assets/fonts/JetbrainsMono/JetbrainsMono-Regular.ttf", 16]
+    "Jetbrains Mono": ["assets/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf", 16]
 }

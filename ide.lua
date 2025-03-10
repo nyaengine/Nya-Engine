@@ -6,7 +6,7 @@ local nodes = require("engine/nodes")
     2. Add the fucking visual coding
 ]]
 
-local font = love.graphics.newFont("assets/fonts/JetbrainsMono/JetbrainsMono-Regular.ttf")
+local font = love.graphics.newFont("assets/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf")
 
 -- Modes: "text" or "visual"
 local mode = "text"

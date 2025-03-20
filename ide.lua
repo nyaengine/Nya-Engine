@@ -18,8 +18,6 @@ scriptNameInput = {
 
 scriptNameTextBox = TextBox.new(0, 60, 150, 30, "Script Name", preferences.getColor("textbox", "background"), preferences.getColor("textbox", "textColor"))
 
-nodeWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
-
 -- Editor states
 local textEditorContent = ""
 local cursorPos = {x = 180, y = 50} -- Track the cursor position
@@ -92,6 +90,7 @@ function ide.load()
 end
 
 function ide.draw()
+    ide.drawTextMode()
     local windowWidth = love.graphics.getWidth()
     local windowHeight = love.graphics.getHeight()
 

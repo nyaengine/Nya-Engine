@@ -2,6 +2,8 @@
   <img width="100" alt="Nya Engine logo" src="assets/nyaengine_icon.jpg">
 </p>
 
+# This project is no longer in development
+
 # Nya Engine
 
 **Nya Engine** is a community-driven 2D game engine built with [LÖVE2D](https://love2d.org/), designed to be lightweight, easy to use, and *kawaii* 🌸. Nya Engine includes an integrated IDE, visual scripting, Lua coding, object and scene management, UI customization, and more — all to empower game developers to create amazing interactive 2D games quickly and easily.

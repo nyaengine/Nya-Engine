@@ -1,15 +1,8 @@
 local ide = {}
 local nodes = require("engine/nodes")
 
---[[
-    TODO:
-    2. Add the fucking visual coding
-]]
+local font = love.graphics.newFont("assets/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf")
 
-local font = love.graphics.newFont("assets/fonts/JetbrainsMono/JetbrainsMono-Regular.ttf")
-
--- Modes: "text" or "visual"
-local mode = "text"
 local syntax  -- Will hold the parsed syntax data
 
 scriptName = "unnamed_script.lua"
@@ -41,8 +34,6 @@ local debuggerMaxScroll = 0  -- Tracks the maximum scrollable height
 local debuggerVisibleHeight = 115  -- Height of the visible debugger area
 local debuggerLineHeight = 15  -- Height of each line of text
 
-local nodewinvis = false
-
 -- Undo/Redo stacks
 local undoStack = {}
 local redoStack = {}
@@ -66,14 +57,6 @@ end)
 
 local openCodeButton = ButtonLibrary:new(290, 10, 100, 30, "Open", function()
     fileDialog.open()
-end)
-
-local toggleModeButton = ButtonLibrary:new(10, 10, 100, 30, "Toggle Mode", function()
-    if mode == "text" then
-        mode = "visual"
-    else
-        mode = "text"
-    end
 end)
 
 local closeIDEButton = ButtonLibrary:new(love.graphics:getWidth() - 50, 10, 30, 30, "X", function()
@@ -103,9 +86,6 @@ function ide.load()
         print("Failed to load syntax.json!")
     end
 
-    chooseNodeWin = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
-
-    table.insert(otherStuff, toggleModeButton)
     table.insert(otherStuff, scriptNameTextBox)
     table.insert(otherStuff, openCodeButton)
     table.insert(otherStuff, saveCodeButton)
@@ -114,12 +94,6 @@ end
 function ide.draw()
     local windowWidth = love.graphics.getWidth()
     local windowHeight = love.graphics.getHeight()
-
-    if mode == "text" then
-        ide.drawTextMode()
-    else 
-        ide.drawVisualMode()
-    end
 
     -- Files sidebar (all scripts)
     love.graphics.setColor(preferences.getColor("general", "primary"))
@@ -157,17 +131,12 @@ function ide.draw()
 
     -- Draw buttons and other UI elements
     saveCodeButton:draw()
-    toggleModeButton:draw()
     openCodeButton:draw()
     closeIDEButton:draw()
     closeIDEButton.x = love.graphics:getWidth() - 50
 
     fileDialog.draw()
     scriptNameTextBox:draw()
-
-    if nodewinvis then
-        chooseNodeWin:draw()
-    end
 end
 
 -- Update function
@@ -176,13 +145,8 @@ function ide.update(dt)
    
    saveCodeButton:update(mouseX, mouseY)
    openCodeButton:update(mouseX, mouseY)
-   toggleModeButton:update(mouseX, mouseY)
    scriptNameTextBox:update(dt) -- Update the textbox
    closeIDEButton:update(mouseX, mouseY)
-
-   if nodewinvis then
-        chooseNodeWin:update(dt)
-    end
 
    cursorBlinkTime = cursorBlinkTime + dt
     if cursorBlinkTime >= cursorBlinkInterval then
@@ -199,20 +163,9 @@ end
 function ide.mousepressed(x, y, button)
     saveCodeButton:mousepressed(x, y, button)
     openCodeButton:mousepressed(x, y, button)
-    toggleModeButton:mousepressed(x, y, button)
     fileDialog.mousepressed(x, y, button)
     closeIDEButton:mousepressed(x,y,button)
-
     scriptNameTextBox:mousepressed(x, y, button)
-    if button == 2 then
-        if mode == "visual" then
-                nodewinvis = true
-        end
-    end
-end
-
-function ide.drawVisualMode()
-
 end
 
 -- Text mode rendering with syntax highlighting
@@ -309,7 +262,6 @@ function ide.getSyntaxColor(token)
 end
 
 function ide.textinput(text)
-    if mode == "text" then
         if scriptNameTextBox.focused == true then
             scriptNameTextBox:textinput(text) -- Pass input to the textbox
         else
@@ -320,7 +272,6 @@ function ide.textinput(text)
 
             ide.saveToUndoStack()
         end
-    end
 end
 
 -- Update the cursor position based on the current text content
@@ -344,7 +295,6 @@ function ide.updateTextEditorContent(content)
 end
 
 function ide.keypressed(key, scancode, isrepeat)
-    if mode == "text" then
          if scriptNameInput.isActive then
             handleScriptNameInput(key)
         else
@@ -383,7 +333,6 @@ function ide.keypressed(key, scancode, isrepeat)
                 ide.redo()
             end
         end
-    end
 end
 
 -- Save current text state to the undo stack

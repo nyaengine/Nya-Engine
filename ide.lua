@@ -3,13 +3,6 @@ local nodes = require("engine/nodes")
 
 local font = love.graphics.newFont("assets/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf")
 
-<<<<<<< HEAD
-=======
-local font = love.graphics.newFont("assets/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf")
-
--- Modes: "text" or "visual"
-local mode = "text"
->>>>>>> e9eb339f0c526ca6f6aa3cb99ae12ecf93d5d6d9
 local syntax  -- Will hold the parsed syntax data
 
 scriptName = "unnamed_script.lua"

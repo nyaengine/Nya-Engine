@@ -7,8 +7,11 @@ function videoLib.loadVideo(videoPath)
         error("Video file not found: " .. videoPath)
     end
 
-    -- Load the video
-    local video = love.graphics.newVideo(videoPath)
+    -- Attempt to load the video
+    local success, video = pcall(love.graphics.newVideo, videoPath)
+    if not success then
+        error("Failed to load video. Ensure the file is in Theora (.ogv) format: " .. videoPath)
+    end
 
     -- Start playing the video
     video:play()

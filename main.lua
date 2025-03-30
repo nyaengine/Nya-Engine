@@ -21,6 +21,7 @@ GameObject = require("lib/GameObject")
 UIManager = require("lib/UIManager")
 love3d = require("lib/3d_library")
 SVG = require("lib/svg_images")
+videoLibrary = require("lib/videoLib")
 
 selectedFont = "Poppins"
 

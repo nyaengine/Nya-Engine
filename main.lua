@@ -17,8 +17,8 @@ fileDialog = require("lib/fileDialog")
 CheckboxGroup = CheckboxLib.CheckboxGroup
 DropdownLibrary = require("lib/DropdownLibrary")
 SaveLoad = require("lib/save_load")
-GameObject = require("engine/GameObject")
-UIManager = require("engine/UIManager")
+GameObject = require("lib/GameObject")
+UIManager = require("lib/UIManager")
 love3d = require("lib/3d_library")
 SVG = require("lib/svg_images")
 

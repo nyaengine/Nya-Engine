@@ -76,9 +76,8 @@ Nya Engine features a kawaii-themed UI designed for ease of use and functionalit
 
 ## Visual and Lua Coding
 
-Nya Engine supports both **Visual Coding** and **Lua Scripting**:
+Nya Engine supports **Lua Scripting**:
 
-- **Visual Coding**: Use a drag-and-drop interface to create game logic without writing code. This is perfect for those who want to quickly prototype or don't have coding experience.
 - **Lua Scripting**: For developers who prefer to write code, Nya Engine fully supports Lua scripting, allowing you to create complex game mechanics, handle events, and interact with the engine’s features.
 
 ## Scenes & Objects

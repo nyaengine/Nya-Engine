@@ -1,5 +1,4 @@
 local ide = {}
-local nodes = require("engine/nodes")
 
 local font = love.graphics.newFont("assets/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf")
 

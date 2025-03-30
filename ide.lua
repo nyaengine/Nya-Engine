@@ -135,6 +135,8 @@ function ide.draw()
     closeIDEButton.x = love.graphics:getWidth() - 50
 
     fileDialog.draw()
+    scriptNameTextBox.bgColor = preferences.getColor("textbox", "background")
+    scriptNameTextBox.textColor = preferences.getColor("textbox", "textColor")
     scriptNameTextBox:draw()
 end
 

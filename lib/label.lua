@@ -1,5 +1,4 @@
 --[[ 
-Label Library for LÖVE2D
 
 Usage:
 

@@ -1,4 +1,3 @@
--- AudioEngine.lua
 local AudioEngine = {}
 
 AudioEngine.sounds = {}

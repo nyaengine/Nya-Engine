@@ -1,5 +1,3 @@
--- SceneManager.lua
-
 SceneManager = {}
 SceneManager.__index = SceneManager
 

@@ -1,5 +1,3 @@
--- CameraLibrary.lua
-
 local Camera = {}
 Camera.__index = Camera
 

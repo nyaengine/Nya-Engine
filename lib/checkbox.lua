@@ -1,4 +1,3 @@
--- Checkbox Library for LOVE2D
 local Checkbox = {}
 Checkbox.__index = Checkbox
 

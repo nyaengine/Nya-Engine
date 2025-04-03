@@ -89,6 +89,22 @@ function engine:mousepressed(x, y, button, istouch, presses)
                 end
             end
 
+            -- Check if an audio object is clicked
+            for index, aud in ipairs(audios) do
+                if aud:isClicked(camX, camY) then
+                    selectedObject = aud
+                    isDragging = true
+
+                    -- Calculate the drag offset
+                    dragOffsetX = camX - selectedObject.x
+                    dragOffsetY = camY - selectedObject.y
+
+                    -- Update ObjectName label with the corresponding name from AudioList
+                    ObjectName:setText(AudioList[index])
+                    return
+                end
+            end
+
             -- Deselect if clicked outside any object
             selectedObject = nil
         end

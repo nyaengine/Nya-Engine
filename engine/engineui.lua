@@ -95,6 +95,7 @@ local createAudioObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Aud
         name = "Audio " .. tostring(#AudioList + 1),
         texture = "assets/nyaengine_icon.jpg",
         Audio = true,
+        audioFile = "assets/default_audio.mp3" -- Default audio file
     })
     table.insert(AudioList, AudioObj.name)
     table.insert(audios, AudioObj)
@@ -521,6 +522,13 @@ function engineui:load()
     ObjectNameTextbox = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "ObjectName")
     objectGravityTB = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "50")
 
+    local audioFileTextbox = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "Audio File")
+    audioFileTextbox:setCallback(function(text)
+        if selectedObject and selectedObject.Audio then
+            selectedObject.audioFile = text
+        end
+    end)
+
     myWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
     myWindow:addElement(closeButton)
     myWindow:addElement(EngineSetText)
@@ -537,6 +545,7 @@ function engineui:load()
     SidebarUI:addElement(SizePropText)
     SidebarUI:addElement(TextureFileText)
     SidebarUI:addElement(objectGravityTB)
+    SidebarUI:addElement(audioFileTextbox)
 
     createWindow = window:new(500, 100, 300, 300)
     createWindow:addElement(createObjectButton)
@@ -890,6 +899,21 @@ function engineui:draw()
 
             objectGravityTB:setPosition(love.graphics:getWidth() - 150, objectGravityTB.y)
             v.gravity = objectGravityTB.text
+
+            if selectedObject and selectedObject.Audio then
+                audioFileTextbox:setPosition(love.graphics:getWidth() - 150, 375)
+                if not audioFileTextbox.focused then
+                    audioFileTextbox.text = selectedObject.audioFile or ""
+                end
+            end
+        end
+    end
+
+    for _, v in ipairs(objects) do
+        if v.Audio then
+            love.graphics.setColor(1, 1, 1, 1) -- White color for audio objects
+            love.graphics.rectangle("line", v.x, v.y, v.width, v.height) -- Draw a rectangle
+            love.graphics.print(v.name, v.x + 5, v.y + 5) -- Display the name
         end
     end
 
@@ -998,6 +1022,16 @@ function loadAndRunScripts()
             else
                 print("Error loading shaders " .. filename .. ":" .. err)
             end
+        end
+    end
+
+    -- Handle audio objects
+    for i = #objects, 1, -1 do
+        local obj = objects[i]
+        if obj.Audio and obj.audioFile then
+            local source = love.audio.newSource(obj.audioFile, "static")
+            source:play()
+            table.remove(objects, i) -- Remove the object after playing the audio
         end
     end
 end

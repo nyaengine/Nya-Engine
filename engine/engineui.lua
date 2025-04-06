@@ -326,6 +326,7 @@ end
 function engineui:load()
     loadSettings()
     loadPlugins()
+    loadMods()
     FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono", "Inter", "JetbrainsMono"})
     FontDropdown.onSelect = function(selectedFontName)
         selectedFont = selectedFontName

@@ -24,8 +24,13 @@ SVG = require("lib/svg_images")
 videoLibrary = require("lib/videoLib")
 ParallaxBackground = require("lib/parallaxbackground")
 Sprite = require("lib/sprite")
+modding_api = require("api/modding_api")
+
+_G.modding_api = modding_api  -- Make the modding API globally accessible
 
 selectedFont = "Poppins"
+
+local mods = {}
 
 local assetsFolder = love.filesystem.createDirectory("project")
 local svgMeshes = {}
@@ -137,4 +142,35 @@ end
 function love.quit()
     saveSettings()
     return false
+end
+
+function loadMods()
+    local modDir = "mods/"
+    local files = love.filesystem.getDirectoryItems(modDir)
+
+    for _, file in ipairs(files) do
+        if love.filesystem.getInfo(modDir .. file, "directory") then
+            local modPath = modDir .. file .. "/mod.lua"
+            if love.filesystem.getInfo(modPath) then
+                local modCode = love.filesystem.read(modPath)
+                if modCode then
+                    local chunk, err = load(modCode, file, "t", _G)
+                    if chunk then
+                        local success, mod = pcall(chunk)
+                        if success and type(mod) == "table" and mod.init then
+                            mod.init() -- Call the mod's initialization function
+                            table.insert(mods, mod)
+                            print("Loaded mod:", file)
+                        else
+                            print("Failed to initialize mod:", file)
+                        end
+                    else
+                        print("Error loading mod:", err)
+                    end
+                end
+            else
+                print("No mod.lua found in mod folder:", file)
+            end
+        end
+    end
 end

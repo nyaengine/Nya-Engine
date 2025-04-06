@@ -23,6 +23,7 @@ love3d = require("lib/3d_library")
 SVG = require("lib/svg_images")
 videoLibrary = require("lib/videoLib")
 ParallaxBackground = require("lib/parallaxbackground")
+Sprite = require("lib/sprite")
 
 selectedFont = "Poppins"
 

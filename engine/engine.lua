@@ -154,6 +154,10 @@ function engine:draw()
                 aud:draw()
             end
 
+            for _, sprite in ipairs(SpriteList) do
+                sprite:draw()
+            end
+
             -- Highlight the selected object
             if selectedObject then
                 love.graphics.setColor(1, 0, 0, 0.5)

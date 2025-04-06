@@ -11,6 +11,8 @@ local disSizeX, disSizeY
 local FontDropdown
 local ThemeDropdown
 
+SpriteList = {}
+
 local scrollOffset = 0
 local scrollSpeed = 20 -- Speed of scrolling
 

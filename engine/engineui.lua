@@ -13,6 +13,8 @@ local ThemeDropdown
 
 SpriteList = {}
 
+local plugins = {}
+
 local scrollOffset = 0
 local scrollSpeed = 20 -- Speed of scrolling
 
@@ -323,6 +325,7 @@ end
 
 function engineui:load()
     loadSettings()
+    loadPlugins()
     FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono", "Inter", "JetbrainsMono"})
     FontDropdown.onSelect = function(selectedFontName)
         selectedFont = selectedFontName
@@ -1035,6 +1038,34 @@ function loadAndRunScripts()
             local source = love.audio.newSource(obj.audioFile, "static")
             source:play()
             table.remove(objects, i) -- Remove the object after playing the audio
+        end
+    end
+end
+
+function loadPlugins()
+    local pluginDir = "plugins/"
+    local files = love.filesystem.getDirectoryItems(pluginDir)
+
+    for _, file in ipairs(files) do
+        if file:match("%.lua$") then -- Only load Lua files
+            local pluginPath = pluginDir .. file
+            local pluginCode = love.filesystem.read(pluginPath)
+
+            if pluginCode then
+                local chunk, err = load(pluginCode, file, "t", _G)
+                if chunk then
+                    local success, plugin = pcall(chunk)
+                    if success and type(plugin) == "table" and plugin.init then
+                        plugin.init() -- Call the plugin's initialization function
+                        table.insert(plugins, plugin)
+                        print("Loaded plugin:", file)
+                    else
+                        print("Failed to initialize plugin:", file)
+                    end
+                else
+                    print("Error loading plugin:", err)
+                end
+            end
         end
     end
 end

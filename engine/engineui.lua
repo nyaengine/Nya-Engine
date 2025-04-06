@@ -796,6 +796,7 @@ end
 
 function engineui:draw()
     if ideTest == false and InEngine then
+
     -- Sidebar
     love.graphics.setColor(preferences.getColor("general", "primary"))
     love.graphics.rectangle("fill", windowWidth - 150, 50, 150, windowHeight - 50)

@@ -722,7 +722,6 @@ end
 function engineui:mousepressed(x, y, button, istouch, presses)
     if button == 1 then -- Left mouse button
         if ideTest == false then
-
             -- Handle clicks on ObjectList labels
             local objectListStartY = 100 - scrollOffset
             for i, objName in ipairs(ObjectList) do
@@ -735,6 +734,31 @@ function engineui:mousepressed(x, y, button, istouch, presses)
                 end
             end
 
+            -- Handle clicks on SceneList labels
+            local sceneListStartY = 100 - scrollOffset + #ObjectList * 20 + 40 -- Adjust based on ObjectList size
+            for i, sceneName in ipairs(SceneList) do
+                local labelX, labelY = 10, sceneListStartY + (i - 1) * 20
+                local labelWidth, labelHeight = 120, 20
+                if x >= labelX and x <= labelX + labelWidth and y >= labelY and y <= labelY + labelHeight then
+                    selectedScene = sceneName
+                    ObjectName:setText("Scene: " .. sceneName)
+                    return
+                end
+            end
+
+            -- Handle clicks on AudioList labels
+            local audioListStartY = sceneListStartY + #SceneList * 20 + 40 -- Adjust based on SceneList size
+            for i, audioName in ipairs(AudioList) do
+                local labelX, labelY = 10, audioListStartY + (i - 1) * 20
+                local labelWidth, labelHeight = 120, 20
+                if x >= labelX and x <= labelX + labelWidth and y >= labelY and y <= labelY + labelHeight then
+                    selectedAudio = audios[i]
+                    ObjectName:setText("Audio: " .. audioName)
+                    return
+                end
+            end
+
+            -- Handle clicks on other UI elements
             if settingsVis == true then
                 FontDropdown:update(x, y, button)
                 LangDropdown:update(x, y, button)
@@ -743,56 +767,44 @@ function engineui:mousepressed(x, y, button, istouch, presses)
             else
                 group:mousepressed(x, y, button)
 
-            for _, textboxes in ipairs(ObjectTextboxes) do
-                textboxes:mousepressed(x, y, button)
-            end
-
-            if x >= sidebarX and x <= sidebarX + sidebarWidth and y >= sidebarY and y <= sidebarY + sidebarHeight then
-                -- Click is within the sidebar, do not deselect
-                return
-            end
-
-            -- Check if a button is clicked
-            for _, btn in ipairs(topbarButtons) do
-                if btn:mousepressed(x, y, button) then
-                    return
+                for _, textboxes in ipairs(ObjectTextboxes) do
+                    textboxes:mousepressed(x, y, button)
                 end
-            end
 
-            for _, btn in ipairs(tabButtons) do
-                if btn:mousepressed(x, y, button) then
-                    return
+                -- Check if a button is clicked
+                for _, btn in ipairs(topbarButtons) do
+                    if btn:mousepressed(x, y, button) then
+                        return
+                    end
                 end
-            end
 
-            if createWin == true then
-            createObjectButton:mousepressed(x, y, button)
-            createCharacterObjectButton:mousepressed(x, y, button)
-            end
-            createuiButton:mousepressed(x, y, button)
-            if sceneWin == true then
-            createSceneButton:mousepressed(x, y, button)
-            end
-
-            if AudioWin == true then
-                createAudioObjectButton:mousepressed(x, y, button)
-            end
-
-            if projectWin == true then
-            ProjectName:mousepressed(x, y, button)
-            createProjectButton:mousepressed(x, y, button)
-            openProjectButton:mousepressed(x, y, button)
-            end
-
-            for index, obj in ipairs(objects) do
-            if obj:isClicked(camX, camY) then
-                ObjectName:setText(ObjectList[index])
-                return
+                for _, btn in ipairs(tabButtons) do
+                    if btn:mousepressed(x, y, button) then
+                        return
+                    end
                 end
-            end
 
-            -- Reset the ObjectName label if no object is selected
-            ObjectName:setText("ObjectName")
+                if createWin == true then
+                    createObjectButton:mousepressed(x, y, button)
+                    createCharacterObjectButton:mousepressed(x, y, button)
+                end
+                createuiButton:mousepressed(x, y, button)
+                if sceneWin == true then
+                    createSceneButton:mousepressed(x, y, button)
+                end
+
+                if AudioWin == true then
+                    createAudioObjectButton:mousepressed(x, y, button)
+                end
+
+                if projectWin == true then
+                    ProjectName:mousepressed(x, y, button)
+                    createProjectButton:mousepressed(x, y, button)
+                    openProjectButton:mousepressed(x, y, button)
+                end
+
+                -- Reset the ObjectName label if no object is selected
+                ObjectName:setText("ObjectName")
             end
         else
             ide.mousepressed(x, y, button)

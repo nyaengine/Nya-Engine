@@ -24,6 +24,7 @@ videoLibrary = require("lib/videoLib")
 ParallaxBackground = require("lib/parallaxbackground")
 Sprite = require("lib/sprite")
 modding_api = require("api/modding_api")
+UI = require("UI")
 
 _G.modding_api = modding_api  -- Make the modding API globally accessible
 

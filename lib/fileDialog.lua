@@ -11,6 +11,15 @@ local dialogWidth = 400
 local dialogHeight = 300
 local margin = 10
 
+-- Supported audio extensions
+local audioExtensions = { mp3 = true, wav = true, ogg = true, flac = true }
+
+-- Helper to check if file is audio
+local function isAudioFile(filename)
+    local ext = filename:match("^.+%.(.+)$")
+    return ext and audioExtensions[ext:lower()]
+end
+
 -- Load directory contents
 function loadDirectory(path)
     local items = love.filesystem.getDirectoryItems(path)
@@ -18,7 +27,12 @@ function loadDirectory(path)
     for _, item in ipairs(items) do
         local fullPath = path .. "/" .. item
         local info = love.filesystem.getInfo(fullPath)
-        table.insert(files, { name = item, isDir = info and info.type == "directory", path = fullPath })
+        table.insert(files, {
+            name = item,
+            isDir = info and info.type == "directory",
+            path = fullPath,
+            isAudio = not (info and info.type == "directory") and isAudioFile(item)
+        })
     end
 end
 
@@ -53,7 +67,15 @@ function fileDialog.draw()
             love.graphics.rectangle("fill", x - margin / 2, y - 5, dialogWidth - 2 * margin, 20)
             love.graphics.setColor(1, 1, 1)
         end
-        love.graphics.print((file.isDir and "[DIR] " or "") .. file.name, x, y)
+        if file.isDir then
+            love.graphics.print("[DIR] " .. file.name, x, y)
+        elseif file.isAudio then
+            love.graphics.setColor(0.2, 1, 0.2)
+            love.graphics.print("[AUDIO] " .. file.name, x, y)
+            love.graphics.setColor(1, 1, 1)
+        else
+            love.graphics.print(file.name, x, y)
+        end
         y = y + 20
     end
 
@@ -85,43 +107,53 @@ function fileDialog.mousepressed(x, y, button)
     end
 
     -- Check if Open button is clicked
-if x >= dialogX + margin + 100 and x <= dialogX + margin + 180 and
-   y >= screenHeight / 2 + dialogHeight / 2 - 40 and y <= screenHeight / 2 + dialogHeight / 2 - 10 then
-    if selectedFile then
-        if selectedFile.isDir then
-            -- Navigate into the directory
-            currentPath = selectedFile.path
-            loadDirectory(currentPath)
-            selectedFile = nil
-        else
-            -- Load the file content and update the IDE
-            local fileContent = love.filesystem.read(selectedFile.path)
-            if fileContent then
-                require("ide").updateTextEditorContent(fileContent)
-                require("ide").updateCursorPosition()
+    if x >= dialogX + margin + 100 and x <= dialogX + margin + 180 and
+       y >= screenHeight / 2 + dialogHeight / 2 - 40 and y <= screenHeight / 2 + dialogHeight / 2 - 10 then
+        if selectedFile then
+            if selectedFile.isDir then
+                -- Navigate into the directory
+                currentPath = selectedFile.path
+                loadDirectory(currentPath)
+                selectedFile = nil
+            elseif selectedFile.isAudio then
+                -- Play the audio file
+                local success, source = pcall(function()
+                    return love.audio.newSource(selectedFile.path, "static")
+                end)
+                if success and source then
+                    source:play()
+                else
+                    print("Failed to play audio: " .. selectedFile.path)
+                end
+                fileDialog.close()
             else
-                print("Failed to load the file: " .. selectedFile.path)
+                -- Load the file content and update the IDE
+                local fileContent = love.filesystem.read(selectedFile.path)
+                if fileContent then
+                    require("ide").updateTextEditorContent(fileContent)
+                    require("ide").updateCursorPosition()
+                else
+                    print("Failed to load the file: " .. selectedFile.path)
+                end
+                fileDialog.close()
             end
-            fileDialog.close()
+        else
+            print("No file selected!")
         end
-    else
-        print("No file selected!")
-    end
-    return
-end
-
-
-    -- Check if a file is selected
-local fileX = dialogX + margin
-local fileY = dialogY + margin
-for _, file in ipairs(files) do
-    if x >= fileX and x <= fileX + dialogWidth - 2 * margin and y >= fileY and y <= fileY + 20 then
-        selectedFile = file
-        print("Selected file: " .. file.name)
         return
     end
-    fileY = fileY + 20
-end
+
+    -- Check if a file is selected
+    local fileX = dialogX + margin
+    local fileY = dialogY + margin
+    for _, file in ipairs(files) do
+        if x >= fileX and x <= fileX + dialogWidth - 2 * margin and y >= fileY and y <= fileY + 20 then
+            selectedFile = file
+            print("Selected file: " .. file.name)
+            return
+        end
+        fileY = fileY + 20
+    end
 end
 
 return fileDialog

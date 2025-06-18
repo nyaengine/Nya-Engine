@@ -89,7 +89,7 @@ local createObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Object",
     table.insert(ObjectList, newObject.name)
 end)
 
-local createAudioObjectButton = ButtonLibrary:new(500, 150, 120, 40, "Create Audio", function()
+local createAudioObjectButton = ButtonLibrary:new(500, 250, 120, 40, "Create Audio", function()
     local AudioObj = GameObject:new({
         x = 150,
         y = 100,

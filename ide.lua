@@ -35,6 +35,8 @@ local debuggerLineHeight = 15  -- Height of each line of text
 local undoStack = {}
 local redoStack = {}
 
+local cursorIndex = 0
+
 -- Override the print function
 print = function(...)
     local message = ""
@@ -268,7 +270,9 @@ function ide.textinput(text)
             -- Update cursor position when typing
             local fontWidth = love.graphics.getFont():getWidth(text)
             cursorPos.x = cursorPos.x + fontWidth
-            textEditorContent = textEditorContent .. text
+            textEditorContent = textEditorContent:sub(1, cursorIndex) .. text .. textEditorContent:sub(cursorIndex+1)
+            cursorIndex = cursorIndex + #text
+            ide.updateCursorPosition()
 
             ide.saveToUndoStack()
         end
@@ -276,18 +280,12 @@ end
 
 -- Update the cursor position based on the current text content
 function ide.updateCursorPosition()
-    local fontWidth = font:getWidth(textEditorContent)  -- Use the JetBrains Mono font for width calculations
-    local lineHeight = font:getHeight()  -- Use the height of the JetBrains Mono font
+    local before = textEditorContent:sub(1, cursorIndex)
+    local lineCount = select(2, before:gsub("\n", "")) -- number of newlines before cursor
+    local lastLine = before:match("([^\n]*)$") or ""
 
-    -- Count the number of newlines in the content to determine the number of lines
-    local lineCount = 0
-    for _ in textEditorContent:gmatch("\n") do
-        lineCount = lineCount + 1
-    end
-
-    -- Update the cursor position
-    cursorPos.x = 180 + fontWidth  -- Update the x position based on the width of the content
-    cursorPos.y = 50 + lineHeight * lineCount  -- Update the y position based on the number of lines
+    cursorPos.x = 175 + font:getWidth(lastLine)
+    cursorPos.y = 50 + lineCount * font:getHeight()
 end
 
 function ide.updateTextEditorContent(content)
@@ -301,10 +299,13 @@ function ide.keypressed(key, scancode, isrepeat)
             local fontWidth = love.graphics.getFont():getWidth(textEditorContent)
             if key == "backspace" then
                 if selectedText ~= "" then
-                    textEditorContent = ""
+                    local startIndex = cursorIndex - #selectedText + 1
+                    if startIndex < 1 then startIndex = 1 end
+
+                    textEditorContent = textEditorContent:sub(1, startIndex - 1) .. textEditorContent:sub(cursorIndex + 1)
+                    cursorIndex = startIndex - 1
+                    ide.updateCursorPosition()
                     selectedText = ""
-                    cursorPos.x = 180
-                    cursorPos.y = 50
                     ide.saveToUndoStack()
                 else
                     -- Remove one character from the end of textEditorContent

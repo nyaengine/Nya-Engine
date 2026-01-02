@@ -55,7 +55,8 @@ local saveCodeButton = ButtonLibrary:new(150, 10, 100, 30, "Save", function()
 end)
 
 local openCodeButton = ButtonLibrary:new(290, 10, 100, 30, "Open", function()
-    fileDialog.open()
+    fileDialog.setFilter({ "lua", "txt", "json" })
+    fileDialog.open("project")
 end)
 
 local closeIDEButton = ButtonLibrary:new(love.graphics:getWidth() - 50, 10, 30, 30, "X", function()
@@ -88,6 +89,24 @@ function ide.load()
     table.insert(otherStuff, scriptNameTextBox)
     table.insert(otherStuff, openCodeButton)
     table.insert(otherStuff, saveCodeButton)
+
+    fileDialog.setCallback(function(path)
+        local content = love.filesystem.read(path)
+        if not content then
+            print("Failed to open file:", path)
+            return
+        end
+
+        ide.updateTextEditorContent(content)
+        cursorIndex = #content
+        ide.updateCursorPosition()
+
+        -- Update script name
+        local name = path:match("([^/]+)%.")
+        if name then
+            scriptNameTextBox.text = name
+        end
+    end)
 end
 
 function ide.draw()

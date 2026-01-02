@@ -15,6 +15,8 @@ local rowHeight = 20
 -- Extension filter (nil = show all files)
 local extensionFilter = nil
 
+local onFileSelected = nil
+
 local function getExtension(filename)
     return filename:match("^.+%.(.+)$")
 end
@@ -37,6 +39,10 @@ end
 
 function fileDialog.clearFilter()
     extensionFilter = nil
+end
+
+function fileDialog.setCallback(fn)
+    onFileSelected = fn
 end
 
 local function loadDirectory(path)
@@ -104,8 +110,10 @@ function fileDialog.draw()
         end
 
         if file.isDir then
+            love.graphics.setColor(preferences.getColor("label", "textColor"))
             love.graphics.print("[DIR] " .. file.name, x, y)
         else
+            love.graphics.setColor(preferences.getColor("label", "textColor"))
             love.graphics.print(file.name, x, y)
         end
 
@@ -146,9 +154,10 @@ function fileDialog.mousepressed(mx, my, button)
                 currentPath = selectedFile.path
                 loadDirectory(currentPath)
                 selectedFile = nil
-            else
-                -- Return selected file path
-                print("Selected file:", selectedFile.path)
+           else
+                if onFileSelected then
+                    onFileSelected(selectedFile.path)
+                end
                 fileDialog.close()
             end
         end

@@ -236,7 +236,7 @@ local openProjectButton = ButtonLibrary:new(150, 150, 125, 30, "Open Project", f
     projectName = ProjectName.text
     if projectName and projectName ~= "" then
         local projectPath = "project/" .. projectName
-        local projectFile = projectPath .. "/project.json"
+        local projectFile = projectPath .. "/project.nyaproj"
 
         if love.filesystem.getInfo(projectFile) then
             local projectJSON = love.filesystem.read(projectFile)

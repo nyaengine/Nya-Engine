@@ -55,7 +55,7 @@ local saveCodeButton = ButtonLibrary:new(150, 10, 100, 30, "Save", function()
 end)
 
 local openCodeButton = ButtonLibrary:new(290, 10, 100, 30, "Open", function()
-    fileDialog.setFilter({ "lua", "txt", "json" })
+    fileDialog.setFilter({ "lua", "txt", "json", "nyaproj"})
     fileDialog.open("project")
 end)
 

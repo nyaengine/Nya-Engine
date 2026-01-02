@@ -1,31 +1,3 @@
---[[ 
-
-Usage:
-
-1. Include this library in your project.
-2. Create a label using Label:new().
-3. Call label:draw() inside love.draw().
-
-Example:
-
-local Label = require 'label'
-
-function love.load()
-    myLabel = Label:new({
-        x = 100,
-        y = 50,
-        text = "Hello, World!",
-        font = love.graphics.newFont(20),
-        color = {1, 1, 1, 1}, -- White
-        textScale = 1.5 -- Scale the text by 1.5 times
-    })
-end
-
-function love.draw()
-    myLabel:draw()
-end
-]]--
-
 local Label = {}
 Label.__index = Label
 

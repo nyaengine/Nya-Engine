@@ -2,7 +2,7 @@
 preferences = require("preferences")
 
 ButtonLibrary = require("lib/ButtonLibrary")
-window = require("window")
+window = require("lib/window")
 Camera = require("lib/Camera")
 Label = require("lib/label")
 SceneManager = require("lib/SceneManager")

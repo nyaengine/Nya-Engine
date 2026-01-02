@@ -170,7 +170,7 @@ local createProjectButton = ButtonLibrary:new(0, 150, 125, 30, "Create Project",
         local projectPath = "project/" .. projectName
         love.filesystem.createDirectory(projectPath)
 
-        local projectFile = projectPath .. "/project.json"
+        local projectFile = projectPath .. "/project.nyaproj"
         local projectData = {
             objects = {},
             scenes = {},
@@ -194,7 +194,7 @@ end)
 local saveProjectButton = ButtonLibrary:new(200, 10, 120, 30, "Save", function()
     if projectName and projectName ~= "" then
         local projectPath = "project/" .. projectName
-        local projectFile = projectPath .. "/project.json"
+        local projectFile = projectPath .. "/project.nyaproj"
 
         -- Prepare project data
         local projectData = {

@@ -47,6 +47,9 @@ function TextBox:setFont(font)
 end
 
 function TextBox:draw()
+    local bg = self.bgColor or preferences.getColor("textbox", "background")
+    local textCol = self.textColor or preferences.getColor("textbox", "textColor")
+    
     -- Draw the textbox background
     love.graphics.setColor(self.bgColor) -- White color for background
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)

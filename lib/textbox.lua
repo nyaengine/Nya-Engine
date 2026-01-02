@@ -31,13 +31,13 @@ function TextBox:setCallback(callback)
 end
 
 function TextBox:update(dt)
-    if self.focused then
-        -- Handle text input
-        if love.keyboard.isDown("backspace") then
-            if #self.text > 0 then
-                self.text = self.text:sub(1, -2)
-                self.cursorPos = #self.text + 1
-            end
+    self.bgColor = preferences.getColor("textbox", "background")
+    self.textColor = preferences.getColor("textbox", "textColor")
+
+    if self.focused and love.keyboard.isDown("backspace") then
+        if #self.text > 0 then
+            self.text = self.text:sub(1, -2)
+            self.cursorPos = #self.text + 1
         end
     end
 end
@@ -47,21 +47,18 @@ function TextBox:setFont(font)
 end
 
 function TextBox:draw()
+    -- pull latest theme colors every frame
     local bg = self.bgColor or preferences.getColor("textbox", "background")
     local textCol = self.textColor or preferences.getColor("textbox", "textColor")
-    
-    -- Draw the textbox background
-    love.graphics.setColor(self.bgColor) -- White color for background
+
+    love.graphics.setColor(bg)
     love.graphics.rectangle("fill", self.x, self.y, self.width, self.height)
 
-    -- Draw the text
-    love.graphics.setColor(self.textColor) -- Black color for text
-    love.graphics.setFont(self.font) -- Use the assigned font
-    if self.text == "" then
-        love.graphics.print(self.placeholder, self.x + 5, self.y + (self.height / 2) - 6)
-    else
-        love.graphics.print(self.text, self.x + 5, self.y + (self.height / 2) - 6)
-    end
+    love.graphics.setColor(textCol)
+    love.graphics.setFont(self.font)
+
+    local textToDraw = self.text ~= "" and self.text or self.placeholder
+    love.graphics.print(textToDraw, self.x + 5, self.y + (self.height / 2) - 6)
 end
 
 -- Use keypressed for discrete input instead of getPressed

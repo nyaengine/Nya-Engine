@@ -1,160 +1,189 @@
 local SVG = {}
 
--- Function to parse an SVG path and convert it to mesh-friendly data
-function SVG.parsePath(path)
-    local vertices = {}  -- Stores points for the mesh
-    local lastX, lastY = 0, 0
-    local startX, startY = 0, 0  -- Track starting position for 'Z' command
-    local prevCtrlX, prevCtrlY = 0, 0  -- Control points for smooth curves
-    local isRelative = false  -- Track relative commands
+local STEPS = 12
 
-    local function addVertex(x, y)
-        table.insert(vertices, {x, y})
-        lastX, lastY = x, y
-    end
+local function lerp(a, b, t)
+    return a + (b - a) * t
+end
 
-    -- Function to handle absolute vs relative positioning
-    local function getCoord(x, y)
-        if isRelative then
-            return lastX + x, lastY + y
-        else
+local function quadBezier(p0, p1, p2, t)
+    local x = lerp(lerp(p0.x, p1.x, t), lerp(p1.x, p2.x, t), t)
+    local y = lerp(lerp(p0.y, p1.y, t), lerp(p1.y, p2.y, t), t)
+    return { x = x, y = y }
+end
+
+local function cubicBezier(p0, p1, p2, p3, t)
+    local a = quadBezier(p0, p1, p2, t)
+    local b = quadBezier(p1, p2, p3, t)
+    return {
+        x = lerp(a.x, b.x, t),
+        y = lerp(a.y, b.y, t)
+    }
+end
+
+function SVG.parsePath(d)
+    local points = {}
+    local cx, cy = 0, 0
+    local sx, sy = 0, 0
+    local pcx, pcy = 0, 0
+
+    for cmd, args in d:gmatch("([MmLlHhVvCcQqTtZz])([^MmLlHhVvCcQqTtZz]*)") do
+        local nums = {}
+        for n in args:gmatch("-?%d+%.?%d*") do
+            nums[#nums+1] = tonumber(n)
+        end
+
+        local rel = cmd:lower() == cmd
+        cmd = cmd:upper()
+
+        local i = 1
+        local function nextXY()
+            local x, y = nums[i], nums[i+1]
+            i = i + 2
+            if rel then
+                x, y = cx + x, cy + y
+            end
             return x, y
         end
-    end
 
-    -- Bezier Curve Interpolation
-    local function cubicBezier(p0, p1, p2, p3, steps)
-        local points = {}
-        for t = 0, 1, 1 / steps do
-            local x = (1 - t)^3 * p0.x + 3 * (1 - t)^2 * t * p1.x + 3 * (1 - t) * t^2 * p2.x + t^3 * p3.x
-            local y = (1 - t)^3 * p0.y + 3 * (1 - t)^2 * t * p1.y + 3 * (1 - t) * t^2 * p2.y + t^3 * p3.y
-            table.insert(points, {x, y})
-        end
-        return points
-    end
+        if cmd == "M" then
+            cx, cy = nextXY()
+            sx, sy = cx, cy
+            table.insert(points, {cx, cy})
 
-    local function quadraticBezier(p0, p1, p2, steps)
-        local points = {}
-        for t = 0, 1, 1 / steps do
-            local x = (1 - t)^2 * p0.x + 2 * (1 - t) * t * p1.x + t^2 * p2.x
-            local y = (1 - t)^2 * p0.y + 2 * (1 - t) * t * p1.y + t^2 * p2.y
-            table.insert(points, {x, y})
-        end
-        return points
-    end
-
-    -- Regex to extract SVG path commands and numbers
-    for command, args in path:gmatch("([mMlLhHvVcCsSqQtTzZ])([^mMlLhHvVcCsSqQtTzZ]*)") do
-        local numbers = {}
-        for num in args:gmatch("-?%d+%.?%d*") do
-            table.insert(numbers, tonumber(num))
-        end
-
-        isRelative = command:lower() == command  -- If lowercase, it's a relative command
-        command = command:upper()  -- Normalize to uppercase for easier processing
-
-        if command == "M" then  -- Move To
-            lastX, lastY = getCoord(numbers[1], numbers[2])
-            startX, startY = lastX, lastY
-            addVertex(lastX, lastY)
-        elseif command == "L" then  -- Line To
-            for i = 1, #numbers, 2 do
-                addVertex(getCoord(numbers[i], numbers[i + 1]))
+        elseif cmd == "L" then
+            while i <= #nums do
+                cx, cy = nextXY()
+                table.insert(points, {cx, cy})
             end
-        elseif command == "H" then  -- Horizontal Line
-            for _, x in ipairs(numbers) do
-                addVertex(getCoord(x, 0))
+
+        elseif cmd == "H" then
+            for _, x in ipairs(nums) do
+                if rel then x = cx + x end
+                cx = x
+                table.insert(points, {cx, cy})
             end
-        elseif command == "V" then  -- Vertical Line
-            for _, y in ipairs(numbers) do
-                addVertex(getCoord(0, y))
+
+        elseif cmd == "V" then
+            for _, y in ipairs(nums) do
+                if rel then y = cy + y end
+                cy = y
+                table.insert(points, {cx, cy})
             end
-        elseif command == "C" then  -- Cubic Bezier Curve
-            for i = 1, #numbers, 6 do
-                local p0 = {x = lastX, y = lastY}
-                local p1 = {x = getCoord(numbers[i], numbers[i + 1])}
-                local p2 = {x = getCoord(numbers[i + 2], numbers[i + 3])}
-                local p3 = {x = getCoord(numbers[i + 4], numbers[i + 5])}
-                prevCtrlX, prevCtrlY = p2.x, p2.y
-                local curvePoints = cubicBezier(p0, p1, p2, p3, 10)
-                for _, p in ipairs(curvePoints) do
-                    addVertex(p.x, p.y)
+
+        elseif cmd == "Q" then
+            while i <= #nums do
+                local x1, y1 = nextXY()
+                local x2, y2 = nextXY()
+                local p0 = {x=cx,y=cy}
+                local p1 = {x=x1,y=y1}
+                local p2 = {x=x2,y=y2}
+                for t = 0, 1, 1/STEPS do
+                    local p = quadBezier(p0, p1, p2, t)
+                    table.insert(points, {p.x, p.y})
                 end
+                cx, cy = x2, y2
+                pcx, pcy = x1, y1
             end
-        elseif command == "Q" then  -- Quadratic Bezier Curve
-            for i = 1, #numbers, 4 do
-                local p0 = {x = lastX, y = lastY}
-                local p1 = {x = getCoord(numbers[i], numbers[i + 1])}
-                local p2 = {x = getCoord(numbers[i + 2], numbers[i + 3])}
-                prevCtrlX, prevCtrlY = p1.x, p1.y
-                local curvePoints = quadraticBezier(p0, p1, p2, 10)
-                for _, p in ipairs(curvePoints) do
-                    addVertex(p.x, p.y)
+
+        elseif cmd == "C" then
+            while i <= #nums do
+                local x1,y1 = nextXY()
+                local x2,y2 = nextXY()
+                local x3,y3 = nextXY()
+                local p0={x=cx,y=cy}
+                local p1={x=x1,y=y1}
+                local p2={x=x2,y=y2}
+                local p3={x=x3,y=y3}
+                for t=0,1,1/STEPS do
+                    local p = cubicBezier(p0,p1,p2,p3,t)
+                    table.insert(points,{p.x,p.y})
                 end
+                cx, cy = x3, y3
+                pcx, pcy = x2, y2
             end
-        elseif command == "T" then  -- Smooth Quadratic Curve
-            for i = 1, #numbers, 2 do
-                local p0 = {x = lastX, y = lastY}
-                local p1 = {x = 2 * lastX - prevCtrlX, y = 2 * lastY - prevCtrlY}  -- Reflection
-                local p2 = {x = getCoord(numbers[i], numbers[i + 1])}
-                prevCtrlX, prevCtrlY = p1.x, p1.y
-                local curvePoints = quadraticBezier(p0, p1, p2, 10)
-                for _, p in ipairs(curvePoints) do
-                    addVertex(p.x, p.y)
+
+        elseif cmd == "T" then
+            while i <= #nums do
+                local x2,y2 = nextXY()
+                local x1 = 2*cx - pcx
+                local y1 = 2*cy - pcy
+                local p0={x=cx,y=cy}
+                local p1={x=x1,y=y1}
+                local p2={x=x2,y=y2}
+                for t=0,1,1/STEPS do
+                    local p = quadBezier(p0,p1,p2,t)
+                    table.insert(points,{p.x,p.y})
                 end
+                cx, cy = x2, y2
+                pcx, pcy = x1, y1
             end
-        elseif command == "Z" then  -- Close Path
-            addVertex(startX, startY)
+
+        elseif cmd == "Z" then
+            table.insert(points, {sx, sy})
+            cx, cy = sx, sy
         end
     end
 
-    return vertices
+    return points
 end
 
--- Function to convert path data into a drawable mesh
-function SVG.pathToMesh(path)
-    local vertices = SVG.parsePath(path)
-    if #vertices < 3 then
-        return nil  -- Mesh requires at least 3 points
+function SVG.pathToMesh(d)
+    local pts = SVG.parsePath(d)
+    if #pts < 3 then return nil end
+
+    local triangles = love.math.triangulate(pts)
+    local verts = {}
+
+    for _, tri in ipairs(triangles) do
+        for _, p in ipairs(tri) do
+            table.insert(verts, {
+                p[1], p[2],
+                0, 0,
+                1, 1, 1, 1
+            })
+        end
     end
-    return love.graphics.newMesh(vertices, "fan")
+
+    return love.graphics.newMesh(verts, "triangles")
 end
 
--- Function to load an SVG file and extract paths
 function SVG.load(filename)
-    local file = love.filesystem.read(filename)
-    if not file then
-        error("Failed to load SVG file: " .. filename)
-    end
-    
-    local paths = {}
-    for path, style in file:gmatch('<path[^>]*d="([^"]+)"[^>]*style="([^"]-)"') do
-        local mesh = SVG.pathToMesh(path)
+    local data = love.filesystem.read(filename)
+    local meshes = {}
+
+    for d, fill in data:gmatch('<path[^>]-d="([^"]+)"[^>]-fill="([^"]+)"') do
+        local mesh = SVG.pathToMesh(d)
         if mesh then
-            table.insert(paths, {mesh = mesh, style = style})
+            table.insert(meshes, { mesh = mesh, fill = fill })
         end
     end
 
-    return paths
+    return meshes
 end
 
--- Function to parse SVG color (for fills and strokes)
-function SVG.parseColor(style)
-    local color = {1, 1, 1, 1}  -- Default to white
-    local r, g, b, a = style:match("fill:rgb%((%d+),(%d+),(%d+)%)")
-    if r and g and b then
-        color = {tonumber(r) / 255, tonumber(g) / 255, tonumber(b) / 255, 1}
+function SVG.parseColor(fill)
+    if fill == "none" then return 1,1,1,1 end
+    local r,g,b = fill:match("#(%x%x)(%x%x)(%x%x)")
+    if r then
+        return tonumber(r,16)/255,
+               tonumber(g,16)/255,
+               tonumber(b,16)/255,
+               1
     end
-    return color
+    return 1,1,1,1
 end
 
--- Function to draw all loaded SVG meshes
-function SVG.draw(svgObjects)
-    for _, obj in ipairs(svgObjects) do
-        love.graphics.setColor(SVG.parseColor(obj.style))
+function SVG.draw(svg)
+    if not svg then return end
+
+    for _, obj in ipairs(svg) do
+        local r,g,b,a = SVG.parseColor(obj.fill)
+        love.graphics.setColor(r,g,b,a)
         love.graphics.draw(obj.mesh)
     end
-    love.graphics.setColor(1, 1, 1, 1)  -- Reset color
+
+    love.graphics.setColor(1,1,1,1)
 end
 
 return SVG

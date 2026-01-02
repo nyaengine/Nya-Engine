@@ -18,6 +18,7 @@ frame = require("lib/frame")
 fileDialog = require("lib/fileDialog")
 CheckboxGroup = CheckboxLib.CheckboxGroup
 DropdownLibrary = require("lib/DropdownLibrary")
+FileButton = require("lib/fileButton")
 SaveLoad = require("lib/save_load")
 GameObject = require("lib/GameObject")
 UIManager = require("lib/UIManager")

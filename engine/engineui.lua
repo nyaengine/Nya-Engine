@@ -58,6 +58,9 @@ otherStuff = {}
 --Textboxes
 local ObjectTextboxes = {}
 
+-- File Buttons
+local objectFileButts = {}
+
 -- Windows
 local settingsVis = false
 local createWin = false
@@ -502,6 +505,16 @@ function engineui:load()
         textScale = 1.25
     })
 
+    AudioFileButton = FileButton.new({
+        x = 50,
+        y = 50,
+        label = "Choose Audio",
+        filter = {"mp3", "ogg", "wav"},
+        onChange = function(path)
+            print("Selected file:", path)
+        end
+    })
+
     ProjectName = TextBox.new(0, 100, 125, 30, "Project Name")
 
     positionTextbox = TextBox.new(love.graphics:getWidth() - 70, 175, 70, 30, "x, y")
@@ -603,6 +616,7 @@ function engineui:load()
     table.insert(ObjectTextboxes, sizeTextbox)
     table.insert(ObjectTextboxes, objectGravityTB)
     table.insert(propertiesLabels, TextureFileText)
+    table.insert(objectFileButts, AudioFileButton)
 end
 
 function applyFont(fontName)
@@ -759,6 +773,7 @@ function engineui:mousepressed(x, y, button, istouch, presses)
                 closeButton:mousepressed(x, y, button)
             else
                 group:mousepressed(x, y, button)
+                fileDialog.mousepressed(x, y, button)
 
                 for _, textboxes in ipairs(ObjectTextboxes) do
                     textboxes:mousepressed(x, y, button)
@@ -773,6 +788,12 @@ function engineui:mousepressed(x, y, button, istouch, presses)
 
                 for _, btn in ipairs(tabButtons) do
                     if btn:mousepressed(x, y, button) then
+                        return
+                    end
+                end
+
+                for _, btns in ipairs(objectFileButts) do
+                    if btns:mousepressed(x, y, button) then
                         return
                     end
                 end
@@ -918,7 +939,10 @@ function engineui:draw()
                     audioFileTextbox.text = selectedObject.audioFile or ""
                 end
             end
+
+            AudioFileButton:draw()
         end
+        fileDialog.draw()
     end
 
     for _, v in ipairs(objects) do
@@ -1160,5 +1184,3 @@ function engineui:keypressed(key)
 end
 
 return engineui
-
--- secret message: i love boobs

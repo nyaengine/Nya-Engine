@@ -589,9 +589,14 @@ function engineui:load()
     createAudioWindow:addElement(createAudioObjectButton)
 
     local createRunButton = ButtonLibrary:new(love.graphics.getWidth() / 2, 10, 120, 30, "Run", function()
-        running = not running
+        -- Delegate run toggling to engine:keypressed to ensure physics auto-init
+        if engine and engine.keypressed then
+            engine:keypressed("f5")
+        else
+            running = not running
+        end
         if running then
-        loadAndRunScripts()
+            loadAndRunScripts()
         end
     end)
 

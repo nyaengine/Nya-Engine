@@ -1,13 +1,15 @@
 GameObject = {}
 GameObject.__index = GameObject
 
+local Physics = require("lib.Physics")
+local _nextPhysicsId = 0
 function GameObject:new(o)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
 
-    local obj = setmetatable(params or {}, GameObject)
-    obj.children = {} -- Initialize the children table
+    local obj = o
+    obj.children = obj.children or {} -- Initialize the children table
 
     -- Default properties
     o.x = o.x or 0
@@ -15,26 +17,42 @@ function GameObject:new(o)
     o.width = o.width or 0
     o.height = o.height or 0
 
-    -- Initialize physics properties
-    o.velocityX = velocityX or  0
-    o.velocityY = velocityY or 0
+    -- Initialize physics properties (used when not using love.physics)
+    o.velocityX = o.velocityX or  0
+    o.velocityY = o.velocityY or 0
     o.accelerationX = o.accelerationX or 0
     o.accelerationY = o.accelerationY or 0
     o.mass = o.mass or 1
     o.gravity = o.gravity or 500  -- acceleration due to gravity, adjust as needed
 
+    -- If requested, create a physics body via the Physics library
+    if o.usePhysics then
+        _nextPhysicsId = _nextPhysicsId + 1
+        local id = "go_" .. tostring(_nextPhysicsId)
+        o.physicsId = id
+        local opts = {}
+        if o.static or o.isStatic then opts.static = true end
+        Physics.addRectangle(id, o.x, o.y, o.width, o.height, opts)
+        Physics.onCollision(id, function(selfData, otherData, contact)
+            if o.onCollision then pcall(o.onCollision, o, otherData, contact) end
+        end)
+    end
+
     return o
 end
 
--- Apply force to the object (useful for handling things like gravity or user input)
-function GameObject:applyForce(fx, fy)
-    self.accelerationX = self.accelerationX + fx / self.mass
-    self.accelerationY = self.accelerationY + fy / self.mass
-end
-
 function GameObject:update(dt)
-    -- Apply gravity
-    self:applyForce(0, self.gravity)
+    -- If using the physics library, sync position from the physics body
+    if self.physicsId then
+        local body = Physics.getBody(self.physicsId)
+        if body then
+            local bx, by = body:getX(), body:getY()
+            -- Physics bodies are centered; convert to top-left
+            self.x = bx - (self.width or 0) / 2
+            self.y = by - (self.height or 0) / 2
+            return
+        end
+    end
 
     -- Update velocity based on acceleration
     self.velocityX = self.velocityX + self.accelerationX * dt
@@ -51,6 +69,25 @@ function GameObject:update(dt)
     -- Reset accelerations after each update
     self.accelerationX = 0
     self.accelerationY = 0
+end
+
+function GameObject:enablePhysics(opts)
+    if self.physicsId then return end
+    _nextPhysicsId = _nextPhysicsId + 1
+    local id = "go_" .. tostring(_nextPhysicsId)
+    self.physicsId = id
+    opts = opts or {}
+    if self.static or self.isStatic then opts.static = true end
+    Physics.addRectangle(id, self.x, self.y, self.width, self.height, opts)
+    Physics.onCollision(id, function(selfData, otherData, contact)
+        if self.onCollision then pcall(self.onCollision, self, otherData, contact) end
+    end)
+end
+
+function GameObject:disablePhysics()
+    if not self.physicsId then return end
+    Physics.remove(self.physicsId)
+    self.physicsId = nil
 end
 
 function GameObject:addChild(child)

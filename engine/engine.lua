@@ -9,12 +9,51 @@ sceneManager = SceneManager:new()
 local camera = Camera:new(0, 0, 1)
 local dragOffsetX = 0
 local dragOffsetY = 0
+local Physics = require("lib.Physics")
+
+-- Physics integration flag
+engine.physicsEnabled = false
+engine._physicsAutoEnabled = false
+
+local function createPhysicsForObject(obj)
+    if not obj then return end
+    -- generate an id for the physics body
+    local id = tostring(obj)
+    obj.physicsId = id
+    local opts = {}
+    if obj.isStatic or obj.static then opts.static = true end
+    -- use object's size and position to create rectangle body
+    Physics.addRectangle(id, obj.x, obj.y, obj.width, obj.height, opts)
+    -- simple collision callback routing
+    Physics.onCollision(id, function(selfObjData, otherData, contact)
+        if obj.onCollision then pcall(obj.onCollision, obj, otherData) end
+    end)
+end
 
 function engine:update(dt)
     -- Update all objects
     if running then
-        for _, obj in ipairs(objects) do
-            obj:update(dt)
+        -- update physics world if enabled
+        if engine.physicsEnabled then
+            Physics.update(dt)
+            -- sync object positions from physics bodies
+            for _, obj in ipairs(objects) do
+                if obj.physicsId then
+                    local body = Physics.getBody(obj.physicsId)
+                    if body then
+                        local bx, by = body:getX(), body:getY()
+                        -- body created at center; adjust to top-left
+                        obj.x = bx - (obj.width or 0) / 2
+                        obj.y = by - (obj.height or 0) / 2
+                    end
+                else
+                    obj:update(dt)
+                end
+            end
+        else
+            for _, obj in ipairs(objects) do
+                obj:update(dt)
+            end
         end
     end
 
@@ -120,6 +159,39 @@ end
 function engine:keypressed(key)
     if key == "f5" and InEngine then
         running = not running
+        if running then
+            -- when starting the project, enable physics by default if not already enabled
+            if not engine.physicsEnabled then
+                engine.physicsEnabled = true
+                engine._physicsAutoEnabled = true
+                Physics.init(0, 9.81 * 64)
+                for _, obj in ipairs(objects) do
+                    createPhysicsForObject(obj)
+                end
+            end
+        else
+            -- when stopping, clear physics only if we auto-enabled it
+            if engine._physicsAutoEnabled then
+                Physics.clear()
+                for _, obj in ipairs(objects) do obj.physicsId = nil end
+                engine.physicsEnabled = false
+                engine._physicsAutoEnabled = false
+            end
+        end
+    elseif key == "p" and InEngine then
+        -- toggle physics integration
+        engine.physicsEnabled = not engine.physicsEnabled
+        if engine.physicsEnabled then
+            Physics.init(0, 9.81 * 64)
+            -- create physics bodies for all existing objects
+            for _, obj in ipairs(objects) do
+                createPhysicsForObject(obj)
+            end
+        else
+            Physics.clear()
+            -- clear physics ids
+            for _, obj in ipairs(objects) do obj.physicsId = nil end
+        end
     elseif key == "f" and running == false then
         camera:focus(selectedObject)
     elseif key == "delete" and InEngine and running == false and selectedObject then
@@ -169,6 +241,10 @@ function engine:draw()
             camera:reset()
 
             sceneManager:draw()
+            -- Draw physics debug shapes when enabled
+            if engine.physicsEnabled and Physics and Physics.debugDraw then
+                Physics.debugDraw()
+            end
         else
             -- Draw game objects when not in engine
             for _, obj in ipairs(objects) do

@@ -1,4 +1,6 @@
--- Required files
+-- This engine is so fucking ass
+-- Why did i make it like that?!
+
 preferences = require("preferences")
 
 ButtonLibrary = require("lib/ButtonLibrary")

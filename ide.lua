@@ -74,6 +74,30 @@ local syntaxColors = {
     default = {1, 1, 1}       -- White for normal text
 }
 
+local function clampCursor()
+    cursorIndex = math.max(0, math.min(cursorIndex, #textEditorContent))
+end
+
+local function getLineStart(index)
+    local before = textEditorContent:sub(1, index)
+    local lastNewline = before:find("\n[^\n]*$") 
+    return lastNewline and lastNewline or 0
+end
+
+local function getLineEnd(index)
+    local after = textEditorContent:sub(index + 1)
+    local nextNewline = after:find("\n")
+    return nextNewline and (index + nextNewline - 1) or #textEditorContent
+end
+
+local function getCursorLineColumn()
+    local before = textEditorContent:sub(1, cursorIndex)
+    local lineStart = before:match("()\n[^\n]*$") or 1
+    local column = cursorIndex - (lineStart - 1)
+    return lineStart, column
+end
+
+
 -- Generic setup
 function ide.load()
     -- Load and parse the syntax.json file
@@ -316,22 +340,14 @@ function ide.keypressed(key, scancode, isrepeat)
             handleScriptNameInput(key)
         else
             local fontWidth = love.graphics.getFont():getWidth(textEditorContent)
-            if key == "backspace" then
-                if selectedText ~= "" then
-                    local startIndex = cursorIndex - #selectedText + 1
-                    if startIndex < 1 then startIndex = 1 end
+            if key == "backspace" and cursorIndex > 0 then
+                textEditorContent =
+                    textEditorContent:sub(1, cursorIndex - 1) ..
+                    textEditorContent:sub(cursorIndex + 1)
 
-                    textEditorContent = textEditorContent:sub(1, startIndex - 1) .. textEditorContent:sub(cursorIndex + 1)
-                    cursorIndex = startIndex - 1
-                    ide.updateCursorPosition()
-                    selectedText = ""
-                    ide.saveToUndoStack()
-                else
-                    -- Remove one character from the end of textEditorContent
-                    textEditorContent = textEditorContent:sub(1, -2)
-                    cursorPos.x = cursorPos.x - love.graphics.getFont():getWidth(textEditorContent:sub(-1))
-                    ide.saveToUndoStack()
-                end
+                cursorIndex = cursorIndex - 1
+                ide.updateCursorPosition()
+                ide.saveToUndoStack()
             elseif key == "return" then
                 -- Add a new line (newline character)
                 textEditorContent = textEditorContent .. "\n"
@@ -351,6 +367,54 @@ function ide.keypressed(key, scancode, isrepeat)
             elseif key == "y" and love.keyboard.isDown("lctrl", "rctrl") then
                 -- Redo
                 ide.redo()
+            elseif key == "left" then
+                cursorIndex = cursorIndex - 1
+
+            elseif key == "right" then
+                cursorIndex = cursorIndex + 1
+
+            elseif key == "home" then
+                cursorIndex = getLineStart(cursorIndex)
+
+            elseif key == "end" then
+                cursorIndex = getLineEnd(cursorIndex)
+
+            elseif key == "up" or key == "down" then
+                local lineStart, column = getCursorLineColumn()
+
+                if key == "up" and lineStart > 1 then
+                    local prevLineEnd = lineStart - 2
+                    local prevLineStart = getLineStart(prevLineEnd)
+                    cursorIndex = math.min(prevLineStart + column - 1, prevLineEnd)
+
+                elseif key == "down" then
+                    local lineEnd = getLineEnd(cursorIndex)
+                    if lineEnd < #textEditorContent then
+                        local nextLineStart = lineEnd + 2
+                        local nextLineEnd = getLineEnd(nextLineStart)
+                        cursorIndex = math.min(nextLineStart + column - 1, nextLineEnd)
+                    end
+                end
+            end
+
+            clampCursor()
+            ide.updateCursorPosition()
+
+            if love.keyboard.isDown("lctrl", "rctrl") then
+                if key == "left" then
+                    local before = textEditorContent:sub(1, cursorIndex)
+                    local s = before:match("()%W+%w*$") or before:match("()%w+$")
+                    cursorIndex = (s or 1) - 1
+
+                elseif key == "right" then
+                    local after = textEditorContent:sub(cursorIndex + 1)
+                    local e = after:match("^%w+()%W") or #after + 1
+                    cursorIndex = cursorIndex + e
+                end
+
+                clampCursor()
+                ide.updateCursorPosition()
+                return
             end
         end
 end

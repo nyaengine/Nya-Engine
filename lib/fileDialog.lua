@@ -2,7 +2,7 @@ local fileDialog = {}
 
 -- Dialog state
 local isDialogOpen = false
-local currentPath = "project"  -- Set this to your starting folder
+local currentPath = "project"
 local files = {}
 local selectedFile = nil
 
@@ -10,149 +10,160 @@ local selectedFile = nil
 local dialogWidth = 400
 local dialogHeight = 300
 local margin = 10
+local rowHeight = 20
 
--- Supported audio extensions
-local audioExtensions = { mp3 = true, wav = true, ogg = true, flac = true }
+-- Extension filter (nil = show all files)
+local extensionFilter = nil
 
--- Helper to check if file is audio
-local function isAudioFile(filename)
-    local ext = filename:match("^.+%.(.+)$")
-    return ext and audioExtensions[ext:lower()]
+local function getExtension(filename)
+    return filename:match("^.+%.(.+)$")
 end
 
--- Load directory contents
-function loadDirectory(path)
-    local items = love.filesystem.getDirectoryItems(path)
-    files = {}
-    for _, item in ipairs(items) do
-        local fullPath = path .. "/" .. item
-        local info = love.filesystem.getInfo(fullPath)
-        table.insert(files, {
-            name = item,
-            isDir = info and info.type == "directory",
-            path = fullPath,
-            isAudio = not (info and info.type == "directory") and isAudioFile(item)
-        })
+local function passesFilter(filename)
+    if not extensionFilter then
+        return true
+    end
+
+    local ext = getExtension(filename)
+    return ext and extensionFilter[ext:lower()] or false
+end
+
+function fileDialog.setFilter(extList)
+    extensionFilter = {}
+    for _, ext in ipairs(extList) do
+        extensionFilter[ext:lower()] = true
     end
 end
 
--- Open the dialog
-function fileDialog.open()
+function fileDialog.clearFilter()
+    extensionFilter = nil
+end
+
+local function loadDirectory(path)
+    files = {}
+
+    for _, item in ipairs(love.filesystem.getDirectoryItems(path)) do
+        local fullPath = path .. "/" .. item
+        local info = love.filesystem.getInfo(fullPath)
+
+        if info then
+            if info.type == "directory" then
+                -- Always show directories
+                table.insert(files, {
+                    name = item,
+                    path = fullPath,
+                    isDir = true
+                })
+            else
+                -- Only show files that pass filter
+                if passesFilter(item) then
+                    table.insert(files, {
+                        name = item,
+                        path = fullPath,
+                        isDir = false,
+                        ext = getExtension(item)
+                    })
+                end
+            end
+        end
+    end
+end
+
+function fileDialog.open(startPath)
     isDialogOpen = true
+    selectedFile = nil
+    currentPath = startPath or currentPath
     loadDirectory(currentPath)
 end
 
--- Close the dialog
 function fileDialog.close()
     isDialogOpen = false
     selectedFile = nil
 end
 
--- Draw the dialog
 function fileDialog.draw()
     if not isDialogOpen then return end
 
-    -- Draw dialog background
-    local screenWidth, screenHeight = love.graphics.getDimensions()
-    love.graphics.setColor(0.1, 0.1, 0.1, 0.9)
-    love.graphics.rectangle("fill", (screenWidth - dialogWidth) / 2, (screenHeight - dialogHeight) / 2, dialogWidth, dialogHeight)
+    local sw, sh = love.graphics.getDimensions()
+    local dx = (sw - dialogWidth) / 2
+    local dy = (sh - dialogHeight) / 2
 
-    -- Draw file list
-    love.graphics.setColor(1, 1, 1)
-    local x = (screenWidth - dialogWidth) / 2 + margin
-    local y = (screenHeight - dialogHeight) / 2 + margin
-    for i, file in ipairs(files) do
+    -- Background
+    love.graphics.setColor(0.1, 0.1, 0.1, 0.95)
+    love.graphics.rectangle("fill", dx, dy, dialogWidth, dialogHeight)
+
+    -- File list
+    local x = dx + margin
+    local y = dy + margin
+
+    for _, file in ipairs(files) do
         if file == selectedFile then
             love.graphics.setColor(0.3, 0.6, 1)
-            love.graphics.rectangle("fill", x - margin / 2, y - 5, dialogWidth - 2 * margin, 20)
+            love.graphics.rectangle("fill", x - 5, y - 2, dialogWidth - margin * 2, rowHeight)
             love.graphics.setColor(1, 1, 1)
         end
+
         if file.isDir then
             love.graphics.print("[DIR] " .. file.name, x, y)
-        elseif file.isAudio then
-            love.graphics.setColor(0.2, 1, 0.2)
-            love.graphics.print("[AUDIO] " .. file.name, x, y)
-            love.graphics.setColor(1, 1, 1)
         else
             love.graphics.print(file.name, x, y)
         end
-        y = y + 20
+
+        y = y + rowHeight
     end
 
-    -- Draw buttons
-    love.graphics.setColor(0.8, 0.8, 0.8)
-    love.graphics.rectangle("fill", x, screenHeight / 2 + dialogHeight / 2 - 40, 80, 30)
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.print("Cancel", x + 10, screenHeight / 2 + dialogHeight / 2 - 35)
+    -- Buttons
+    local by = dy + dialogHeight - 40
 
     love.graphics.setColor(0.8, 0.8, 0.8)
-    love.graphics.rectangle("fill", x + 100, screenHeight / 2 + dialogHeight / 2 - 40, 80, 30)
+    love.graphics.rectangle("fill", x, by, 80, 30)
+    love.graphics.rectangle("fill", x + 100, by, 80, 30)
+
     love.graphics.setColor(0, 0, 0)
-    love.graphics.print("Open", x + 110, screenHeight / 2 + dialogHeight / 2 - 35)
+    love.graphics.print("Cancel", x + 10, by + 7)
+    love.graphics.print("Open", x + 115, by + 7)
 end
 
--- Mouse interaction
-function fileDialog.mousepressed(x, y, button)
+function fileDialog.mousepressed(mx, my, button)
     if not isDialogOpen or button ~= 1 then return end
 
-    local screenWidth, screenHeight = love.graphics.getDimensions()
-    local dialogX = (screenWidth - dialogWidth) / 2
-    local dialogY = (screenHeight - dialogHeight) / 2
+    local sw, sh = love.graphics.getDimensions()
+    local dx = (sw - dialogWidth) / 2
+    local dy = (sh - dialogHeight) / 2
 
-    -- Check if Cancel button is clicked
-    if x >= dialogX + margin and x <= dialogX + margin + 80 and
-       y >= screenHeight / 2 + dialogHeight / 2 - 40 and y <= screenHeight / 2 + dialogHeight / 2 - 10 then
+    -- Cancel
+    if mx >= dx + margin and mx <= dx + margin + 80 and
+       my >= dy + dialogHeight - 40 and my <= dy + dialogHeight - 10 then
         fileDialog.close()
         return
     end
 
-    -- Check if Open button is clicked
-    if x >= dialogX + margin + 100 and x <= dialogX + margin + 180 and
-       y >= screenHeight / 2 + dialogHeight / 2 - 40 and y <= screenHeight / 2 + dialogHeight / 2 - 10 then
+    -- Open
+    if mx >= dx + margin + 100 and mx <= dx + margin + 180 and
+       my >= dy + dialogHeight - 40 and my <= dy + dialogHeight - 10 then
         if selectedFile then
             if selectedFile.isDir then
-                -- Navigate into the directory
                 currentPath = selectedFile.path
                 loadDirectory(currentPath)
                 selectedFile = nil
-            elseif selectedFile.isAudio then
-                -- Play the audio file
-                local success, source = pcall(function()
-                    return love.audio.newSource(selectedFile.path, "static")
-                end)
-                if success and source then
-                    source:play()
-                else
-                    print("Failed to play audio: " .. selectedFile.path)
-                end
-                fileDialog.close()
             else
-                -- Load the file content and update the IDE
-                local fileContent = love.filesystem.read(selectedFile.path)
-                if fileContent then
-                    require("ide").updateTextEditorContent(fileContent)
-                    require("ide").updateCursorPosition()
-                else
-                    print("Failed to load the file: " .. selectedFile.path)
-                end
+                -- Return selected file path
+                print("Selected file:", selectedFile.path)
                 fileDialog.close()
             end
-        else
-            print("No file selected!")
         end
         return
     end
 
-    -- Check if a file is selected
-    local fileX = dialogX + margin
-    local fileY = dialogY + margin
+    -- File selection
+    local y = dy + margin
     for _, file in ipairs(files) do
-        if x >= fileX and x <= fileX + dialogWidth - 2 * margin and y >= fileY and y <= fileY + 20 then
+        if mx >= dx + margin and mx <= dx + dialogWidth - margin and
+           my >= y and my <= y + rowHeight then
             selectedFile = file
-            print("Selected file: " .. file.name)
             return
         end
-        fileY = fileY + 20
+        y = y + rowHeight
     end
 end
 

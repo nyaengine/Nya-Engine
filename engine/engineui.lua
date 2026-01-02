@@ -528,12 +528,12 @@ function engineui:load()
     ObjectNameTextbox = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "ObjectName")
     objectGravityTB = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "50")
 
-    local audioFileTextbox = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "Audio File")
+    --[[local audioFileTextbox = TextBox.new(love.graphics:getWidth() - 150, 325, 100, 30, "Audio File")
     audioFileTextbox:setCallback(function(text)
         if selectedObject and selectedObject.Audio then
             selectedObject.audioFile = text
         end
-    end)
+    end)]]
 
     myWindow = window:new(50, 50, love.graphics:getWidth() - 100, love.graphics:getWidth() - 100)
     myWindow:addElement(closeButton)

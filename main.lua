@@ -32,7 +32,6 @@ selectedFont = "Poppins"
 local mods = {}
 
 local assetsFolder = love.filesystem.createDirectory("project")
-local svgMeshes = {}
 
 objects = {}
 audios = {}
@@ -93,9 +92,9 @@ end
 
 function love.draw()
     if InEngine then
-    engine:draw()
-    engineUI:draw()
-end
+        engine:draw()
+        engineUI:draw()
+    end
     
     if InEngine == false then
         for _, obj in ipairs(objects) do

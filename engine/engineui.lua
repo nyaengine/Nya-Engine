@@ -3,6 +3,13 @@ local engineui = {}
 --engine ui only libraries
 local something = require("lib/something")
 
+-- Debug overlay state
+local debugOverlay = {
+    enabled = false,
+    font = nil,
+    toggleKey = "f3"
+}
+
 --UI objects
 local group
 local projectName
@@ -371,6 +378,10 @@ function engineui:load()
 
     if not InEngine then
         projectWin = false
+    end
+
+    if love and love.graphics and not debugOverlay.font then
+        debugOverlay.font = love.graphics.newFont(12)
     end
     
     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
@@ -1029,6 +1040,29 @@ function engineui:draw()
     end
 end
 
+local function drawDebugOverlay()
+    if not debugOverlay.enabled then return end
+    local fps = love.timer.getFPS()
+    local mem = collectgarbage("count") / 1024 -- MB
+    local x, y = 10, 10
+    local w, h = 160, 40
+
+    love.graphics.push()
+    if debugOverlay.font then love.graphics.setFont(debugOverlay.font) end
+    love.graphics.setColor(0, 0, 0, 0.6)
+    love.graphics.rectangle("fill", x, y, w, h, 4, 4)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.print("FPS: " .. tostring(fps), x + 8, y + 6)
+    love.graphics.print(string.format("Mem: %.2f MB", mem), x + 8, y + 20)
+    love.graphics.pop()
+end
+
+local _orig_draw = engineui.draw
+function engineui:draw()
+    _orig_draw(self)
+    if debugOverlay then drawDebugOverlay() end
+end
+
 function loadAndRunScripts()
     local scriptsFolder = "project/" .. projectName .. "/scripts"
     local files = love.filesystem.getDirectoryItems(scriptsFolder)
@@ -1180,6 +1214,11 @@ end
 function engineui:keypressed(key)
     if ideTest == true then
         ide.keypressed(key)
+    end
+
+    -- toggle debug overlay
+    if key == debugOverlay.toggleKey then
+        debugOverlay.enabled = not debugOverlay.enabled
     end
 end
 

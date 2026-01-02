@@ -41,7 +41,7 @@ audios = {}
 CollisionObjects = {}
 font = preferences.getFont(selectedFont)
 
-engineVer = "Prototype"
+engineVer = "1.0.0"
 InEngine = true
 
 if InEngine then

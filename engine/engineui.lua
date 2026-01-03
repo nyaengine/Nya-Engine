@@ -386,7 +386,33 @@ function engineui:load()
     
     group = CheckboxLib.Checkbox.new(love.graphics.getWidth() - 135, 125, 20, "Collisions")
     group:setOnToggle(function(checked)
-        table.insert(CollisionObjects, selectedObject)
+        if not selectedObject then return end
+        if checked then
+            -- If object was anchored, un-anchor it so it can receive physics
+            if selectedObject.anchored then
+                selectedObject.anchored = false
+            end
+            -- Enable physics on the object (will no-op if already enabled)
+            if selectedObject.enablePhysics then
+                selectedObject:enablePhysics()
+            end
+            -- Add to CollisionObjects list if not present
+            local found = false
+            for _, v in ipairs(CollisionObjects) do if v == selectedObject then found = true; break end end
+            if not found then table.insert(CollisionObjects, selectedObject) end
+        else
+            -- Disable physics for this object
+            if selectedObject.disablePhysics then
+                selectedObject:disablePhysics()
+            else
+                -- fallback: clear physicsId if present
+                selectedObject.physicsId = nil
+            end
+            -- Remove from CollisionObjects list
+            for i, v in ipairs(CollisionObjects) do
+                if v == selectedObject then table.remove(CollisionObjects, i); break end
+            end
+        end
     end)
 
     myLabel = Label:new({

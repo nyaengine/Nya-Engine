@@ -575,7 +575,7 @@ function engineui:load()
     })
 
     AudioFileButton = FileButton.new({
-        x = love.graphics.getWidth() - 200,
+        x = love.graphics.getWidth() - 150,
         y = 200,
         label = "Choose Audio",
         filter = {"mp3", "ogg", "wav"},
@@ -1025,7 +1025,7 @@ function engineui:draw()
             end
 
             AudioFileButton:draw()
-            AudioFileButton:setPosition(love.graphics:getWidth() - 200, 400)
+            AudioFileButton:setPosition(love.graphics:getWidth() - 150, 400)
         end
         fileDialog.draw()
     end

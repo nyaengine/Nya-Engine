@@ -10,6 +10,7 @@ local camera = Camera:new(0, 0, 1)
 local dragOffsetX = 0
 local dragOffsetY = 0
 local Physics = require("lib.Physics")
+local ShaderManager = require("lib.ShaderManager")
 
 -- Physics integration flag
 engine.physicsEnabled = false
@@ -216,10 +217,18 @@ function engine:draw()
             windowWidth = love.graphics.getWidth()
             windowHeight = love.graphics.getHeight()
 
-            -- Apply camera
+            -- If shader post-processing is enabled, render scene into canvas
+            local usePost = ShaderManager and ShaderManager.enabled
+            local canvas
+            if usePost then
+                canvas = ShaderManager.getCanvas()
+                love.graphics.setCanvas(canvas)
+                love.graphics.clear()
+            end
+
+            -- Apply camera and draw scene into current target (screen or canvas)
             camera:apply()
 
-            -- Draw all objects
             for _, obj in ipairs(objects) do
                 obj:draw()
             end
@@ -232,17 +241,22 @@ function engine:draw()
                 sprite:draw()
             end
 
-            -- Highlight the selected object
             if selectedObject then
                 love.graphics.setColor(1, 0, 0, 0.5)
                 love.graphics.rectangle("line", selectedObject.x, selectedObject.y, selectedObject.width, selectedObject.height)
-                love.graphics.setColor(1, 1, 1, 1) -- Reset color
+                love.graphics.setColor(1, 1, 1, 1)
             end
 
-            -- Reset camera
             camera:reset()
 
             sceneManager:draw()
+
+            -- finish canvas and apply shader if needed
+            if usePost and canvas then
+                love.graphics.setCanvas()
+                ShaderManager.apply(canvas)
+            end
+
             -- Draw physics debug shapes when enabled
             if engine.physicsEnabled and Physics and Physics.debugDraw then
                 Physics.debugDraw()

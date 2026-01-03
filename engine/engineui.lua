@@ -475,12 +475,13 @@ function engineui:load()
         bgy = 25
     })
 
+    -- WHY THE FUCK IS IT NOT WORKING?!
     ObjectName = Label:new({
         x = love.graphics.getWidth() - 150,
         y = 75,
         text = "ObjectName",
-        color = {1, 1, 1, 1}, -- White
-        textScale = 1.25, -- Scale the text by 1.5 times
+        color = {1, 1, 1, 1}, 
+        textScale = 1.25, 
         background = true,
         bgx = 120,
         bgy = 25
@@ -626,6 +627,15 @@ function engineui:load()
         end
     end)
 
+    local shaderButton = ButtonLibrary:new(love.graphics.getWidth() / 2 + 130, 10, 120, 30, "Shader", function()
+        local ok, SM = pcall(require, "lib.ShaderManager")
+        if ok and SM then
+            SM.toggle()
+            -- cycle active shader when enabling
+            if SM.enabled then SM.cycle() end
+        end
+    end)
+
     local settingsButton = ButtonLibrary:new(10, 10, 30, 30, "", function()
         openSettingsWindow()
     end, "assets/settings.png")
@@ -640,6 +650,7 @@ function engineui:load()
     
     -- Add buttons to the buttons table
     table.insert(topbarButtons, createRunButton)
+    table.insert(topbarButtons, shaderButton)
     table.insert(topbarButtons, settingsButton)
     table.insert(topbarButtons, saveProjectButton)
     table.insert(topbarButtons, scaleModeButton)

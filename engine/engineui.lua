@@ -388,15 +388,15 @@ function engineui:load()
     group:setOnToggle(function(checked)
         if not selectedObject then return end
         if checked then
-            -- If object was anchored, un-anchor it so it can receive physics
+            
             if selectedObject.anchored then
                 selectedObject.anchored = false
             end
-            -- Enable physics on the object (will no-op if already enabled)
+
             if selectedObject.enablePhysics then
                 selectedObject:enablePhysics()
             end
-            -- Add to CollisionObjects list if not present
+
             local found = false
             for _, v in ipairs(CollisionObjects) do if v == selectedObject then found = true; break end end
             if not found then table.insert(CollisionObjects, selectedObject) end
@@ -419,8 +419,8 @@ function engineui:load()
         x = love.graphics.getWidth() - 150,
         y = 50,
         text = "Properties",
-        color = {1, 1, 1, 1}, -- White
-        textScale = 1.25 -- Scale the text by 1.5 times
+        color = {1, 1, 1, 1},
+        textScale = 1.25 
     })
 
     SidebarTitle = Label:new({
@@ -428,7 +428,7 @@ function engineui:load()
         y = 50,
         text = "Explorer",
         color = {1, 1, 1, 1},
-        textScale = 1.25 -- Scale the text by 1.5 times
+        textScale = 1.25 
     })
 
     ObjectsText = Label:new({

@@ -16,6 +16,7 @@ function GameObject:new(o)
     o.y = o.y or 0
     o.width = o.width or 0
     o.height = o.height or 0
+    o.anchored = o.anchored or false
 
     -- Initialize physics properties (used when not using love.physics)
     o.velocityX = o.velocityX or  0
@@ -26,7 +27,7 @@ function GameObject:new(o)
     o.gravity = o.gravity or 500  -- acceleration due to gravity, adjust as needed
 
     -- If requested, create a physics body via the Physics library
-    if o.usePhysics then
+    if o.usePhysics and not o.anchored then
         _nextPhysicsId = _nextPhysicsId + 1
         local id = "go_" .. tostring(_nextPhysicsId)
         o.physicsId = id

@@ -17,6 +17,8 @@ engine._physicsAutoEnabled = false
 
 local function createPhysicsForObject(obj)
     if not obj then return end
+    -- Skip creating physics for anchored objects
+    if obj.anchored then return end
     -- generate an id for the physics body
     local id = tostring(obj)
     obj.physicsId = id

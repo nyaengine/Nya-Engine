@@ -47,7 +47,7 @@ end
 
 function fileButton:draw()
     -- Button background
-    love.graphics.setColor(preferences.getColor("button", "background"))
+    love.graphics.setColor(preferences.getColor("button", "hover"))
     love.graphics.rectangle("fill", self.x, self.y, self.w, self.h, 4, 4)
 
     -- Text
@@ -63,6 +63,11 @@ function fileButton:draw()
             self.y + self.h + 4
         )
     end
+end
+
+function fileButton:setPosition(x, y)
+    self.x = x
+    self.y = y
 end
 
 function fileButton:mousepressed(mx, my, button)

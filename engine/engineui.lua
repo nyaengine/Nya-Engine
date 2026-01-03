@@ -10,6 +10,9 @@ local debugOverlay = {
     toggleKey = "f3"
 }
 
+local ShaderManager = require("lib.ShaderManager")
+local selectedShader = "none"
+
 --UI objects
 local group
 local projectName
@@ -293,6 +296,8 @@ function saveSettings()
         selectedTheme = selectedTheme,
         currentLanguage = currentLanguage,
         scrollSpeed = scrollSpeed,
+        selectedShader = selectedShader,
+        shaderEnabled = ShaderManager and ShaderManager.enabled or false,
         -- Add other settings you want to save here
     }
 
@@ -317,6 +322,12 @@ function loadSettings()
             selectedTheme = settings.selectedTheme or "default"
             currentLanguage = settings.currentLanguage or "en"
             scrollSpeed = settings.scrollSpeed or 20
+            selectedShader = settings.selectedShader or "none"
+            if ShaderManager then
+                ShaderManager.init()
+                if settings.shaderEnabled then ShaderManager.enable() else ShaderManager.disable() end
+                if selectedShader and selectedShader ~= "none" then ShaderManager.setActive(selectedShader) end
+            end
             -- Apply other settings as needed
 
             -- Apply the loaded settings to the UI
@@ -374,6 +385,26 @@ function engineui:load()
         end
         updateUIText(currentLanguage)
         saveSettings()
+    end
+
+    -- Initialize shader manager and create shader dropdown
+    if ShaderManager then
+        ShaderManager.init()
+        local shaderList = ShaderManager.list()
+        -- ensure 'none' appears first
+        table.sort(shaderList)
+        ShaderDropdown = DropdownLibrary:new(50, 50, 150, 25, shaderList)
+        ShaderDropdown.onSelect = function(name)
+            selectedShader = name
+            if name == "none" or not name then
+                ShaderManager.setActive(nil)
+            else
+                ShaderManager.setActive(name)
+            end
+            saveSettings()
+        end
+        -- select previously loaded shader
+        if selectedShader then ShaderDropdown:selectOption(selectedShader) end
     end
 
     if not InEngine then
@@ -544,8 +575,8 @@ function engineui:load()
     })
 
     AudioFileButton = FileButton.new({
-        x = 50,
-        y = 50,
+        x = love.graphics.getWidth() - 200,
+        y = 200,
         label = "Choose Audio",
         filter = {"mp3", "ogg", "wav"},
         onChange = function(path)
@@ -994,6 +1025,7 @@ function engineui:draw()
             end
 
             AudioFileButton:draw()
+            AudioFileButton:setPosition(love.graphics:getWidth() - 200, 400)
         end
         fileDialog.draw()
     end
@@ -1015,6 +1047,7 @@ function engineui:draw()
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
         FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
         ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 250)
+        if ShaderDropdown then ShaderDropdown:setPosition(myWindow.x + 20, myWindow.y + 350) end
         LangDropdown:setPosition(myWindow.x + 180, myWindow.y + 50)
         
         if FontDropdown.selected == "Poppins" then 

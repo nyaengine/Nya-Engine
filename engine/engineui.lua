@@ -2,6 +2,7 @@ local engineui = {}
 
 --engine ui only libraries
 local something = require("lib/something")
+local Slider = require("lib/slider")
 
 -- Debug overlay state
 local debugOverlay = {
@@ -9,9 +10,6 @@ local debugOverlay = {
     font = nil,
     toggleKey = "f3"
 }
-
-local ShaderManager = require("lib.ShaderManager")
-local selectedShader = "none"
 
 --UI objects
 local group
@@ -296,9 +294,6 @@ function saveSettings()
         selectedTheme = selectedTheme,
         currentLanguage = currentLanguage,
         scrollSpeed = scrollSpeed,
-        selectedShader = selectedShader,
-        shaderEnabled = ShaderManager and ShaderManager.enabled or false,
-        -- Add other settings you want to save here
     }
 
     local settingsJSON = dkjson.encode(settings, { indent = true })
@@ -322,12 +317,6 @@ function loadSettings()
             selectedTheme = settings.selectedTheme or "default"
             currentLanguage = settings.currentLanguage or "en"
             scrollSpeed = settings.scrollSpeed or 20
-            selectedShader = settings.selectedShader or "none"
-            if ShaderManager then
-                ShaderManager.init()
-                if settings.shaderEnabled then ShaderManager.enable() else ShaderManager.disable() end
-                if selectedShader and selectedShader ~= "none" then ShaderManager.setActive(selectedShader) end
-            end
             -- Apply other settings as needed
 
             -- Apply the loaded settings to the UI
@@ -385,26 +374,6 @@ function engineui:load()
         end
         updateUIText(currentLanguage)
         saveSettings()
-    end
-
-    -- Initialize shader manager and create shader dropdown
-    if ShaderManager then
-        ShaderManager.init()
-        local shaderList = ShaderManager.list()
-        -- ensure 'none' appears first
-        table.sort(shaderList)
-        ShaderDropdown = DropdownLibrary:new(50, 50, 150, 25, shaderList)
-        ShaderDropdown.onSelect = function(name)
-            selectedShader = name
-            if name == "none" or not name then
-                ShaderManager.setActive(nil)
-            else
-                ShaderManager.setActive(name)
-            end
-            saveSettings()
-        end
-        -- select previously loaded shader
-        if selectedShader then ShaderDropdown:selectOption(selectedShader) end
     end
 
     if not InEngine then
@@ -658,15 +627,6 @@ function engineui:load()
         end
     end)
 
-    local shaderButton = ButtonLibrary:new(love.graphics.getWidth() / 2 + 130, 10, 120, 30, "Shader", function()
-        local ok, SM = pcall(require, "lib.ShaderManager")
-        if ok and SM then
-            SM.toggle()
-            -- cycle active shader when enabling
-            if SM.enabled then SM.cycle() end
-        end
-    end)
-
     local settingsButton = ButtonLibrary:new(10, 10, 30, 30, "", function()
         openSettingsWindow()
     end, "assets/settings.png")
@@ -681,7 +641,6 @@ function engineui:load()
     
     -- Add buttons to the buttons table
     table.insert(topbarButtons, createRunButton)
-    table.insert(topbarButtons, shaderButton)
     table.insert(topbarButtons, settingsButton)
     table.insert(topbarButtons, saveProjectButton)
     table.insert(topbarButtons, scaleModeButton)
@@ -1047,8 +1006,6 @@ function engineui:draw()
         EngineSetText:setPosition(myWindow.x * 10, myWindow.y)
         FontDropdown:setPosition(myWindow.x + 20, myWindow.y + 50)
         ThemeDropdown:setPosition(myWindow.x + 20, myWindow.y + 250)
-        if ShaderDropdown then ShaderDropdown:setPosition(myWindow.x + 20, myWindow.y + 350) end
-        LangDropdown:setPosition(myWindow.x + 180, myWindow.y + 50)
         
         if FontDropdown.selected == "Poppins" then 
             selectedFont = "Poppins"

@@ -90,6 +90,7 @@ end
 function love.mousereleased(x, y, button, istouch, presses)
     if InEngine then
     engine:mousereleased(x, y, button)
+    if engineUI and engineUI.mousereleased then engineUI:mousereleased(x, y, button) end
 end
 end
 

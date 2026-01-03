@@ -4,6 +4,24 @@ local engineui = {}
 local something = require("lib/something")
 local Slider = require("lib/slider")
 
+-- Centralized dropdown options to make adding options easier
+local DropdownOptions = {
+    fonts = {"Poppins", "Noto Sans", "RobotoMono", "Inter", "JetbrainsMono"},
+    languages = {"English", "Polish"},
+    themes = {"Nya Mode", "Dark Mode"},
+}
+
+-- Helper: accepts either a key into DropdownOptions or a table of options
+local function createDropdown(x, y, w, h, opts)
+    local optionsList = {}
+    if type(opts) == "string" then
+        optionsList = DropdownOptions[opts] or {}
+    elseif type(opts) == "table" then
+        optionsList = opts
+    end
+    return DropdownLibrary:new(x, y, w, h, optionsList)
+end
+
 -- Debug overlay state
 local debugOverlay = {
     enabled = false,
@@ -337,7 +355,7 @@ function engineui:load()
     loadSettings()
     loadPlugins()
     loadMods()
-    FontDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Poppins", "Noto Sans", "RobotoMono", "Inter", "JetbrainsMono"})
+    FontDropdown = createDropdown(50, 50, 100, 25, "fonts")
     FontDropdown.onSelect = function(selectedFontName)
         selectedFont = selectedFontName
         applyFont(selectedFont)
@@ -346,8 +364,8 @@ function engineui:load()
 
     FontDropdown:selectOption(selectedFont)
     
-    LangDropdown = DropdownLibrary:new(50, 50, 100, 25, {"English", "Polish"})
-    ThemeDropdown = DropdownLibrary:new(50, 50, 100, 25, {"Nya Mode", "Dark Mode"})
+    LangDropdown = createDropdown(50, 50, 100, 25, "languages")
+    ThemeDropdown = createDropdown(50, 50, 100, 25, "themes")
 
     if selectedTheme == "default" then
         ThemeDropdown:selectOption("Nya Mode")

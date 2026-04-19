@@ -4,6 +4,8 @@
 
 # Nya Engine
 
+**CANCELLED AND DISCONTINUED PROJECT**
+
 **Nya Engine** is a community-driven 2D game engine built with [LÖVE2D](https://love2d.org/), designed to be lightweight, easy to use, and *kawaii* 🌸. Nya Engine includes an integrated IDE, Lua coding, object and scene management, UI customization, and more — all to empower game developers to create amazing interactive 2D games quickly and easily.
 
 ## Table of Contents
